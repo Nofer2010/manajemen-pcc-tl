@@ -1,0 +1,2409 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Manajemen SPM & TL</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4f46e5">
+
+    <!-- Tailwind, SweetAlert, FontAwesome, Chart.js, Html2Pdf -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { darkbg: '#111827', darkcard: '#1F2937' } } }
+        }
+    </script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); }
+        #initial-loader { backdrop-filter: blur(15px); background: rgba(17, 24, 39, 0.85); transition: opacity 0.3s ease-out; }
+        .swal2-popup { border-radius: 1.5rem !important; }
+        /* Custom Scrollbar for better UI */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    </style>
+</head>
+<body class="font-sans text-gray-800 dark:text-gray-200 transition-colors duration-300 overflow-hidden bg-gray-50 dark:bg-darkbg relative">
+
+    <!-- LOADER -->
+    <div id="initial-loader" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center">
+        <div class="animate-spin rounded-full h-14 w-14 border-t-4 border-b-4 border-indigo-500 mb-4 shadow-lg"></div>
+        <h2 class="text-white text-2xl font-bold tracking-wider">Mohon Tunggu</h2>
+        <p class="text-indigo-200 mt-2 text-sm animate-pulse">Memuat Data Sesi & Real-time...</p>
+    </div>
+
+    <!-- AUTENTIKASI -->
+    <div id="auth-wrapper" class="hidden fixed inset-0 z-50 items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-800 p-4 overflow-y-auto">
+        <div class="w-full max-w-md glass-panel rounded-3xl p-6 sm:p-8 fade-in my-8 shadow-2xl">
+            <!-- Logo Brand Modern -->
+            <div class="flex flex-col items-center justify-center mb-6">
+                <img src="logo.png" alt="Logo" class="w-20 h-20 object-contain mb-3 drop-shadow-md rounded-2xl">
+            </div>
+
+            <!-- Login -->
+            <div id="login-section">
+                <div class="text-center mb-6">
+                    <h2 class="text-3xl font-extrabold text-gray-800 tracking-tight">Selamat Datang</h2>
+                    <p class="text-sm text-gray-500 mt-1">Masuk ke Sistem Manajemen Kinerja</p>
+                </div>
+                <form id="login-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Email Login</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400"><i class="fas fa-envelope"></i></span>
+                            <input type="email" id="login-email" required class="block w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl text-gray-800 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400"><i class="fas fa-lock"></i></span>
+                            <input type="password" id="login-password" required class="block w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl text-gray-800 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full py-3.5 mt-2 rounded-xl text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 font-bold shadow-lg shadow-indigo-500/30 transition transform hover:-translate-y-0.5">Masuk</button>
+                </form>
+                <div class="mt-6 text-center"><p class="text-sm text-gray-600">Spv / TL Baru? <button onclick="toggleAuthView('register')" class="text-indigo-600 font-bold hover:underline transition">Daftar Di sini</button></p></div>
+            </div>
+
+            <!-- Register TL/SPV -->
+            <div id="register-section" class="hidden">
+                <div class="text-center mb-6"><h2 class="text-3xl font-extrabold text-gray-800">Daftar TL/SPV</h2></div>
+                <form id="register-form" class="space-y-4">
+                    <div><label class="block text-sm font-semibold text-gray-700">Nama Lengkap</label><input type="text" id="reg-nama" required class="w-full p-3 bg-gray-50 focus:bg-white border rounded-xl text-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition"></div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700">Jabatan</label>
+                        <select id="reg-jabatan" required class="w-full p-3 bg-gray-50 focus:bg-white border rounded-xl text-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition"><option value="TL">Team Leader (TL)</option><option value="SPV">Supervisor (SPV)</option></select>
+                    </div>
+                    <div><label class="block text-sm font-semibold text-gray-700">Email Login</label><input type="email" id="reg-email" required class="w-full p-3 bg-gray-50 focus:bg-white border rounded-xl text-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition"></div>
+                    <div><label class="block text-sm font-semibold text-gray-700">Password (Min. 6 Karakter)</label><input type="password" id="reg-password" required minlength="6" class="w-full p-3 bg-gray-50 focus:bg-white border rounded-xl text-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition"></div>
+                    <button type="submit" class="w-full py-3.5 mt-2 rounded-xl text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 font-bold shadow-lg transition">Buat Akun</button>
+                </form>
+                <div class="mt-4 text-center"><button onclick="toggleAuthView('login')" class="text-indigo-600 font-bold hover:underline transition"><i class="fas fa-arrow-left mr-1"></i> Kembali ke Login</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD UTAMA -->
+    <div id="dashboard-wrapper" class="hidden h-screen bg-gray-50 dark:bg-darkbg flex-col overflow-hidden">
+        <!-- Navbar -->
+        <nav class="bg-white/90 dark:bg-darkcard/90 backdrop-blur-md shadow-sm px-4 py-3 flex justify-between items-center flex-shrink-0 z-40 border-b border-gray-100 dark:border-gray-800 sticky top-0">
+            <div class="flex items-center gap-3">
+                <button id="menu-btn" class="md:hidden text-2xl text-indigo-600 p-1 focus:outline-none"><i class="fas fa-bars"></i></button>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400" id="header-title">Sistem SPM</h1>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="theme-toggle" class="text-gray-500 hover:text-indigo-600 bg-gray-100 hover:bg-indigo-50 dark:bg-gray-800 dark:hover:bg-gray-700 p-2.5 rounded-full transition"><i class="fas fa-moon" id="theme-icon"></i></button>
+                <div class="flex items-center gap-2 px-3 py-1.5 bg-gray-50 dark:bg-gray-800 rounded-full border border-gray-200 dark:border-gray-700">
+                    <div class="w-6 h-6 rounded-full bg-indigo-600 text-white flex justify-center items-center font-bold text-xs"><i class="fas fa-user"></i></div>
+                    <span id="user-profile-name" class="font-semibold text-gray-700 dark:text-gray-300 hidden md:block text-sm">Memuat...</span>
+                </div>
+                <button id="btn-logout" class="bg-red-50 text-red-600 hover:bg-red-500 hover:text-white px-4 py-2 rounded-xl text-sm font-bold transition shadow-sm border border-red-100"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </nav>
+
+        <div class="flex flex-1 overflow-hidden relative">
+            <div id="sidebar-backdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden md:hidden transition-opacity duration-300"></div>
+
+            <!-- Sidebar Profesional -->
+            <aside id="sidebar" class="fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 w-64 bg-white dark:bg-darkcard shadow-2xl md:shadow-none flex-shrink-0 z-50 overflow-y-auto border-r border-gray-200 dark:border-gray-800 transition-transform duration-300 ease-in-out h-full">
+                
+                <!-- MENU TL / SPV -->
+                <ul id="menu-tl" class="hidden p-4 space-y-2">
+                    <li class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-3 mb-2">Menu Utama</li>
+                    <li><button id="btn-tl-dash" onclick="bukaMenu('tl-dash', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-indigo-50 hover:text-indigo-600"><i class="fas fa-chart-line w-5 text-center"></i> Dashboard</button></li>
+                    <li><button onclick="bukaMenu('tl-toko', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-indigo-50 hover:text-indigo-600"><i class="fas fa-store w-5 text-center"></i> Manajemen Toko</button></li>
+                    <li><button onclick="bukaMenu('tl-produk-toko', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-indigo-50 hover:text-indigo-600"><i class="fas fa-boxes w-5 text-center"></i> Stok Toko</button></li>
+                    <li><button onclick="bukaMenu('tl-rekap-toko', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-indigo-50 hover:text-indigo-600"><i class="fas fa-file-excel w-5 text-center"></i> Rekap Penjualan</button></li>
+                    
+                    <li class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-3 mb-2 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">Manajemen Target</li>
+                    <li><button onclick="bukaMenu('tl-target', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-indigo-50 hover:text-indigo-600"><i class="fas fa-bullseye w-5 text-center text-red-500"></i> Target Reguler</button></li>
+                    <li><button onclick="bukaMenu('tl-target-lain', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-indigo-50 hover:text-indigo-600"><i class="fas fa-star w-5 text-center text-orange-500"></i> Fokus Produk Lain</button></li>
+                </ul>
+
+                <!-- MENU SPM / SPG -->
+                <ul id="menu-spm" class="hidden p-4 space-y-2">
+                    <li class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-3 mb-2">Kinerja & Laporan</li>
+                    <li><button id="btn-spm-dash" onclick="bukaMenu('spm-dash', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-green-50 hover:text-green-600"><i class="fas fa-chart-pie w-5 text-center"></i> Dashboard Anda</button></li>
+                    <li><button onclick="bukaMenu('spm-laporan', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-green-50 hover:text-green-600"><i class="fas fa-edit w-5 text-center"></i> Laporan Harian</button></li>
+                    
+                    <li class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-3 mb-2 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">Inventory Toko</li>
+                    <li><button onclick="bukaMenu('spm-produk', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-green-50 hover:text-green-600"><i class="fas fa-box-open w-5 text-center"></i> Tambah Produk</button></li>
+                    <li><button onclick="bukaMenu('spm-rekap', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-green-50 hover:text-green-600"><i class="fas fa-list w-5 text-center"></i> Daftar Harga</button></li>
+                    <li><button onclick="bukaMenu('spm-po', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-green-50 hover:text-green-600"><i class="fas fa-file-invoice w-5 text-center text-blue-500"></i> Request PO <span class="ml-auto bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full">BARU</span></button></li>
+                </ul>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="flex-1 p-4 md:p-8 overflow-y-auto w-full flex flex-col justify-between h-full bg-gray-50/50 dark:bg-transparent">
+                
+                <div class="w-full pb-20 md:pb-10 max-w-7xl mx-auto">
+                    <!-- ================= KHUSUS TL / SPV ================= -->
+                    <!-- TL: Dashboard -->
+                    <section id="tl-dash" class="menu-section hidden fade-in">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="p-3 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 rounded-xl"><i class="fas fa-tachometer-alt text-xl"></i></div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Dashboard Global (CCM)</h2>
+                                <p class="text-sm font-medium text-indigo-600" id="tl-bulan-title">Bulan Ini</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
+                            <div class="bg-white dark:bg-darkcard p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow border-l-4 border-blue-500 relative overflow-hidden">
+                                <div class="absolute -right-4 -bottom-4 opacity-10"><i class="fas fa-bullseye text-6xl text-blue-500"></i></div>
+                                <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Target Global</p>
+                                <h3 id="tl-total-target" class="text-2xl font-black text-gray-800 dark:text-white mt-2">Rp 0</h3>
+                            </div>
+                            <div class="bg-white dark:bg-darkcard p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow border-l-4 border-green-500 relative overflow-hidden">
+                                <div class="absolute -right-4 -bottom-4 opacity-10"><i class="fas fa-check-circle text-6xl text-green-500"></i></div>
+                                <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Tercapai (CCM)</p>
+                                <h3 id="tl-total-capaian" class="text-2xl font-black text-green-600 mt-2">Rp 0</h3>
+                            </div>
+                            <div class="bg-white dark:bg-darkcard p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow border-l-4 border-red-500 relative overflow-hidden">
+                                <div class="absolute -right-4 -bottom-4 opacity-10"><i class="fas fa-arrow-down text-6xl text-red-500"></i></div>
+                                <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Kekurangan</p>
+                                <h3 id="tl-kekurangan" class="text-2xl font-black text-red-500 mt-2">Rp 0</h3>
+                            </div>
+                            <div class="bg-white dark:bg-darkcard p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow border-l-4 border-purple-500 relative overflow-hidden">
+                                <div class="absolute -right-4 -bottom-4 opacity-10"><i class="fas fa-percentage text-6xl text-purple-500"></i></div>
+                                <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Persentase</p>
+                                <h3 id="tl-persen-text" class="text-2xl font-black text-purple-600 mt-2">0%</h3>
+                                <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-3 mt-3 shadow-inner"><div id="tl-bar" class="bg-gradient-to-r from-purple-500 to-indigo-500 h-3 rounded-full transition-all duration-1000" style="width: 0%"></div></div>
+                            </div>
+                        </div>
+
+                        <!-- GRAFIK TAHUNAN -->
+                        <div class="bg-white dark:bg-darkcard p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 w-full mb-8">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2">
+                                <h3 class="font-bold flex items-center gap-2 text-lg"><i class="fas fa-chart-bar text-indigo-500"></i> Grafik Performa Tahunan - <span id="tl-chart-year" class="text-indigo-600">2026</span></h3>
+                            </div>
+                            <div class="w-full overflow-x-auto">
+                                <div class="relative w-full min-w-[500px] h-72 sm:h-80 md:h-96">
+                                    <canvas id="tlChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="p-2 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 rounded-lg"><i class="fas fa-trophy"></i></div>
+                            <h3 class="text-xl font-bold">Ranking Tim Bulan Ini</h3>
+                        </div>
+                        <div class="bg-white dark:bg-darkcard rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-800">
+                            <div class="overflow-x-auto w-full">
+                                <table class="w-full text-left whitespace-nowrap min-w-[600px]">
+                                    <thead class="bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur">
+                                        <tr>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Rank</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Nama Tim</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Outlet / Toko</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Target</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Capaian</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">%</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tl-ranking-body" class="divide-y divide-gray-100 dark:divide-gray-800">
+                                        <tr><td colspan="6" class="p-6 text-center text-gray-500">Menyinkronkan data tim...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- TL: Data Toko -->
+                    <section id="tl-toko" class="menu-section hidden fade-in">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="p-3 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 rounded-xl"><i class="fas fa-store text-xl"></i></div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Manajemen Toko & Akun</h2>
+                                <p class="text-sm font-medium text-gray-500">Daftarkan Toko dan Akun SPM/G Baru.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-darkcard p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 mb-8">
+                            <form id="form-toko" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Nama Toko</label>
+                                    <input type="text" id="t-nama" list="list-toko-terdaftar" required autocomplete="off" placeholder="Pilih toko atau ketik baru..." class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                                    <datalist id="list-toko-terdaftar"></datalist>
+                                </div>
+                                <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Nama SPM/G</label><input type="text" id="t-pegawai" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-500 transition"></div>
+                                <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Jabatan</label><select id="t-jab" class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-500 transition"><option>SPM</option><option>SPB</option><option>SPG</option></select></div>
+                                <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Email Login</label><input type="email" id="t-email" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-500 transition"></div>
+                                <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Password Login</label><input type="password" id="t-pass" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-500 transition"></div>
+                                
+                                <!-- Opsi Wilayah Dinamis dengan API EMSIFA -->
+                                <div>
+                                    <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Provinsi</label>
+                                    <select id="t-provinsi" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                                        <option value="" disabled selected>Memuat Provinsi...</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Kota / Kabupaten</label>
+                                    <select id="t-kota" required disabled class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                                        <option value="" disabled selected>Pilih Provinsi Dahulu...</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Kecamatan</label>
+                                    <select id="t-kec" required disabled class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                                        <option value="" disabled selected>Pilih Kota/Kab Dahulu...</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Kelurahan</label>
+                                    <select id="t-kel" required disabled class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                                        <option value="" disabled selected>Pilih Kecamatan Dahulu...</option>
+                                    </select>
+                                </div>
+
+                                <div class="md:col-span-2 mt-4"><button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3.5 rounded-xl font-bold shadow-md transition transform hover:-translate-y-0.5"><i class="fas fa-plus-circle mr-2"></i>Buat Akun Tim & Daftarkan Toko</button></div>
+                            </form>
+                        </div>
+
+                        <h3 class="text-xl font-bold mb-4">Daftar Tim Aktif</h3>
+                        <div class="bg-white dark:bg-darkcard rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-800">
+                            <div class="overflow-x-auto w-full">
+                                <table class="w-full text-left whitespace-nowrap min-w-[700px]">
+                                    <thead class="bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur">
+                                        <tr>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Nama Toko</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Nama SPM/G</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Jabatan</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Wilayah</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-center">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tl-toko-table-body" class="divide-y divide-gray-100 dark:divide-gray-800">
+                                        <tr><td colspan="5" class="p-6 text-center text-gray-500">Memuat data toko...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- TL: Data Produk Toko -->
+                    <section id="tl-produk-toko" class="menu-section hidden fade-in">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
+                            <div>
+                                <h2 class="text-2xl font-bold"><i class="fas fa-boxes text-indigo-600"></i> Data Produk Toko (Inventory Gudang)</h2>
+                                <p class="text-sm text-gray-500 mt-1">Pilih toko di bawah ini untuk melihat detail stok barang per toko secara rapi.</p>
+                            </div>
+                            <div class="w-full sm:w-72">
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400"><i class="fas fa-search"></i></span>
+                                    <input type="text" id="search-list-toko" onkeyup="filterListToko()" placeholder="Cari nama toko / SPM..." class="w-full pl-10 pr-4 py-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 border-gray-200 dark:border-gray-700">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-darkcard rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-800">
+                            <div class="overflow-x-auto overflow-y-auto max-h-[380px] w-full custom-scroll">
+                                <table class="w-full text-left whitespace-nowrap min-w-[500px]">
+                                    <thead class="bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur sticky top-0 z-10">
+                                        <tr>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Nama Toko</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Nama SPM/G</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-center">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tl-list-toko-produk-body" class="divide-y divide-gray-100 dark:divide-gray-800">
+                                        <tr><td colspan="3" class="p-6 text-center text-gray-500">Memuat daftar toko...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- TL: Halaman Rekap Omzet Per Toko & Per Bulan/Tahun -->
+                    <section id="tl-rekap-toko" class="menu-section hidden fade-in">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
+                            <div>
+                                <h2 class="text-2xl font-bold"><i class="fas fa-file-invoice-dollar text-indigo-600"></i> Rekap Omzet Toko</h2>
+                                <p class="text-sm text-gray-500 mt-1">Laporan rekapitulasi nilai penjualan tiap toko berdasarkan bulan dan tahun.</p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <select id="rekap-filter-bulan" onchange="renderRekapTokoTable()" class="p-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none">
+                                    <option value="">Semua Bulan</option>
+                                    <option value="Januari">Januari</option><option value="Februari">Februari</option><option value="Maret">Maret</option><option value="April">April</option><option value="Mei">Mei</option><option value="Juni">Juni</option><option value="Juli">Juli</option><option value="Agustus">Agustus</option><option value="September">September</option><option value="Oktober">Oktober</option><option value="November">November</option><option value="Desember">Desember</option>
+                                </select>
+                                <input type="text" id="rekap-filter-tahun" onkeyup="renderRekapTokoTable()" placeholder="Tahun (Cth: 2026)" class="w-32 p-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none">
+                                <button onclick="exportTableToCSV('rekap-toko-table', 'Rekap_Omzet_Toko.csv')" class="px-3.5 py-2 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-xl transition shadow-sm"><i class="fas fa-file-csv mr-1"></i> CSV</button>
+                                <button onclick="exportTableToExcel('rekap-toko-table', 'Rekap_Omzet_Toko.xls')" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition shadow-sm"><i class="fas fa-file-excel mr-1"></i> Excel</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-darkcard rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-800">
+                            <div class="overflow-x-auto w-full">
+                                <table id="rekap-toko-table" class="w-full text-left whitespace-nowrap min-w-[600px]">
+                                    <thead class="bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur">
+                                        <tr>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Nama Toko</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Nama SPM/G</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Bulan / Tahun</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Total Omzet (CCM)</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Target Toko</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">% Capaian</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tl-rekap-toko-body" class="divide-y divide-gray-100 dark:divide-gray-800">
+                                        <tr><td colspan="6" class="p-6 text-center text-gray-500">Memuat rekap omzet...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- TL: Halaman Khusus Detail Stok Toko -->
+                    <section id="tl-detail-stok-toko" class="menu-section hidden fade-in">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+                            <div>
+                                <button onclick="bukaMenu('tl-produk-toko', document.querySelector('aside button[onclick*=\'tl-produk-toko\']'))" class="mb-2 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-xs font-bold rounded-lg transition"><i class="fas fa-arrow-left"></i> Kembali</button>
+                                <h2 class="text-2xl font-bold text-indigo-600" id="detail-stok-nama-toko">Stok Toko</h2>
+                                <p class="text-sm text-gray-500" id="detail-stok-nama-spm">SPM/G: -</p>
+                            </div>
+                            <div class="w-full sm:w-72">
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400"><i class="fas fa-search"></i></span>
+                                    <input type="text" id="search-stok-barang" onkeyup="filterStokBarang()" placeholder="Cari nama barang/kategori..." class="w-full pl-10 pr-4 py-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 border-gray-200 dark:border-gray-700">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-darkcard rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-800">
+                            <div class="overflow-x-auto overflow-y-auto max-h-[380px] w-full">
+                                <table class="w-full text-left whitespace-nowrap min-w-[500px]">
+                                    <thead class="bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur sticky top-0 z-10">
+                                        <tr>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Kategori</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Nama Produk</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Stock Qty</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Kemasan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tl-detail-stok-body" class="divide-y divide-gray-100 dark:divide-gray-800">
+                                        <tr><td colspan="4" class="p-6 text-center text-gray-500">Memuat stok produk...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- TL: Target Reguler -->
+                    <section id="tl-target" class="menu-section hidden fade-in">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="p-3 bg-red-100 dark:bg-red-900/30 text-red-600 rounded-xl"><i class="fas fa-bullseye text-xl"></i></div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Set Target Bulanan Toko</h2>
+                                <p class="text-sm font-medium text-gray-500">Khusus Kategori CCM</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white dark:bg-darkcard p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 max-w-xl">
+                            <form id="form-target" class="space-y-4">
+                                <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Pilih Toko Terdaftar</label><select id="target-toko-select" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-500 transition"><option value="">Memuat Toko...</option></select></div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Bulan</label><select id="target-bulan" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                                        <option value="Januari">Januari</option><option value="Februari">Februari</option><option value="Maret">Maret</option><option value="April">April</option><option value="Mei">Mei</option><option value="Juni">Juni</option><option value="Juli">Juli</option><option value="Agustus">Agustus</option><option value="September">September</option><option value="Oktober">Oktober</option><option value="November">November</option><option value="Desember">Desember</option>
+                                    </select></div>
+                                    <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Tahun</label><input type="number" id="target-tahun" value="2026" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-500 transition"></div>
+                                </div>
+                                <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Target Nominal CCM (Rp)</label><input type="number" id="target-nominal" required placeholder="Contoh: 50000000" class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-500 transition"></div>
+                                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3.5 rounded-xl font-bold transition shadow-md mt-4">Simpan Target</button>
+                            </form>
+                        </div>
+                    </section>
+
+                    <!-- TL: Target Lain -->
+                    <section id="tl-target-lain" class="menu-section hidden fade-in">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="p-3 bg-orange-100 dark:bg-orange-900/30 text-orange-600 rounded-xl"><i class="fas fa-star text-xl"></i></div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Tambah Target Fokus</h2>
+                                <p class="text-sm font-medium text-gray-500">Target tambahan berdasarkan volume / produk spesifik.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-darkcard p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 max-w-xl">
+                            <form id="form-target-lain" class="space-y-5">
+                                <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Pilih Toko</label><select id="lain-toko-select" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-orange-500 transition"><option value="">Pilih Toko Terlebih Dahulu...</option></select></div>
+                                <div>
+                                    <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Pilih Produk</label>
+                                    <select id="lain-produk-select" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-orange-500 transition">
+                                        <option value="" disabled selected>Pilih Toko Dahulu...</option>
+                                    </select>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Target Volume (Qty/Liter)</label><input type="number" id="lain-volume" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-orange-500 transition" placeholder="Cth: 50"></div>
+                                    <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Target Nilai / Value (Rp)</label><input type="number" id="lain-nilai" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-orange-500 transition" placeholder="Cth: 5000000"></div>
+                                </div>
+                                <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white p-3.5 rounded-xl font-bold shadow-md transition mt-4">Kirim Target Lain</button>
+                            </form>
+                        </div>
+                    </section>
+
+
+                    <!-- ================= KHUSUS SPM / SPG / SPB ================= -->
+
+                    <!-- SPM: Dashboard Kinerja -->
+                    <section id="spm-dash" class="menu-section hidden fade-in">
+                        <h2 class="text-2xl font-bold mb-2">Pencapaian (Khusus CCM) <span id="spm-bulan-title" class="text-green-600"></span></h2>
+                        <p class="text-sm text-gray-500 mb-6"><i class="fas fa-info-circle"></i> Target Harian dipotong libur 4 hari/bulan.</p>
+                        
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                            <div class="bg-white dark:bg-darkcard p-5 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm border-l-4 border-l-indigo-500">
+                                <p class="text-xs text-gray-500 font-bold uppercase">Target Bulanan</p><h4 id="spm-target-bulanan" class="text-lg font-bold mt-1 text-gray-800 dark:text-gray-100">Rp 0</h4>
+                            </div>
+                            <div class="bg-white dark:bg-darkcard p-5 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm border-l-4 border-l-green-500">
+                                <p class="text-xs text-gray-500 font-bold uppercase">Total Capaian (CCM)</p><h4 id="spm-total-capaian" class="text-lg font-bold mt-1 text-green-600">Rp 0 (0%)</h4>
+                            </div>
+                            <div class="bg-white dark:bg-darkcard p-5 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm border-l-4 border-l-orange-500">
+                                <p class="text-xs text-gray-500 font-bold uppercase">Target Harian</p><h4 id="spm-target-harian" class="text-lg font-bold mt-1 text-gray-800 dark:text-gray-100">Rp 0</h4>
+                            </div>
+                            <div class="bg-white dark:bg-darkcard p-5 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm border-l-4 border-l-blue-500">
+                                <p class="text-xs text-gray-500 font-bold uppercase">Capaian Hari Ini</p><h4 id="spm-capaian-hari-ini" class="text-lg font-bold mt-1 text-blue-600">Rp 0</h4>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-bold mb-4"><i class="fas fa-bullseye text-orange-500"></i> Target Produk Fokus (Dari TL)</h3>
+                            <div id="spm-target-fokus-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <div class="bg-white dark:bg-darkcard p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 text-gray-500 text-sm">
+                                    Memuat target produk fokus...
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- GRAFIK TAHUNAN -->
+                        <div class="bg-white dark:bg-darkcard p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 w-full mb-8">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+                                <h3 class="font-bold flex items-center gap-2 text-base sm:text-lg"><i class="fas fa-chart-bar text-green-600"></i> Grafik Target vs Omzet Tahunan (CCM) - <span id="spm-chart-year">2026</span></h3>
+                            </div>
+                            <div class="w-full overflow-x-auto">
+                                <div class="relative w-full min-w-[500px] h-72 sm:h-80 md:h-96">
+                                    <canvas id="spmChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- SPM: Tambah Produk -->
+                    <section id="spm-produk" class="menu-section hidden fade-in">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="p-3 bg-green-100 dark:bg-green-900/30 text-green-600 rounded-xl"><i class="fas fa-box-open text-xl"></i></div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Master Data Produk</h2>
+                                <p class="text-sm font-medium text-gray-500">Tambahkan barang/produk yang ada di toko Anda.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-darkcard p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
+                            <form id="form-produk" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Kategori</label>
+                                    <select id="prod-kat" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-green-500 transition">
+                                        <option value="" disabled selected>Pilih Kategori</option><option value="CCM">CCM</option><option value="RM">Ready Mix (RM)</option><option value="ALAT">Alat</option><option value="DLL">Lain-lain</option>
+                                    </select>
+                                </div>
+                                <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Nama Produk</label><input type="text" id="prod-nama" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-green-500 transition"></div>
+                                <div>
+                                    <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Kemasan / Satuan</label>
+                                    <select id="prod-vol" class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-green-500 transition">
+                                        <option value="1 Lt">1 Lt</option>
+                                        <option value="2.5 Lt">2.5 Lt</option>
+                                        <option value="4 Kg">4 Kg</option>
+                                        <option value="5 Kg">5 Kg</option>
+                                        <option value="15 Kg">15 Kg</option>
+                                        <option value="15 Lt">15 Lt</option>
+                                        <option value="20 Kg">20 Kg</option>
+                                        <option value="20 Lt">20 Lt</option>
+                                        <option value="22 Kg">22 Kg</option>
+                                        <option value="25 Kg">25 Kg</option>
+                                        <option value="1 Pcs">1 Pcs</option>
+                                        <option value="1 Set">1 Set</option>
+                                    </select>
+                                </div>
+                                <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Stock Awal (Qty)</label><input type="number" id="prod-qty" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-green-500 transition" min="0"></div>
+                                <div class="md:col-span-2">
+                                    <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Harga Patokan (Rp)</label>
+                                    <input type="number" id="prod-harga" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-green-500 transition">
+                                    <p class="text-xs text-red-500 mt-2 font-medium" id="prod-note">*Pilih kategori terlebih dahulu</p>
+                                </div>
+                                <div class="md:col-span-2 mt-2"><button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white p-3.5 rounded-xl font-bold shadow-md transition transform hover:-translate-y-0.5">Simpan Produk</button></div>
+                            </form>
+                        </div>
+                    </section>
+
+                    <!-- SPM: Input Laporan & Snapshot Toko -->
+                    <section id="spm-laporan" class="menu-section hidden fade-in">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="p-3 bg-green-100 dark:bg-green-900/30 text-green-600 rounded-xl"><i class="fas fa-edit text-xl"></i></div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Input Penjualan Harian</h2>
+                                <p class="text-sm font-medium text-gray-500">Catat transaksi omzet dengan cermat.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-darkcard p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-800 max-w-2xl mb-8 relative">
+                            <!-- Indikator Snapshot -->
+                            <div class="absolute top-4 right-4 px-3 py-1 bg-indigo-50 text-indigo-600 dark:bg-gray-800 dark:text-indigo-400 rounded-full text-xs font-bold flex items-center gap-2 border border-indigo-100 dark:border-gray-700">
+                                <i class="fas fa-store"></i> <span id="indikator-toko-spm">Toko Aktif</span>
+                            </div>
+
+                            <form id="form-laporan" class="space-y-5 mt-4">
+                                <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Tanggal Penjualan</label><input type="date" id="lap-tgl" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-green-500 transition"></div>
+                                <div>
+                                    <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Pilih Produk</label>
+                                    <select id="lap-produk" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-green-500 transition">
+                                        <option value="" disabled selected>Memuat Data Produk Toko...</option>
+                                    </select>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Qty Terjual</label><input type="number" id="lap-qty" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-green-500 transition" min="1" value="1"></div>
+                                    <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Harga Satuan (Rp)</label><input type="number" id="lap-harga" required class="w-full p-3 mt-1 border rounded-xl bg-gray-100 dark:bg-gray-800 outline-none"></div>
+                                </div>
+                                <div class="mt-4 p-4 bg-green-50 dark:bg-green-900/10 rounded-xl border border-green-100 dark:border-green-900/30">
+                                    <label class="text-xs font-bold text-green-600 uppercase tracking-wider">Total Pendapatan Transaksi Ini</label>
+                                    <input type="text" id="lap-total" readonly class="w-full p-2 mt-1 bg-transparent border-none font-black text-2xl text-green-700 dark:text-green-400 outline-none" value="Rp 0">
+                                </div>
+                                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white p-4 mt-2 rounded-xl font-bold shadow-md transition transform hover:-translate-y-0.5"><i class="fas fa-paper-plane mr-2"></i>Kirim Laporan</button>
+                            </form>
+                        </div>
+
+                        <!-- HISTORI PENJUALAN HARIAN & PENCARIAN -->
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-white"><i class="fas fa-history text-indigo-500 mr-2"></i> Rekap & Histori Penjualan</h3>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <input type="date" id="filter-search-tgl" onchange="filterHistoriPenjualan()" class="p-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none">
+                                <select id="filter-search-bulan" onchange="filterHistoriPenjualan()" class="p-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none">
+                                    <option value="">Semua Bulan</option>
+                                    <option value="Januari">Januari</option><option value="Februari">Februari</option><option value="Maret">Maret</option><option value="April">April</option><option value="Mei">Mei</option><option value="Juni">Juni</option><option value="Juli">Juli</option><option value="Agustus">Agustus</option><option value="September">September</option><option value="Oktober">Oktober</option><option value="November">November</option><option value="Desember">Desember</option>
+                                </select>
+                                <input type="text" id="filter-search-tahun" onkeyup="filterHistoriPenjualan()" placeholder="Tahun (Cth: 2026)" class="w-32 p-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none">
+                                <button onclick="resetFilterHistori()" class="px-3 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 text-xs font-bold rounded-xl transition">Reset</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-darkcard rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-800 mb-8">
+                            <div class="overflow-x-auto w-full">
+                                <table class="w-full text-left whitespace-nowrap min-w-[800px]">
+                                    <thead class="bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur">
+                                        <tr>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Tanggal</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Toko</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Kategori</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Detail Produk</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Qty</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Total Nilai Rp</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-center">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="spm-histori-body" class="divide-y divide-gray-100 dark:divide-gray-800">
+                                        <tr><td colspan="7" class="p-6 text-center text-gray-500">Memuat histori penjualan...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- SPM: FITUR PO KE SALES (BARU) -->
+                    <section id="spm-po" class="menu-section hidden fade-in">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-xl"><i class="fas fa-file-invoice text-xl"></i></div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Purchase Order (PO) ke Sales</h2>
+                                <p class="text-sm font-medium text-gray-500">Request stok barang otomatis via WhatsApp & PDF.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-darkcard p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 max-w-2xl">
+                            <form id="form-po" class="space-y-4">
+                                <div>
+                                    <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">No WhatsApp Penerima (Sales)</label>
+                                    <input type="text" id="po-wa" required placeholder="Cth: 6281234567890 (Gunakan awalan 62)" class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition">
+                                </div>
+                                
+                                <!-- Kotak Tambah Barang -->
+                                <div class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 mb-2">
+                                    <h3 class="text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">Tambah Barang ke Order</h3>
+                                    <div class="space-y-3">
+                                        <div>
+                                            <label class="text-xs font-semibold text-gray-600 dark:text-gray-400">Pilih Produk</label>
+                                            <select id="po-produk" class="w-full p-2.5 mt-1 border rounded-lg bg-white dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition text-sm">
+                                                <option value="" disabled selected>Memuat Data Produk Toko...</option>
+                                            </select>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-3 items-end">
+                                            <div>
+                                                <label class="text-xs font-semibold text-gray-600 dark:text-gray-400">Qty Order</label>
+                                                <input type="number" id="po-qty" class="w-full p-2.5 mt-1 border rounded-lg bg-white dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition text-sm" min="1" value="1">
+                                            </div>
+                                            <button type="button" onclick="tambahItemPO()" class="w-full bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 p-2.5 rounded-lg font-bold transition text-sm flex items-center justify-center gap-1 shadow-sm">
+                                                <i class="fas fa-plus"></i> Tambah
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tabel Daftar Order -->
+                                <div>
+                                    <h3 class="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Daftar List PO:</h3>
+                                    <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                                        <table class="w-full text-left text-sm">
+                                            <thead class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
+                                                <tr>
+                                                    <th class="p-3 font-semibold">Detail Produk</th>
+                                                    <th class="p-3 font-semibold w-16 text-center">Qty</th>
+                                                    <th class="p-3 font-semibold w-12 text-center"><i class="fas fa-cog"></i></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="po-list-body" class="divide-y divide-gray-100 dark:divide-gray-800">
+                                                <tr><td colspan="3" class="p-4 text-center text-gray-400 text-xs italic">Belum ada barang ditambahkan.</td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="w-full bg-[#25D366] hover:bg-green-600 text-white p-4 mt-4 rounded-xl font-bold shadow-md transition-transform transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                                    <i class="fab fa-whatsapp text-xl"></i> Download PDF & Kirim WA
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <!-- TABEL HISTORI PO & PENERIMAAN BARANG -->
+                        <div class="mt-8 mb-8">
+                            <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-white"><i class="fas fa-history text-blue-500 mr-2"></i> Histori PO & Penerimaan Barang</h3>
+                            <div class="bg-white dark:bg-darkcard rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-800">
+                                <div class="overflow-x-auto overflow-y-auto max-h-[300px] w-full custom-scroll">
+                                    <table class="w-full text-left whitespace-nowrap min-w-[600px]">
+                                        <thead class="bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur sticky top-0 z-10">
+                                            <tr>
+                                                <th class="p-4 text-xs font-bold text-gray-500 uppercase">Tanggal Request</th>
+                                                <th class="p-4 text-xs font-bold text-gray-500 uppercase">Detail Produk</th>
+                                                <th class="p-4 text-xs font-bold text-gray-500 uppercase text-center">Qty Order</th>
+                                                <th class="p-4 text-xs font-bold text-gray-500 uppercase text-center">Status</th>
+                                                <th class="p-4 text-xs font-bold text-gray-500 uppercase text-center">Aksi (Barang Datang)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="po-history-body" class="divide-y divide-gray-100 dark:divide-gray-800">
+                                            <tr><td colspan="5" class="p-6 text-center text-gray-500">Memuat histori PO...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- SPM: Daftar Harga & Produk -->
+                    <section id="spm-rekap" class="menu-section hidden fade-in">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
+                            <h2 class="text-2xl font-bold">Daftar Produk & Harga</h2>
+                            <div class="w-full sm:w-72">
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400"><i class="fas fa-search"></i></span>
+                                    <input type="text" id="search-rekap-produk" onkeyup="filterRekapProduk()" placeholder="Cari kategori atau nama..." class="w-full pl-10 pr-4 py-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none focus:ring-2 focus:ring-green-500 border-gray-200 dark:border-gray-700">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white dark:bg-darkcard rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-800">
+                            <!-- Tabel Harga dibuat bisa discroll otomatis -->
+                            <div class="overflow-x-auto overflow-y-auto max-h-[400px] w-full custom-scroll">
+                                <table class="w-full text-left whitespace-nowrap min-w-[500px]">
+                                    <thead class="bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur sticky top-0 z-10">
+                                        <tr>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Kategori</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Nama Produk</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Stok (Qty)</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Kemasan (Satuan)</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Harga</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-center">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="spm-produk-body" class="divide-y divide-gray-100 dark:divide-gray-800">
+                                        <tr><td colspan="6" class="p-6 text-center text-gray-500">Memuat Data...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- FOOTER -->
+                <footer class="mt-6 pt-6 pb-6 border-t border-gray-200 dark:border-gray-800 flex justify-center text-xs sm:text-sm text-gray-500 dark:text-gray-400 text-center flex-shrink-0">
+                    <div>
+                        © Copyright App by Bg Fer - 2026
+                    </div>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <!-- Floating WhatsApp Button (Selalu Tampil di Layar Semua Device) -->
+    <a id="wa-btn" href="https://wa.me/6285719134016" target="_blank" class="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[100] flex items-center gap-1.5 bg-[#25D366] hover:bg-[#1ebd56] text-white px-3 py-2 rounded-full shadow-[0_10px_25px_rgba(37,211,102,0.4)] transition-all duration-300 transform hover:scale-105 border-2 border-white dark:border-darkbg">
+        <i class="fab fa-whatsapp text-lg"></i>
+        <span class="font-bold text-[10px] tracking-wide">Bang FER™</span>
+    </a>
+
+    <!-- Template Tersembunyi Untuk Generate PDF (Off-Screen) -->
+    <div style="position: absolute; left: -9999px; top: 0; width: 800px;">
+        <div id="po-pdf-template" class="p-10 bg-white text-black w-full font-sans">
+            <div class="text-center mb-8 border-b-4 border-black pb-4">
+                <h1 class="text-4xl font-extrabold uppercase tracking-widest text-black">PURCHASE ORDER (PO)</h1>
+            </div>
+            
+            <div class="flex justify-between mb-8 text-sm">
+                <div class="w-1/2 pr-4">
+                    <p id="pdf-header-toko" class="font-bold text-2xl uppercase text-black">NAMA TOKO</p>
+                    <p id="pdf-header-alamat" class="text-gray-700 font-medium mt-1 leading-relaxed">Alamat Toko</p>
+                </div>
+                <div class="text-right w-1/2">
+                    <p class="font-bold text-gray-700">Toko Pemesan:</p>
+                    <p id="pdf-right-toko" class="font-bold text-xl uppercase mt-1 text-black">NAMA TOKO</p>
+                    
+                    <p class="font-bold text-gray-700 mt-4">Tanggal Buat PO:</p>
+                    <p id="pdf-tgl-po" class="font-bold text-xl mt-1 text-black">12 Okt 2026</p>
+                </div>
+            </div>
+
+            <table class="w-full text-left border-collapse mt-8">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="border-2 border-black p-3 text-center text-lg text-black w-12">No</th>
+                        <th class="border-2 border-black p-3 text-lg text-black w-1/4">Kategori</th>
+                        <th class="border-2 border-black p-3 text-lg text-black">Nama Barang</th>
+                        <th class="border-2 border-black p-3 text-center text-lg text-black w-1/5">Kemasan</th>
+                        <th class="border-2 border-black p-3 text-center text-lg text-black w-24">Qty Order</th>
+                    </tr>
+                </thead>
+                <tbody id="pdf-table-body">
+                    <!-- Baris tabel akan di-generate otomatis oleh JavaScript berdasarkan list PO -->
+                </tbody>
+            </table>
+
+            <div class="mt-24 flex justify-end">
+                <div class="text-center w-64">
+                    <p class="mb-24 text-lg text-black font-medium">Hormat Kami,</p>
+                    <p id="pdf-ttd-nama" class="font-bold text-xl underline uppercase text-black">NAMA SPM</p>
+                    <p class="text-gray-700 font-medium">(SPM / SPG / SPB)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT FIREBASE LOGIC UTAMA -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, updateDoc, deleteDoc, getDoc, collection, addDoc, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCDVjGIdEa4S80g4l4OrUe3LRJvzUmjlvU",
+            authDomain: "manajemen-data-spm-g.firebaseapp.com",
+            projectId: "manajemen-data-spm-g",
+            storageBucket: "manajemen-data-spm-g.firebasestorage.app",
+            messagingSenderId: "368988634072",
+            appId: "1:368988634072:web:ae590e364663fb139610ad"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appSecondary = initializeApp(firebaseConfig, "SecondaryApp");
+        const authSecondary = getAuth(appSecondary);
+
+        // Setup Toast Alert UI Modern
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        let currentUser = null;
+        let currentRole = '';
+        let currentTLId = '';
+        let rawTokoProdukList = []; 
+        let rawHistoriPenjualanList = [];
+        let globalRekapTokoData = [];
+        const bulanArray = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+        
+        const formatRp = (angka) => "Rp " + parseInt(angka).toLocaleString('id-ID');
+        
+        const loader = document.getElementById('initial-loader');
+        const authWrapper = document.getElementById('auth-wrapper');
+        const dashWrapper = document.getElementById('dashboard-wrapper');
+
+        let rawProdukListSPM = []; 
+        window.globalUserData = null;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                try {
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists()) {
+                        const data = userDoc.data();
+                        window.globalUserData = data; 
+                        currentRole = data.role || data.jabatan || 'SPM'; 
+                        currentTLId = data.tl_id || user.uid;
+                        document.getElementById('user-profile-name').innerText = `${data.nama} (${data.jabatan || currentRole})`;
+
+                        // Set Indikator Toko di Form Laporan SPM
+                        if(document.getElementById('indikator-toko-spm')) {
+                            document.getElementById('indikator-toko-spm').innerText = data.toko || 'Toko Unknown';
+                        }
+                    }
+                    
+                    routingMenuBerdasarkanRole(currentRole);
+                    
+                    if(currentRole === 'TL' || currentRole === 'SPV') {
+                        inisialisasiDataTL(user.uid);
+                    } else {
+                        inisialisasiDataSPM(user.uid, currentTLId);
+                    }
+                    
+                    loader.classList.add('opacity-0');
+                    setTimeout(() => {
+                        loader.classList.add('hidden');
+                        authWrapper.classList.add('hidden');
+                        dashWrapper.classList.remove('hidden', 'flex');
+                        dashWrapper.classList.add('flex');
+                    }, 300);
+
+                } catch (error) {
+                    console.error("Gagal memuat profil:", error);
+                    loader.classList.add('hidden');
+                }
+            } else {
+                loader.classList.add('opacity-0');
+                setTimeout(() => {
+                    loader.classList.add('hidden');
+                    dashWrapper.classList.add('hidden');
+                    dashWrapper.classList.remove('flex');
+                    authWrapper.classList.remove('hidden');
+                    authWrapper.classList.add('flex');
+                }, 200);
+            }
+        });
+
+        function routingMenuBerdasarkanRole(role) {
+            document.querySelectorAll('.menu-section').forEach(el => el.classList.add('hidden'));
+            if (role === 'TL' || role === 'SPV' || role === 'admin') {
+                document.getElementById('menu-tl').classList.remove('hidden');
+                document.getElementById('menu-spm').classList.add('hidden');
+                document.getElementById('header-title').innerText = "Dashboard TL / SPV";
+                window.bukaMenu('tl-dash', document.getElementById('btn-tl-dash'));
+            } else {
+                document.getElementById('menu-spm').classList.remove('hidden');
+                document.getElementById('menu-tl').classList.add('hidden');
+                document.getElementById('header-title').innerText = "Dashboard SPM/G";
+                window.bukaMenu('spm-dash', document.getElementById('btn-spm-dash'));
+            }
+        }
+
+        // ================= INIT DATA TL =================
+        function inisialisasiDataTL(uid) {
+            const date = new Date();
+            const currentBulanIndex = date.getMonth();
+            const currentBulan = bulanArray[currentBulanIndex];
+            const currentTahun = date.getFullYear().toString();
+            
+            document.getElementById('tl-bulan-title').innerText = `(${currentBulan} ${currentTahun})`;
+            document.getElementById('tl-chart-year').innerText = currentTahun;
+            document.getElementById('target-bulan').value = currentBulan;
+            document.getElementById('target-tahun').value = currentTahun;
+            document.getElementById('rekap-filter-bulan').value = currentBulan;
+            document.getElementById('rekap-filter-tahun').value = currentTahun;
+
+            let tokoInfoMap = {}; 
+            let targetMap = {}; 
+            let capaianMap = {}; 
+            let produkKatMap = {}; 
+            let allProdukData = [];
+            let storeMonthlyData = {};
+
+            const qSpm = query(collection(db, "users"), where("tl_id", "==", uid), where("role", "==", "SPM"));
+            onSnapshot(qSpm, (snapSpm) => {
+                let dropdownHtml = '<option value="">Pilih Toko & Tim...</option>';
+                let tableTokoHtml = '';
+                rawTokoProdukList = [];
+                tokoInfoMap = {};
+                let uniqueStores = new Set();
+                
+                snapSpm.forEach(docSnap => {
+                    const t = docSnap.data();
+                    const sId = docSnap.id;
+                    const namaPegawai = t.nama || 'VACANT';
+                    tokoInfoMap[sId] = { nama: namaPegawai, toko: t.toko || '-' };
+                    
+                    if (t.toko && t.toko !== '-') {
+                        uniqueStores.add(t.toko);
+                    }
+                    
+                    if(namaPegawai !== 'VACANT') {
+                        dropdownHtml += `<option value="${sId}">${t.toko} (${namaPegawai})</option>`;
+                    }
+                    
+                    capaianMap[sId] = 0; 
+                    targetMap[sId] = 0;
+
+                    rawTokoProdukList.push({ id: sId, namaToko: t.toko || '-', namaSpm: namaPegawai });
+
+                    let badgeColor = namaPegawai === 'VACANT' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-green-50 text-green-600 border-green-100';
+
+                    tableTokoHtml += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                        <td class="p-4 text-sm font-bold text-indigo-600">${t.toko || '-'}</td>
+                        <td class="p-4 text-sm font-medium ${namaPegawai === 'VACANT' ? 'text-red-500 italic' : ''}">${namaPegawai}</td>
+                        <td class="p-4 text-sm"><span class="px-2.5 py-1 ${badgeColor} rounded-lg text-xs font-bold border">${t.jabatan || 'SPM'}</span></td>
+                        <td class="p-4 text-sm text-gray-600 dark:text-gray-300">${t.kelurahan || '-'}, Kec. ${t.kecamatan || '-'}, ${t.kota || '-'} (${t.provinsi || '-'})</td>
+                        <td class="p-4 text-center space-x-1">
+                            <button onclick="editTokoSPM('${sId}', '${t.toko || ''}', '${namaPegawai === 'VACANT' ? '' : namaPegawai}', '${t.jabatan || 'SPM'}', '${t.provinsi || ''}', '${t.kota || ''}', '${t.kecamatan || ''}', '${t.kelurahan || ''}')" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-600 rounded-lg text-xs font-bold transition border border-blue-100 shadow-sm"><i class="fas fa-edit"></i> Edit</button>
+                            <button onclick="hapusTokoSPM('${sId}', '${t.toko || ''}')" class="px-3 py-1.5 bg-red-50 hover:bg-red-500 hover:text-white text-red-600 rounded-lg text-xs font-bold transition border border-red-100 shadow-sm"><i class="fas fa-user-slash"></i> Vacant</button>
+                        </td>
+                    </tr>`;
+                });
+
+                document.getElementById('target-toko-select').innerHTML = dropdownHtml;
+                document.getElementById('lain-toko-select').innerHTML = dropdownHtml;
+                document.getElementById('tl-toko-table-body').innerHTML = tableTokoHtml || '<tr><td colspan="5" class="p-6 text-center text-gray-500">Belum ada toko yang didaftarkan.</td></tr>';
+                
+                let datalistHtml = '';
+                uniqueStores.forEach(namaToko => {
+                    datalistHtml += `<option value="${namaToko}">`;
+                });
+                const datalistEl = document.getElementById('list-toko-terdaftar');
+                if (datalistEl) datalistEl.innerHTML = datalistHtml;
+
+                renderTabelListTokoProduk(rawTokoProdukList);
+
+                const qAllProd = query(collection(db, "produk"), where("tl_id", "==", uid));
+                onSnapshot(qAllProd, (snapProd) => {
+                    allProdukData = [];
+                    snapProd.forEach(docSnap => {
+                        const p = docSnap.data();
+                        allProdukData.push({ id: docSnap.id, ...p });
+                        produkKatMap[docSnap.id] = p.kategori;
+                        produkKatMap[p.nama] = p.kategori; 
+                    });
+
+                    const qTargetAll = query(collection(db, "target_reguler"), where("tl_id", "==", uid));
+                    onSnapshot(qTargetAll, (snapTargetAll) => {
+                        let targetDetailMap = {};
+                        let targetBulananArray = new Array(12).fill(0);
+                        let totalTargetGlobBulanIni = 0;
+                        
+                        for (let k in targetMap) targetMap[k] = 0;
+
+                        snapTargetAll.forEach(doc => {
+                            const trg = doc.data();
+                            const key = `${trg.toko_id}_${trg.bulan}_${trg.tahun}`;
+                            targetDetailMap[key] = parseFloat(trg.nominal) || 0;
+
+                            const bIdx = bulanArray.indexOf(trg.bulan);
+                            const nominal = parseFloat(trg.nominal) || 0;
+                            if(trg.tahun === currentTahun) {
+                                if(bIdx !== -1) targetBulananArray[bIdx] += nominal;
+                                if(trg.bulan === currentBulan) {
+                                    targetMap[trg.toko_id] = (targetMap[trg.toko_id] || 0) + nominal;
+                                    totalTargetGlobBulanIni += nominal;
+                                }
+                            }
+                        });
+
+                        const qLapAll = query(collection(db, "laporan"), where("tl_id", "==", uid));
+                        onSnapshot(qLapAll, (snapLapAll) => {
+                            let capaianBulananArray = new Array(12).fill(0);
+                            let totalCapaianGlobBulanIni = 0;
+                            storeMonthlyData = {};
+                            for (let k in capaianMap) capaianMap[k] = 0;
+
+                            snapLapAll.forEach(doc => {
+                                const lap = doc.data();
+                                const kat = produkKatMap[lap.produk_id] || produkKatMap[lap.nama_produk] || '';
+                                if (kat === 'CCM') {
+                                    const spmId = lap.spm_id;
+                                    const bln = lap.bulan || '-';
+                                    const thn = lap.tahun || '-';
+                                    const totalVal = parseFloat(lap.total) || 0;
+                                    
+                                    const storeMonthKey = `${spmId}_${bln}_${thn}`;
+                                    if(!storeMonthlyData[storeMonthKey]) {
+                                        storeMonthlyData[storeMonthKey] = { spmId: spmId, bulan: bln, tahun: thn, total: 0 };
+                                    }
+                                    storeMonthlyData[storeMonthKey].total += totalVal;
+
+                                    if(thn === currentTahun) {
+                                        const bIdx = bulanArray.indexOf(bln);
+                                        if(bIdx !== -1) capaianBulananArray[bIdx] += totalVal;
+                                        if(bln === currentBulan) {
+                                            capaianMap[spmId] = (capaianMap[spmId] || 0) + totalVal;
+                                            totalCapaianGlobBulanIni += totalVal;
+                                        }
+                                    }
+                                }
+                            });
+
+                            let storeGroupedRekap = {};
+
+                            for(let key in storeMonthlyData) {
+                                const item = storeMonthlyData[key];
+                                const tInfo = tokoInfoMap[item.spmId] || { nama: 'Unknown', toko: 'Unknown' };
+                                if(tInfo.nama === 'VACANT') continue;
+                                
+                                const namaToko = tInfo.toko;
+                                const periodKey = `${namaToko}_${item.bulan}_${item.tahun}`;
+
+                                if(!storeGroupedRekap[periodKey]) {
+                                    storeGroupedRekap[periodKey] = {
+                                        namaToko: namaToko,
+                                        spmList: [],
+                                        bulan: item.bulan,
+                                        tahun: item.tahun,
+                                        periode: `${item.bulan} ${item.tahun}`,
+                                        omzet: 0,
+                                        target: 0
+                                    };
+                                }
+                                if(!storeGroupedRekap[periodKey].spmList.includes(tInfo.nama)) {
+                                    storeGroupedRekap[periodKey].spmList.push(tInfo.nama);
+                                }
+                                storeGroupedRekap[periodKey].omzet += item.total;
+                            }
+
+                            for(let sId in tokoInfoMap) {
+                                const tInfo = tokoInfoMap[sId];
+                                if(tInfo.nama === 'VACANT') continue;
+
+                                const periodKey = `${tInfo.toko}_${currentBulan}_${currentTahun}`;
+                                const trgKey = `${sId}_${currentBulan}_${currentTahun}`;
+                                const tVal = targetDetailMap[trgKey] || 0;
+
+                                if(!storeGroupedRekap[periodKey]) {
+                                    storeGroupedRekap[periodKey] = {
+                                        namaToko: tInfo.toko,
+                                        spmList: [],
+                                        bulan: currentBulan,
+                                        tahun: currentTahun,
+                                        periode: `${currentBulan} ${currentTahun}`,
+                                        omzet: 0,
+                                        target: 0
+                                    };
+                                }
+                                if(!storeGroupedRekap[periodKey].spmList.includes(tInfo.nama)) {
+                                    storeGroupedRekap[periodKey].spmList.push(tInfo.nama);
+                                }
+                                storeGroupedRekap[periodKey].target += tVal;
+                            }
+
+                            globalRekapTokoData = [];
+                            for(let k in storeGroupedRekap) {
+                                const item = storeGroupedRekap[k];
+                                const pct = item.target > 0 ? (item.omzet / item.target * 100) : (item.omzet > 0 ? 100 : 0);
+                                globalRekapTokoData.push({
+                                    namaToko: item.namaToko,
+                                    namaSpm: item.spmList.join(" & "),
+                                    periode: item.periode,
+                                    bulan: item.bulan,
+                                    tahun: item.tahun,
+                                    omzet: item.omzet,
+                                    target: item.target,
+                                    persen: pct
+                                });
+                            }
+
+                            window.renderRekapTokoTable();
+
+                            document.getElementById('tl-total-target').innerText = formatRp(totalTargetGlobBulanIni);
+                            document.getElementById('tl-total-capaian').innerText = formatRp(totalCapaianGlobBulanIni);
+                            let kurang = totalTargetGlobBulanIni - totalCapaianGlobBulanIni;
+                            document.getElementById('tl-kekurangan').innerText = formatRp(kurang > 0 ? kurang : 0);
+                            let persenGlob = totalTargetGlobBulanIni > 0 ? (totalCapaianGlobBulanIni / totalTargetGlobBulanIni * 100).toFixed(1) : 0;
+                            document.getElementById('tl-persen-text').innerText = persenGlob + '%';
+                            document.getElementById('tl-bar').style.width = Math.min(persenGlob, 100) + '%';
+
+                            updateGrafikTahunanTL(targetBulananArray, capaianBulananArray, currentTahun);
+
+                            let storeRankMap = {};
+                            for (let tId in tokoInfoMap) {
+                                const tInfo = tokoInfoMap[tId];
+                                if (tInfo.nama === 'VACANT') continue;
+
+                                const namaToko = tInfo.toko;
+                                const tTgt = targetMap[tId] || 0;
+                                const tCap = capaianMap[tId] || 0;
+
+                                if (!storeRankMap[namaToko]) {
+                                    storeRankMap[namaToko] = { namaToko: namaToko, spmNames: [], target: 0, cap: 0 };
+                                }
+                                if(!storeRankMap[namaToko].spmNames.includes(tInfo.nama)) {
+                                    storeRankMap[namaToko].spmNames.push(tInfo.nama);
+                                }
+                                storeRankMap[namaToko].target += tTgt;
+                                storeRankMap[namaToko].cap += tCap;
+                            }
+
+                            let rankArr = [];
+                            for (let tName in storeRankMap) {
+                                const store = storeRankMap[tName];
+                                const tPct = store.target > 0 ? (store.cap / store.target * 100) : (store.cap > 0 ? 100 : 0);
+                                rankArr.push({
+                                    nama: store.spmNames.join(" & "),
+                                    toko: store.namaToko,
+                                    target: store.target,
+                                    cap: store.cap,
+                                    pct: tPct
+                                });
+                            }
+                            rankArr.sort((a,b) => b.pct - a.pct);
+
+                            let tbody = '';
+                            rankArr.forEach((item, i) => {
+                                let icon = `#${i+1}`;
+                                if(i===0) icon = '<i class="fas fa-medal text-yellow-500 text-lg"></i> #1';
+                                else if(i===1) icon = '<i class="fas fa-medal text-gray-400 text-lg"></i> #2';
+                                else if(i===2) icon = '<i class="fas fa-medal text-orange-400 text-lg"></i> #3';
+
+                                let color = item.pct >= 100 ? 'text-green-500 font-bold' : (item.pct >= 70 ? 'text-blue-500 font-bold' : 'text-yellow-500 font-bold');
+                                tbody += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                                    <td class="p-4 text-sm font-bold">${icon}</td>
+                                    <td class="p-4 text-sm font-medium">${item.nama}</td>
+                                    <td class="p-4 text-sm font-semibold text-indigo-600 dark:text-indigo-400">${item.toko}</td>
+                                    <td class="p-4 text-sm">${formatRp(item.target)}</td>
+                                    <td class="p-4 text-sm">${formatRp(item.cap)}</td>
+                                    <td class="p-4 text-sm ${color}">${item.pct.toFixed(1)}%</td>
+                                </tr>`;
+                            });
+                            if(rankArr.length === 0) tbody = '<tr><td colspan="6" class="p-6 text-center text-gray-500">Belum ada tim yang didaftarkan.</td></tr>';
+                            document.getElementById('tl-ranking-body').innerHTML = tbody;
+                        });
+                    });
+                });
+            });
+
+            window.renderRekapTokoTable = function() {
+                const fMonth = document.getElementById('rekap-filter-bulan').value;
+                const fYear = document.getElementById('rekap-filter-tahun').value.toLowerCase();
+
+                const filtered = globalRekapTokoData.filter(item => {
+                    let mMatch = !fMonth || item.bulan === fMonth;
+                    let yMatch = !fYear || item.tahun.toLowerCase().includes(fYear);
+                    return mMatch && yMatch;
+                });
+
+                let html = '';
+                filtered.forEach(item => {
+                    let badgeColor = item.persen >= 100 ? 'text-green-600 font-bold' : (item.persen >= 70 ? 'text-blue-600 font-bold' : 'text-orange-600 font-bold');
+                    html += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                        <td class="p-4 text-sm font-bold text-indigo-600">${item.namaToko}</td>
+                        <td class="p-4 text-sm font-medium">${item.namaSpm}</td>
+                        <td class="p-4 text-sm font-semibold">${item.periode}</td>
+                        <td class="p-4 text-sm font-bold text-green-600">${formatRp(item.omzet)}</td>
+                        <td class="p-4 text-sm">${formatRp(item.target)}</td>
+                        <td class="p-4 text-sm ${badgeColor}">${item.persen.toFixed(1)}%</td>
+                    </tr>`;
+                });
+
+                if(filtered.length === 0) {
+                    html = '<tr><td colspan="6" class="p-6 text-center text-gray-500">Tidak ada data rekap omzet toko untuk filter ini.</td></tr>';
+                }
+                document.getElementById('tl-rekap-toko-body').innerHTML = html;
+            };
+
+            window.hapusTokoSPM = async function(id, namaToko) {
+                const res = await Swal.fire({
+                    title: 'Jadikan Toko VACANT?',
+                    text: `Nama SPM/G pada toko ${namaToko} akan dihapus dan status berubah menjadi VACANT (kosong).`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Jadikan Vacant'
+                });
+                if(res.isConfirmed) {
+                    try {
+                        await updateDoc(doc(db, "users", id), { nama: 'VACANT', email_login_disabled: true });
+                        Toast.fire({ icon: 'success', title: 'Status toko menjadi VACANT.' });
+                    } catch(e) { Swal.fire('Error', e.message, 'error'); }
+                }
+            };
+
+            window.editTokoSPM = async function(id, toko, nama, jabatan, provinsi, kota, kecamatan, kelurahan) {
+                const { value: formValues } = await Swal.fire({
+                    title: 'Edit Toko & SPM/G Pengganti',
+                    html: `
+                        <div class="text-left space-y-3">
+                            <div><label class="text-xs font-bold">Nama Toko</label><input id="swal-toko" class="swal2-input !w-full !m-0 !text-sm !p-2 border" value="${toko}"></div>
+                            <div><label class="text-xs font-bold">Nama SPM/G Baru / Pengganti</label><input id="swal-nama" class="swal2-input !w-full !m-0 !text-sm !p-2 border" placeholder="Nama SPM baru..." value="${nama === 'VACANT' ? '' : nama}"></div>
+                            <div><label class="text-xs font-bold">Jabatan</label><select id="swal-jabatan" class="swal2-input !w-full !m-0 !text-sm !p-2 border bg-white"><option ${jabatan==='SPM'?'selected':''}>SPM</option><option ${jabatan==='SPB'?'selected':''}>SPB</option><option ${jabatan==='SPG'?'selected':''}>SPG</option></select></div>
+                            <div><label class="text-xs font-bold">Kota / Kabupaten</label><input id="swal-kota" class="swal2-input !w-full !m-0 !text-sm !p-2 border" value="${kota}"></div>
+                        </div>
+                    `,
+                    focusConfirm: false,
+                    showCancelButton: true,
+                    confirmButtonText: 'Simpan Perubahan',
+                    preConfirm: () => {
+                        return {
+                            toko: document.getElementById('swal-toko').value,
+                            nama: document.getElementById('swal-nama').value || 'VACANT',
+                            jabatan: document.getElementById('swal-jabatan').value,
+                            kota: document.getElementById('swal-kota').value
+                        }
+                    }
+                });
+
+                if (formValues) {
+                    try {
+                        await updateDoc(doc(db, "users", id), {
+                            toko: formValues.toko,
+                            nama: formValues.nama,
+                            jabatan: formValues.jabatan,
+                            kota: formValues.kota
+                        });
+                        Toast.fire({ icon: 'success', title: 'Data toko disesuaikan!' });
+                    } catch(e) { Swal.fire('Error', e.message, 'error'); }
+                }
+            };
+
+            window.filterListToko = function() {
+                const keyword = document.getElementById('search-list-toko').value.toLowerCase();
+                const filtered = rawTokoProdukList.filter(t => 
+                    t.namaToko.toLowerCase().includes(keyword) || 
+                    t.namaSpm.toLowerCase().includes(keyword)
+                );
+                renderTabelListTokoProduk(filtered);
+            };
+
+            function renderTabelListTokoProduk(list) {
+                let grouped = {};
+                list.forEach(t => {
+                    if(t.namaSpm === 'VACANT') return;
+                    if(!grouped[t.namaToko]) {
+                        grouped[t.namaToko] = { namaToko: t.namaToko, spms: [] };
+                    }
+                    if(!grouped[t.namaToko].spms.includes(t.namaSpm)) {
+                        grouped[t.namaToko].spms.push(t.namaSpm);
+                    }
+                });
+
+                let html = '';
+                for(let key in grouped) {
+                    let g = grouped[key];
+                    let namaGabungan = g.spms.join(' & ');
+                    html += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                        <td class="p-4 text-sm font-bold text-indigo-600">${g.namaToko}</td>
+                        <td class="p-4 text-sm font-medium">${namaGabungan}</td>
+                        <td class="p-4 text-sm text-center">
+                            <button onclick="bukaDetailStokToko('${g.namaToko}', '${namaGabungan}')" class="px-3.5 py-1.5 bg-indigo-50 hover:bg-indigo-600 hover:text-white text-indigo-600 rounded-xl text-xs font-bold transition border border-indigo-100 shadow-sm">
+                                <i class="fas fa-eye mr-1"></i> Lihat Stok Toko
+                            </button>
+                        </td>
+                    </tr>`;
+                }
+                if(Object.keys(grouped).length === 0) {
+                    html = '<tr><td colspan="3" class="p-6 text-center text-gray-500">Tidak ada toko yang sesuai.</td></tr>';
+                }
+                document.getElementById('tl-list-toko-produk-body').innerHTML = html;
+            }
+
+            window.bukaDetailStokToko = function(namaToko, namaSpm) {
+                document.getElementById('detail-stok-nama-toko').innerText = `Stok Toko: ${namaToko}`;
+                document.getElementById('detail-stok-nama-spm').innerText = `Tim: ${namaSpm}`;
+                document.getElementById('search-stok-barang').value = '';
+
+                tampilkanStokGabungan(namaToko, '');
+                window.bukaMenu('tl-detail-stok-toko', null);
+            };
+
+            window.filterStokBarang = function() {
+                const keyword = document.getElementById('search-stok-barang').value.toLowerCase();
+                const namaTokoAktif = document.getElementById('detail-stok-nama-toko').innerText.replace('Stok Toko: ', '');
+                tampilkanStokGabungan(namaTokoAktif, keyword);
+            };
+
+            function tampilkanStokGabungan(namaTokoAktif, keyword) {
+                let filteredProd = allProdukData.filter(p => {
+                    let tInfo = tokoInfoMap[p.spm_id];
+                    return tInfo && tInfo.toko === namaTokoAktif && (
+                        p.nama.toLowerCase().includes(keyword) ||
+                        p.kategori.toLowerCase().includes(keyword)
+                    );
+                });
+
+                let prodMap = {};
+                filteredProd.forEach(p => {
+                    let key = p.kategori + "_" + p.nama + "_" + p.satuan;
+                    if(!prodMap[key]) {
+                        prodMap[key] = { ...p, qty: 0 };
+                    }
+                    prodMap[key].qty += parseFloat(p.qty) || 0;
+                });
+
+                renderTabelDetailStok(Object.values(prodMap));
+            }
+
+            function renderTabelDetailStok(prodList) {
+                let detailTableHtml = '';
+                prodList.forEach(p => {
+                    detailTableHtml += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                        <td class="p-4 text-sm"><span class="px-2.5 py-1 bg-gray-100 dark:bg-gray-800 rounded text-xs font-bold border border-gray-200 dark:border-gray-700">${p.kategori}</span></td>
+                        <td class="p-4 text-sm font-medium">${p.nama}</td>
+                        <td class="p-4 text-sm font-black text-indigo-600">${p.qty}</td>
+                        <td class="p-4 text-sm text-gray-600 dark:text-gray-400 font-medium">${p.satuan || '-'}</td>
+                    </tr>`;
+                });
+
+                if(prodList.length === 0) {
+                    detailTableHtml = '<tr><td colspan="4" class="p-6 text-center text-gray-500">Tidak ada produk yang sesuai dengan pencarian.</td></tr>';
+                }
+
+                document.getElementById('tl-detail-stok-body').innerHTML = detailTableHtml;
+            }
+
+            document.getElementById('lain-toko-select').addEventListener('change', function() {
+                const selectedTokoId = this.value;
+                const produkSelect = document.getElementById('lain-produk-select');
+                produkSelect.innerHTML = '<option value="" disabled selected>Memuat produk toko...</option>';
+                
+                if(!selectedTokoId) return;
+
+                const namaTokoTerpilih = tokoInfoMap[selectedTokoId]?.toko || '';
+                const qProdToko = query(collection(db, "produk"), where("toko", "==", namaTokoTerpilih));
+
+                onSnapshot(qProdToko, (snapProd) => {
+                    let pOpts = '<option value="" disabled selected>Pilih Produk Fokus Toko...</option>';
+                    snapProd.forEach(doc => {
+                        const p = doc.data();
+                        pOpts += `<option value="${p.nama}" data-kat="${p.kategori}">${p.kategori} - ${p.nama} (${p.satuan})</option>`;
+                    });
+                    if(snapProd.empty) pOpts = '<option value="" disabled selected>Toko ini belum mendaftarkan produk.</option>';
+                    produkSelect.innerHTML = pOpts;
+                });
+            });
+        }
+
+        window.exportTableToCSV = function(tableId, filename) {
+            let csv = [];
+            let rows = document.querySelectorAll("#" + tableId + " tr");
+            for (let i = 0; i < rows.length; i++) {
+                let row = [], cols = rows[i].querySelectorAll("td, th");
+                for (let j = 0; j < cols.length; j++) {
+                    let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, "").replace(/(\s\s)/gm, " ");
+                    row.push('"' + data + '"');
+                }
+                csv.push(row.join(","));
+            }
+            let csvFile = new Blob([csv.join("\n")], { type: "text/csv;charset=utf-8;" });
+            let downloadLink = document.createElement("a");
+            downloadLink.download = filename;
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+            downloadLink.style.display = "none";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        };
+
+        window.exportTableToExcel = function(tableId, filename = '') {
+            let downloadLink;
+            let dataType = 'application/vnd.ms-excel';
+            let tableSelect = document.getElementById(tableId);
+            
+            let clonedTable = tableSelect.cloneNode(true);
+            let cells = clonedTable.querySelectorAll('th, td');
+            cells.forEach(cell => {
+                cell.style.border = "1px solid #999999";
+                cell.style.padding = "8px";
+            });
+
+            let tableHTML = clonedTable.outerHTML.replace(/ /g, '%20');
+            
+            filename = filename ? filename+'\.xls' : 'excel_data.xls';
+            downloadLink = document.createElement("a");
+            document.body.appendChild(downloadLink);
+            
+            if(navigator.msSaveOrOpenBlob){
+                let blob = new Blob(['\ufeff', tableHTML], { type: dataType });
+                navigator.msSaveOrOpenBlob(blob, filename);
+            } else{
+                downloadLink.href = 'data:' + dataType + ', ' + '\ufeff' + tableHTML;
+                downloadLink.download = filename;
+                downloadLink.click();
+            }
+            document.body.removeChild(downloadLink);
+        };
+
+        let myTlChart = null;
+        function updateGrafikTahunanTL(targetArray, capaianArray, tahun) {
+            const ctx = document.getElementById('tlChart');
+            if(!ctx) return;
+            const labels = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"];
+            
+            if(myTlChart) {
+                myTlChart.data.datasets[0].data = targetArray;
+                myTlChart.data.datasets[1].data = capaianArray;
+                myTlChart.update();
+            } else {
+                myTlChart = new Chart(ctx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            { label: `Target CCM (${tahun})`, data: targetArray, backgroundColor: '#3b82f6', borderRadius: 6 },
+                            { label: `Pencapaian Omzet CCM (${tahun})`, data: capaianArray, backgroundColor: '#10b981', borderRadius: 6 }
+                        ]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { legend: { position: 'bottom' } } }
+                });
+            }
+        }
+
+        // ================= INIT DATA SPM =================
+        function inisialisasiDataSPM(uid, tlId) {
+            const date = new Date();
+            const currentBulanIndex = date.getMonth();
+            const currentBulan = bulanArray[currentBulanIndex];
+            const currentTahun = date.getFullYear().toString();
+            const todayStr = date.toISOString().split('T')[0];
+            
+            document.getElementById('spm-bulan-title').innerText = `(${currentBulan} ${currentTahun})`;
+            document.getElementById('spm-chart-year').innerText = currentTahun;
+            document.getElementById('lap-tgl').value = todayStr;
+
+            const daysInMonth = new Date(parseInt(currentTahun), currentBulanIndex + 1, 0).getDate();
+            const workDays = (daysInMonth - 4) > 0 ? (daysInMonth - 4) : 1;
+
+            let produkKatMapSPM = {};
+          
+            const namaTokoAktif = window.globalUserData?.toko || '';
+            const qProd = query(collection(db, "produk"), where("toko", "==", namaTokoAktif));
+
+            onSnapshot(qProd, (snapProd) => {
+                let pSelect = '<option value="" disabled selected>Pilih Produk (Tersedia)...</option>';
+                rawProdukListSPM = [];
+                
+                snapProd.forEach(doc => {
+                    const p = doc.data();
+                    rawProdukListSPM.push({ id: doc.id, ...p });
+                    produkKatMapSPM[doc.id] = p.kategori;
+                    produkKatMapSPM[p.nama] = p.kategori;
+                    
+                    pSelect += `<option value="${doc.id}" data-kat="${p.kategori}" data-nama="${p.nama}" data-satuan="${p.satuan}" data-harga="${p.harga}">${p.kategori} - ${p.nama} (${p.satuan})</option>`;
+                });
+                
+                document.getElementById('lap-produk').innerHTML = pSelect;
+                if(document.getElementById('po-produk')) {
+                    document.getElementById('po-produk').innerHTML = pSelect;
+                }
+                
+                renderTabelRekapSPM(rawProdukListSPM);
+
+                // --- Histori PO ---
+                const qPoHist = query(collection(db, "po_history"), where("spm_id", "==", uid));
+                onSnapshot(qPoHist, (snapHistPo) => {
+                    let poHistHtml = '';
+                    let histArr = [];
+                    snapHistPo.forEach(doc => {
+                        histArr.push({ id: doc.id, ...doc.data() });
+                    });
+                    
+                    histArr.sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal));
+
+                    histArr.forEach(data => {
+                        const d = new Date(data.tanggal);
+                        const tglFormat = d.toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'});
+                        
+                        let statusBadge = data.status === 'SELESAI' 
+                            ? '<span class="px-2 py-1 bg-green-100 text-green-700 rounded text-[10px] font-bold border border-green-200 uppercase">Selesai</span>'
+                            : '<span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-[10px] font-bold border border-yellow-200 uppercase">Menunggu</span>';
+                            
+                        let actionBtn = data.status === 'PENDING'
+                            ? `<button onclick="terimaBarangPO('${data.id}', '${data.produk_id}', ${data.qty_order})" class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-xs font-bold transition shadow-sm whitespace-nowrap"><i class="fas fa-box-open mr-1"></i> Datang</button>`
+                            : `<span class="text-xs font-bold text-gray-400 whitespace-nowrap"><i class="fas fa-check-double"></i> Diterima</span>`;
+
+                        poHistHtml += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                            <td class="p-3 text-xs text-gray-500">${tglFormat}</td>
+                            <td class="p-3 text-sm font-semibold">${data.nama_produk} <span class="text-[10px] font-bold text-blue-600 border border-blue-200 bg-blue-50 rounded px-1 ml-1">${data.kemasan}</span></td>
+                            <td class="p-3 text-sm text-center font-black text-indigo-600">${data.qty_order}</td>
+                            <td class="p-3 text-sm text-center">${statusBadge}</td>
+                            <td class="p-3 text-center">${actionBtn}</td>
+                        </tr>`;
+                    });
+                    if(histArr.length === 0) poHistHtml = '<tr><td colspan="5" class="p-6 text-center text-gray-500 italic">Belum ada histori PO direkam.</td></tr>';
+                    const elPoHist = document.getElementById('po-history-body');
+                    if (elPoHist) elPoHist.innerHTML = poHistHtml;
+                });
+                // ------------------
+
+                const qTargetYear = query(collection(db, "target_reguler"), where("toko_id", "==", uid), where("tahun", "==", currentTahun));
+                onSnapshot(qTargetYear, (snapTargetYear) => {
+                    let targetBulananArray = new Array(12).fill(0);
+                    let tBulananBulanIni = 0;
+
+                    snapTargetYear.forEach(doc => {
+                        const trg = doc.data();
+                        const bIdx = bulanArray.indexOf(trg.bulan);
+                        const nominal = parseFloat(trg.nominal) || 0;
+                        if(bIdx !== -1) targetBulananArray[bIdx] += nominal;
+                        if(trg.bulan === currentBulan) tBulananBulanIni += nominal;
+                    });
+
+                    const tHarian = tBulananBulanIni / workDays;
+                    document.getElementById('spm-target-bulanan').innerText = formatRp(tBulananBulanIni);
+                    document.getElementById('spm-target-harian').innerText = formatRp(tHarian);
+
+                    const qLapYear = query(collection(db, "laporan"), where("spm_id", "==", uid), where("tahun", "==", currentTahun));
+                    onSnapshot(qLapYear, (snapLapYear) => {
+                        let capaianBulananArray = new Array(12).fill(0);
+                        let totalCapBulanIni = 0;
+                        let capHariIni = 0;
+                        let laporanList = [];
+                        rawHistoriPenjualanList = [];
+                        
+                        snapLapYear.forEach(docSnap => {
+                            const lap = docSnap.data();
+                            const lapId = docSnap.id;
+                            laporanList.push(lap);
+                            const kat = produkKatMapSPM[lap.produk_id] || produkKatMapSPM[lap.nama_produk] || 'CCM';
+                            
+                            rawHistoriPenjualanList.push({
+                                id: lapId,
+                                toko: lap.toko || '-',
+                                tanggal: lap.tanggal_lengkap || '',
+                                bulan: lap.bulan || '',
+                                tahun: lap.tahun || '',
+                                kategori: kat,
+                                namaProduk: lap.nama_produk || '-',
+                                qty: lap.qty || 0,
+                                total: lap.total || 0
+                            });
+
+                            if(kat === 'CCM') {
+                                const bIdx = bulanArray.indexOf(lap.bulan);
+                                const tot = parseFloat(lap.total) || 0;
+                                if(bIdx !== -1) capaianBulananArray[bIdx] += tot;
+                                if(lap.bulan === currentBulan) {
+                                    totalCapBulanIni += tot;
+                                    if(lap.tanggal_lengkap === todayStr) capHariIni += tot; 
+                                }
+                            }
+                        });
+
+                        renderTabelHistori(rawHistoriPenjualanList);
+
+                        let pct = tBulananBulanIni > 0 ? (totalCapBulanIni / tBulananBulanIni * 100).toFixed(1) : 0;
+                        document.getElementById('spm-total-capaian').innerText = `${formatRp(totalCapBulanIni)} (${pct}%)`;
+                        document.getElementById('spm-capaian-hari-ini').innerText = formatRp(capHariIni);
+
+                        updateGrafikTahunanSPM(targetBulananArray, capaianBulananArray, currentTahun);
+
+                        const qTargetLain = query(collection(db, "target_lain"), where("toko_id", "==", uid));
+                        onSnapshot(qTargetLain, (snapTgtLain) => {
+                            let fokusHtml = '';
+                            if(snapTgtLain.empty) {
+                                document.getElementById('spm-target-fokus-container').innerHTML = '<div class="bg-white dark:bg-darkcard p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 text-gray-500 text-sm col-span-full">Belum ada Target Produk Fokus dari Team Leader.</div>';
+                                return;
+                            }
+
+                            snapTgtLain.forEach(docTgt => {
+                                const tFokus = docTgt.data();
+                                const targetVol = parseFloat(tFokus.volume) || 0;
+                                const targetNilai = parseFloat(tFokus.nilai) || 0;
+                                const namaProdFokus = tFokus.produk;
+
+                                let capVol = 0;
+                                let capNilai = 0;
+                                laporanList.forEach(l => {
+                                    if(l.nama_produk && l.nama_produk.includes(namaProdFokus)) {
+                                        capVol += parseFloat(l.qty) || 0;
+                                        capNilai += parseFloat(l.total) || 0;
+                                    }
+                                });
+
+                                let pctNilai = targetNilai > 0 ? (capNilai / targetNilai * 100).toFixed(1) : 0;
+
+                                fokusHtml += `
+                                <div class="bg-white dark:bg-darkcard p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <div>
+                                            <span class="px-2.5 py-1 bg-orange-50 text-orange-600 rounded text-xs font-bold border border-orange-100">Fokus Produk</span>
+                                            <h4 class="font-bold text-base mt-1 text-gray-800 dark:text-gray-100">${namaProdFokus}</h4>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-2 text-sm">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-500">Target Volume:</span>
+                                            <span class="font-bold">${capVol} / ${targetVol}</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-500">Target Nilai (Value):</span>
+                                            <span class="font-bold text-indigo-600">${formatRp(capNilai)} / ${formatRp(targetNilai)}</span>
+                                        </div>
+                                        <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mt-3 shadow-inner">
+                                            <div class="bg-orange-500 h-2 rounded-full" style="width: ${Math.min(pctNilai, 100)}%"></div>
+                                        </div>
+                                        <div class="text-right text-xs font-bold text-gray-500 mt-1">Capaian Nilai: ${pctNilai}%</div>
+                                    </div>
+                                </div>`;
+                            });
+
+                            document.getElementById('spm-target-fokus-container').innerHTML = fokusHtml;
+                        });
+                    });
+                });
+            });
+        }
+
+        window.filterHistoriPenjualan = function() {
+            const fTgl = document.getElementById('filter-search-tgl').value;
+            const fBulan = document.getElementById('filter-search-bulan').value;
+            const fTahun = document.getElementById('filter-search-tahun').value.toLowerCase();
+
+            const filtered = rawHistoriPenjualanList.filter(item => {
+                let matchTgl = !fTgl || item.tanggal === fTgl;
+                let matchBulan = !fBulan || item.bulan === fBulan;
+                let matchTahun = !fTahun || item.tahun.toLowerCase().includes(fTahun);
+                return matchTgl && matchBulan && matchTahun;
+            });
+            renderTabelHistori(filtered);
+        };
+
+        window.resetFilterHistori = function() {
+            document.getElementById('filter-search-tgl').value = '';
+            document.getElementById('filter-search-bulan').value = '';
+            document.getElementById('filter-search-tahun').value = '';
+            renderTabelHistori(rawHistoriPenjualanList);
+        };
+
+        function renderTabelHistori(list) {
+            let historiHtml = '';
+            list.forEach(item => {
+                historiHtml += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                    <td class="p-4 text-sm font-medium text-gray-700 dark:text-gray-300">${item.tanggal || '-'}</td>
+                    <td class="p-4 text-sm font-bold text-indigo-600"><i class="fas fa-store-alt mr-1 opacity-50"></i> ${item.toko}</td>
+                    <td class="p-4 text-sm"><span class="px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded text-xs font-bold border border-gray-200 dark:border-gray-600">${item.kategori}</span></td>
+                    <td class="p-4 text-sm font-semibold">${item.namaProduk}</td>
+                    <td class="p-4 text-sm">${item.qty}</td>
+                    <td class="p-4 text-sm font-black text-green-600">Rp ${item.total.toLocaleString('id-ID')}</td>
+                    <td class="p-4 text-center">
+                        <button onclick="hapusLaporan('${item.id}')" class="px-3 py-1.5 bg-red-50 hover:bg-red-500 hover:text-white text-red-600 rounded-lg text-xs font-bold transition border border-red-100 shadow-sm"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            });
+            if(list.length === 0) {
+                historiHtml = '<tr><td colspan="7" class="p-6 text-center text-gray-500">Belum ada transaksi direkam.</td></tr>';
+            }
+            document.getElementById('spm-histori-body').innerHTML = historiHtml;
+        }
+
+        window.filterRekapProduk = function() {
+            const keyword = document.getElementById('search-rekap-produk').value.toLowerCase();
+            const filtered = rawProdukListSPM.filter(p => 
+                p.nama.toLowerCase().includes(keyword) || 
+                p.kategori.toLowerCase().includes(keyword)
+            );
+            renderTabelRekapSPM(filtered);
+        };
+
+        function renderTabelRekapSPM(list) {
+            let pTable = '';
+            list.forEach(p => {
+                pTable += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                    <td class="p-4 text-sm"><span class="px-2.5 py-1 bg-gray-100 dark:bg-gray-800 rounded text-xs font-bold border border-gray-200 dark:border-gray-700">${p.kategori}</span></td>
+                    <td class="p-4 text-sm font-medium">${p.nama}</td>
+                    <td class="p-4 text-sm font-semibold">${p.qty}</td>
+                    <td class="p-4 text-sm text-gray-600 dark:text-gray-400 font-medium">${p.satuan || '-'}</td>
+                    <td class="p-4 text-sm font-medium text-green-600">${p.harga==0?'Menyesuaikan (CCM)':formatRp(p.harga)}</td>
+                    <td class="p-4 text-center space-x-1">
+                        <button onclick="editProduk('${p.id}', '${p.nama}', ${p.qty}, ${p.harga}, '${p.kategori}', '${p.satuan}')" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-600 rounded-lg text-xs font-bold transition border border-blue-100 shadow-sm"><i class="fas fa-edit"></i> Edit</button>
+                        <button onclick="hapusProduk('${p.id}')" class="px-3 py-1.5 bg-red-50 hover:bg-red-500 hover:text-white text-red-600 rounded-lg text-xs font-bold transition border border-red-100 shadow-sm"><i class="fas fa-trash"></i> Hapus</button>
+                    </td>
+                </tr>`;
+            });
+            if(list.length === 0) {
+                pTable = '<tr><td colspan="6" class="p-6 text-center text-gray-500">Tidak ada produk yang sesuai dengan pencarian.</td></tr>';
+            }
+            document.getElementById('spm-produk-body').innerHTML = pTable;
+        }
+
+        window.hapusLaporan = async function(id) {
+            const res = await Swal.fire({ title: 'Hapus Histori?', text: "Data penjualan ini akan dihapus dari sistem.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Ya, Hapus' });
+            if(res.isConfirmed) {
+                try {
+                    await deleteDoc(doc(db, "laporan", id));
+                    Toast.fire({ icon: 'success', title: 'Histori berhasil dihapus.' });
+                } catch(e) { Swal.fire('Error', e.message, 'error'); }
+            }
+        };
+
+        window.hapusProduk = async function(id) {
+            const res = await Swal.fire({ title: 'Hapus Produk?', text: "Produk ini akan dihapus dari data toko.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Ya, Hapus' });
+            if(res.isConfirmed) {
+                try {
+                    await deleteDoc(doc(db, "produk", id));
+                    Toast.fire({ icon: 'success', title: 'Produk berhasil dihapus.' });
+                } catch(e) { Swal.fire('Error', e.message, 'error'); }
+            }
+        };
+
+        window.editProduk = async function(id, nama, qty, harga, kategori, satuan) {
+            const { value: formValues } = await Swal.fire({
+                title: 'Edit Data Produk',
+                html: `
+                    <div class="text-left space-y-3">
+                        <div><label class="text-xs font-bold">Nama Produk</label><input id="swal-nama" class="swal2-input !w-full !m-0 !text-sm !p-2 border" value="${nama}"></div>
+                        <div><label class="text-xs font-bold">Stok Qty</label><input id="swal-qty" type="number" class="swal2-input !w-full !m-0 !text-sm !p-2 border" value="${qty}"></div>
+                        <div><label class="text-xs font-bold">Harga (Rp)</label><input id="swal-harga" type="number" class="swal2-input !w-full !m-0 !text-sm !p-2 border" value="${harga}"></div>
+                    </div>
+                `,
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Simpan Perubahan',
+                preConfirm: () => {
+                    return {
+                        nama: document.getElementById('swal-nama').value,
+                        qty: parseFloat(document.getElementById('swal-qty').value) || 0,
+                        harga: parseFloat(document.getElementById('swal-harga').value) || 0
+                    }
+                }
+            });
+
+            if (formValues) {
+                try {
+                    await updateDoc(doc(db, "produk", id), {
+                        nama: formValues.nama,
+                        qty: formValues.qty,
+                        harga: formValues.harga
+                    });
+                    Toast.fire({ icon: 'success', title: 'Produk diperbarui!' });
+                } catch(e) { Swal.fire('Error', e.message, 'error'); }
+            }
+        };
+
+        // Fungsi Tambahan Stok Otomatis Saat Barang PO Datang
+        window.terimaBarangPO = async function(docId, produkId, qty) {
+            const res = await Swal.fire({
+                title: 'Barang Sudah Datang?',
+                text: `Stok produk ini akan otomatis bertambah sebanyak ${qty}.`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#10b981',
+                confirmButtonText: 'Ya, Tambah Stok'
+            });
+            
+            if(res.isConfirmed) {
+                try {
+                    const prodRef = doc(db, "produk", produkId);
+                    const prodSnap = await getDoc(prodRef);
+                    if (prodSnap.exists()) {
+                        const currentQty = parseFloat(prodSnap.data().qty) || 0;
+                        await updateDoc(prodRef, { qty: currentQty + qty });
+                        await updateDoc(doc(db, "po_history", docId), { status: 'SELESAI' });
+                        Toast.fire({ icon: 'success', title: 'Stok berhasil ditambahkan!' });
+                    } else {
+                        Swal.fire('Gagal', 'Data master produk sudah tidak ada, tidak dapat menambah stok otomatis.', 'error');
+                        // Status PO tetap diselesaikan agar tidak menggantung
+                        await updateDoc(doc(db, "po_history", docId), { status: 'SELESAI' });
+                    }
+                } catch(e) { 
+                    Swal.fire('Error', e.message, 'error'); 
+                }
+            }
+        };
+
+        let mySpmChart = null;
+        function updateGrafikTahunanSPM(targetArray, capaianArray, tahun) {
+            const ctx = document.getElementById('spmChart');
+            if(!ctx) return;
+            const labels = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"];
+            
+            if(mySpmChart) {
+                mySpmChart.data.datasets[0].data = targetArray;
+                mySpmChart.data.datasets[1].data = capaianArray;
+                mySpmChart.update();
+            } else {
+                mySpmChart = new Chart(ctx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            { label: `Target CCM (${tahun})`, data: targetArray, backgroundColor: '#6366f1', borderRadius: 6 },
+                            { label: `Pencapaian Omzet CCM (${tahun})`, data: capaianArray, backgroundColor: '#10b981', borderRadius: 6 }
+                        ]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { legend: { position: 'bottom' } } }
+                });
+            }
+        }
+
+        document.getElementById('form-target')?.addEventListener('submit', async(e)=>{
+            e.preventDefault();
+            const btn = e.target.querySelector('button'); btn.disabled=true;
+            const tokoId = document.getElementById('target-toko-select').value;
+            const bulan = document.getElementById('target-bulan').value;
+            const tahun = document.getElementById('target-tahun').value;
+            const nominal = document.getElementById('target-nominal').value;
+            
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...`;
+            try {
+                const docId = `${tokoId}_${bulan}_${tahun}`;
+                await setDoc(doc(db, "target_reguler", docId), {
+                    tl_id: currentUser.uid, toko_id: tokoId, bulan: bulan, tahun: tahun, nominal: parseFloat(nominal), created_at: new Date()
+                });
+                Toast.fire({ icon: 'success', title: 'Target CCM berhasil ditetapkan!' });
+                document.getElementById('target-nominal').value = '';
+            } catch(e) { Swal.fire('Error', e.message, 'error'); } 
+            finally { btn.disabled=false; btn.innerHTML = 'Simpan Target'; }
+        });
+
+        document.getElementById('form-target-lain')?.addEventListener('submit', async(e)=>{
+            e.preventDefault();
+            const btn = e.target.querySelector('button'); btn.disabled=true;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Mengirim...`;
+            try {
+                const selectProd = document.getElementById('lain-produk-select');
+                const namaProduk = selectProd.value;
+                
+                await addDoc(collection(db, "target_lain"), {
+                    tl_id: currentUser.uid,
+                    toko_id: document.getElementById('lain-toko-select').value,
+                    produk: namaProduk,
+                    volume: parseFloat(document.getElementById('lain-volume').value) || 0,
+                    nilai: parseFloat(document.getElementById('lain-nilai').value) || 0,
+                    tanggal: new Date().toISOString()
+                });
+                Toast.fire({ icon: 'success', title: 'Target Fokus Produk berhasil dikirim!' });
+                e.target.reset();
+                document.getElementById('lain-produk-select').innerHTML = '<option value="" disabled selected>Pilih Toko Dahulu...</option>';
+            } catch(e){ Swal.fire('Error',e.message,'error'); } finally { btn.disabled=false; btn.innerHTML = 'Kirim Target Lain'; }
+        });
+
+        document.getElementById('form-produk')?.addEventListener('submit', async(e)=>{
+            e.preventDefault();
+            const btn = e.target.querySelector('button'); btn.disabled=true;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...`;
+            try {
+                await addDoc(collection(db, "produk"), {
+                    spm_id: currentUser.uid,
+                    tl_id: currentTLId,
+                    toko: window.globalUserData?.toko || '',
+                    kategori: document.getElementById('prod-kat').value,
+                    nama: document.getElementById('prod-nama').value,
+                    satuan: document.getElementById('prod-vol').value,
+                    qty: parseFloat(document.getElementById('prod-qty').value),
+                    harga: parseFloat(document.getElementById('prod-harga').value || 0),
+                    created_at: new Date()
+                });
+                Toast.fire({ icon: 'success', title: 'Data Produk ditambahkan!' });
+                e.target.reset();
+                document.getElementById('prod-harga').readOnly = false;
+            } catch(e){ Swal.fire('Error',e.message,'error'); } finally { btn.disabled=false; btn.innerHTML = 'Simpan Produk'; }
+        });
+
+        document.getElementById('form-laporan')?.addEventListener('submit', async(e)=>{
+            e.preventDefault();
+            const btn = e.target.querySelector('button'); btn.disabled=true;
+            const tgl = document.getElementById('lap-tgl').value;
+            if(!tgl) return;
+            
+            const [thn, bln, hari] = tgl.split('-');
+            const bulanStr = bulanArray[parseInt(bln) - 1];
+
+            const select = document.getElementById('lap-produk');
+            const produkId = select.value;
+            const opt = select.options[select.selectedIndex];
+            const nmProduk = opt.text;
+            const qtyTerjual = parseFloat(document.getElementById('lap-qty').value) || 0;
+            const namaTokoSnapshot = window.globalUserData?.toko || 'Tidak Diketahui';
+
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...`;
+            try {
+                // 1. Simpan laporan penjualan
+                await addDoc(collection(db, "laporan"), {
+                    spm_id: currentUser.uid, tl_id: currentTLId,
+                    toko: namaTokoSnapshot, 
+                    tanggal_lengkap: tgl,
+                    bulan: bulanStr, tahun: thn,
+                    produk_id: produkId, nama_produk: nmProduk,
+                    qty: qtyTerjual,
+                    harga: parseFloat(document.getElementById('lap-harga').value),
+                    total: parseFloat(document.getElementById('lap-total').value.replace(/[^0-9]/g, '')),
+                    created_at: new Date()
+                });
+
+                // 2. Ambil data produk saat ini untuk mengurangi stok secara real-time
+                const produkRef = doc(db, "produk", produkId);
+                const produkSnap = await getDoc(produkRef);
+                
+                if (produkSnap.exists()) {
+                    const stokSaatIni = parseFloat(produkSnap.data().qty) || 0;
+                    const stokBaru = stokSaatIni - qtyTerjual;
+
+                    // 3. Update stok produk di database (minimal 0 agar tidak minus)
+                    await updateDoc(produkRef, {
+                        qty: stokBaru >= 0 ? stokBaru : 0
+                    });
+                }
+
+                Toast.fire({ icon: 'success', title: 'Laporan & Pengurangan Stok Berhasil!' });
+                document.getElementById('lap-qty').value = '1';
+                document.getElementById('lap-harga').value = '';
+                document.getElementById('lap-total').value = 'Rp 0';
+            } catch(e){ 
+                Swal.fire('Error', e.message, 'error'); 
+            } finally { 
+                btn.disabled = false; 
+                btn.innerHTML = `<i class="fas fa-paper-plane mr-2"></i>Kirim Laporan`; 
+            }
+        });
+
+        // VARIABEL ARRAY UNTUK MENAMPUNG LIST PO
+        let poItemList = [];
+
+        // FUNGSI UNTUK MENAMBAH BARANG KE LIST
+        window.tambahItemPO = function() {
+            const selectProd = document.getElementById('po-produk');
+            if(selectProd.selectedIndex <= 0) {
+                Swal.fire('Perhatian', 'Silakan pilih produk terlebih dahulu.', 'warning');
+                return;
+            }
+            const produkId = selectProd.value;
+            const opt = selectProd.options[selectProd.selectedIndex];
+            const kategori = opt.getAttribute('data-kat') || '-';
+            const produkNama = opt.getAttribute('data-nama') || opt.text;
+            const kemasan = opt.getAttribute('data-satuan') || '-';
+            const qty = parseInt(document.getElementById('po-qty').value) || 1;
+
+            // Cek apakah barang dengan ID yang sama sudah ada di list
+            const existIdx = poItemList.findIndex(item => item.produkId === produkId);
+            if(existIdx >= 0) {
+                poItemList[existIdx].qty += qty;
+            } else {
+                poItemList.push({ produkId, kategori, nama: produkNama, kemasan, qty });
+            }
+
+            renderPOList();
+            document.getElementById('po-qty').value = 1;
+            selectProd.selectedIndex = 0;
+        };
+
+        // FUNGSI UNTUK MENGHAPUS BARANG DARI LIST
+        window.hapusItemPO = function(idx) {
+            poItemList.splice(idx, 1);
+            renderPOList();
+        };
+
+        // FUNGSI UNTUK MERENDER TABEL LIST DI LAYAR UI
+        window.renderPOList = function() {
+            const tbody = document.getElementById('po-list-body');
+            if(poItemList.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-gray-400 text-xs italic">Belum ada barang ditambahkan.</td></tr>';
+                return;
+            }
+            let html = '';
+            poItemList.forEach((item, idx) => {
+                html += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                    <td class="p-3">
+                        <div class="font-bold text-gray-800 dark:text-gray-200">${item.nama}</div>
+                        <div class="text-[10px] font-semibold text-blue-500 uppercase tracking-wider">${item.kategori} &bull; ${item.kemasan}</div>
+                    </td>
+                    <td class="p-3 text-center font-black text-blue-600">${item.qty}</td>
+                    <td class="p-3 text-center">
+                        <button type="button" onclick="hapusItemPO(${idx})" class="text-red-500 hover:text-red-700 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 p-1.5 rounded-lg transition"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+        };
+
+        // LOGIKA UTAMA SAAT TOMBOL WA & PDF DITEKAN
+        document.getElementById('form-po')?.addEventListener('submit', async(e) => {
+            e.preventDefault();
+            
+            if(poItemList.length === 0) {
+                Swal.fire('Daftar PO Kosong', 'Silakan tambahkan minimal 1 barang ke dalam daftar order.', 'warning');
+                return;
+            }
+            
+            const noWaRaw = document.getElementById('po-wa').value;
+            const noWa = noWaRaw.replace(/[^0-9]/g, ''); 
+            
+            const user = window.globalUserData;
+            const toko = user?.toko || 'Toko Tidak Diketahui';
+            const spm = user?.nama || 'SPM';
+            
+            let alamatArr = [user?.kelurahan, user?.kecamatan ? `Kec. ${user.kecamatan}` : null, user?.kota, user?.provinsi].filter(Boolean);
+            const alamatLengkap = alamatArr.join(', ') || '-';
+            
+            const tgl = new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'});
+
+            // Set Header Info Toko di PDF
+            document.getElementById('pdf-header-toko').innerText = toko;
+            document.getElementById('pdf-header-alamat').innerText = alamatLengkap;
+            document.getElementById('pdf-right-toko').innerText = toko;
+            document.getElementById('pdf-tgl-po').innerText = tgl;
+            document.getElementById('pdf-ttd-nama').innerText = spm;
+
+            // Suntikkan Data Array ke Tabel Layout PDF
+            let pdfRowsHtml = '';
+            poItemList.forEach((item, idx) => {
+                pdfRowsHtml += `
+                    <tr>
+                        <td class="border-2 border-black p-3 text-center text-lg font-medium text-black">${idx + 1}</td>
+                        <td class="border-2 border-black p-3 text-lg font-medium text-black">${item.kategori}</td>
+                        <td class="border-2 border-black p-3 text-lg font-medium text-black">${item.nama}</td>
+                        <td class="border-2 border-black p-3 text-center text-lg font-medium text-black">${item.kemasan}</td>
+                        <td class="border-2 border-black p-3 text-center text-lg font-bold text-black">${item.qty}</td>
+                    </tr>
+                `;
+            });
+            document.getElementById('pdf-table-body').innerHTML = pdfRowsHtml;
+
+            Swal.fire({ title: 'Membuat Dokumen PO...', text: 'Tunggu sebentar, sedang generate PDF.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+            const element = document.getElementById('po-pdf-template');
+            
+            const optPdf = {
+                margin:       0.5,
+                filename:     `PO_${toko.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(optPdf).from(element).save().then(async () => {
+                // Simpan Riwayat PO ke Database
+                const tglPoIsos = new Date().toISOString();
+                for (let item of poItemList) {
+                    try {
+                        await addDoc(collection(db, "po_history"), {
+                            spm_id: currentUser.uid,
+                            toko: toko,
+                            produk_id: item.produkId,
+                            nama_produk: item.nama,
+                            kategori: item.kategori,
+                            kemasan: item.kemasan,
+                            qty_order: item.qty,
+                            tanggal: tglPoIsos,
+                            status: 'PENDING'
+                        });
+                    } catch(err) { console.error("Gagal simpan histori PO:", err); }
+                }
+
+                Swal.close();
+                
+                // Bentuk Text WhatsApp yang berisi list barang
+                let orderListText = '';
+                poItemList.forEach((item, idx) => {
+                    orderListText += `${idx+1}. ${item.nama} (${item.kemasan}) - *${item.qty} Qty*\n`;
+                });
+                
+                let waText = `Halo Tim Sales,\n\nSaya dari toko *${toko}* ingin melakukan Purchase Order (PO) untuk restock barang.\n\n*Daftar Order:*\n${orderListText}\nMohon bantuannya untuk diproses. *File PDF bukti PO akan saya kirimkan setelah pesan ini.*\n\nTerima kasih.`;
+                
+                let waUrl = `https://wa.me/${noWa}?text=${encodeURIComponent(waText)}`;
+                window.open(waUrl, '_blank');
+
+                // Reset Form & Array Setelah Order Berhasil
+                poItemList = [];
+                renderPOList();
+            });
+        });
+
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button'); btn.disabled=true;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Mendaftarkan...`;
+            try {
+                const userCred = await createUserWithEmailAndPassword(auth, document.getElementById('reg-email').value, document.getElementById('reg-password').value);
+                await setDoc(doc(db, "users", userCred.user.uid), {
+                    nama: document.getElementById('reg-nama').value,
+                    jabatan: document.getElementById('reg-jabatan').value,
+                    role: document.getElementById('reg-jabatan').value,
+                    email: document.getElementById('reg-email').value
+                });
+            } catch (err) { Swal.fire('Gagal', err.message, 'error'); btn.disabled=false; btn.innerHTML = 'Buat Akun'; }
+        });
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button'); btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Memproses...`;
+            try {
+                await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-password').value);
+            } catch (err) { 
+                btn.disabled = false;
+                btn.innerHTML = 'Masuk';
+                Swal.fire('Gagal Masuk', 'Pastikan Email atau Password benar!', 'error'); 
+            }
+        });
+
+        // PERBAIKAN LOGOUT: Mereset form login & register beserta tombolnya agar tidak tersangkut "Memproses/Mendaftar..."
+        document.getElementById('btn-logout').addEventListener('click', () => {
+            Swal.fire({ title: 'Konfirmasi Keluar', text: "Sesi Anda akan diakhiri.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Ya, Keluar' }).then((res) => {
+                if (res.isConfirmed) { 
+                    loader.classList.remove('hidden', 'opacity-0'); 
+                    
+                    // Reset Login Form
+                    document.getElementById('login-form').reset();
+                    const loginBtn = document.querySelector('#login-form button[type="submit"]');
+                    if(loginBtn) {
+                        loginBtn.disabled = false;
+                        loginBtn.innerHTML = 'Masuk';
+                    }
+
+                    // Reset Register Form
+                    document.getElementById('register-form').reset();
+                    const regBtn = document.querySelector('#register-form button[type="submit"]');
+                    if(regBtn) {
+                        regBtn.disabled = false;
+                        regBtn.innerHTML = 'Buat Akun';
+                    }
+
+                    signOut(auth); 
+                }
+            });
+        });
+
+        document.getElementById('form-toko').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button'); btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Mendaftarkan Tim...`;
+            
+            try {
+                const provEl = document.getElementById('t-provinsi');
+                const kotaEl = document.getElementById('t-kota');
+                const kecEl = document.getElementById('t-kec');
+                const kelEl = document.getElementById('t-kel');
+
+                const provName = provEl.options[provEl.selectedIndex]?.text || '';
+                const kotaName = kotaEl.options[kotaEl.selectedIndex]?.text || '';
+                const kecName = kecEl.options[kecEl.selectedIndex]?.text || '';
+                const kelName = kelEl.options[kelEl.selectedIndex]?.text || '';
+
+                const emailSPM = document.getElementById('t-email').value;
+                const passSPM = document.getElementById('t-pass').value;
+                const jabSPM = document.getElementById('t-jab').value;
+
+                const newSPMCred = await createUserWithEmailAndPassword(authSecondary, emailSPM, passSPM);
+                const newUid = newSPMCred.user.uid;
+
+                await setDoc(doc(db, "users", newUid), {
+                    nama: document.getElementById('t-pegawai').value, 
+                    toko: document.getElementById('t-nama').value,
+                    provinsi: provName,      
+                    kota: kotaName,          
+                    kecamatan: kecName,      
+                    kelurahan: kelName,      
+                    jabatan: jabSPM, 
+                    role: 'SPM', 
+                    email: emailSPM, 
+                    tl_id: currentUser.uid
+                });
+                await signOut(authSecondary);
+                Toast.fire({ icon: 'success', title: 'Toko & Akun Tim berhasil dibuat!' });
+                
+                e.target.reset();
+                kotaEl.innerHTML = '<option value="" disabled selected>Pilih Provinsi Dahulu...</option>'; kotaEl.disabled = true;
+                kecEl.innerHTML = '<option value="" disabled selected>Pilih Kota/Kab Dahulu...</option>'; kecEl.disabled = true;
+                kelEl.innerHTML = '<option value="" disabled selected>Pilih Kecamatan Dahulu...</option>'; kelEl.disabled = true;
+
+            } catch (error) { Swal.fire('Error', error.message, 'error'); } finally { btn.disabled = false; btn.innerHTML = `<i class="fas fa-plus-circle mr-2"></i>Buat Akun Tim & Daftarkan Toko`; }
+        });
+    </script>
+
+    <!-- SCRIPT UI & LOGIKA RESPONSIVE SIDEBAR + API WILAYAH -->
+    <script>
+        window.bukaMenu = function(idMenu, btnElement = null) {
+            document.querySelectorAll('.menu-section').forEach(el => el.classList.add('hidden', 'fade-in'));
+            const targetSection = document.getElementById(idMenu);
+            if (targetSection) targetSection.classList.remove('hidden');
+            
+            if(window.innerWidth < 768) {
+                document.getElementById('sidebar').classList.add('-translate-x-full');
+                document.getElementById('sidebar-backdrop').classList.add('hidden');
+            }
+            
+            if(btnElement) {
+                document.querySelectorAll('#sidebar button').forEach(btn => {
+                    btn.classList.remove('bg-indigo-50', 'bg-green-50', 'dark:bg-gray-800', 'text-indigo-600', 'text-green-600');
+                });
+                if (btnElement.closest('#menu-tl')) btnElement.classList.add('bg-indigo-50', 'dark:bg-gray-800', 'text-indigo-600');
+                else btnElement.classList.add('bg-green-50', 'dark:bg-gray-800', 'text-green-600');
+            }
+        };
+
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('sidebar-backdrop');
+        const menuBtn = document.getElementById('menu-btn');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            backdrop.classList.toggle('hidden');
+        }
+
+        menuBtn.addEventListener('click', toggleSidebar);
+        backdrop.addEventListener('click', toggleSidebar);
+
+        window.toggleAuthView = function(v) {
+            document.getElementById('login-section').classList.toggle('hidden', v !== 'login');
+            document.getElementById('register-section').classList.toggle('hidden', v !== 'register');
+        };
+        
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('theme-icon');
+            icon.classList.contains('fa-moon') ? icon.classList.replace('fa-moon', 'fa-sun') : icon.classList.replace('fa-sun', 'fa-moon');
+        });
+
+        const apiWilayah = 'https://www.emsifa.com/api-wilayah-indonesia/api';
+
+        async function initWilayah() {
+            try {
+                const res = await fetch(`${apiWilayah}/provinces.json`);
+                const data = await res.json();
+                let options = '<option value="" disabled selected>Pilih Provinsi...</option>';
+                data.forEach(prov => {
+                    options += `<option value="${prov.id}">${prov.name}</option>`;
+                });
+                const provEl = document.getElementById('t-provinsi');
+                if(provEl) provEl.innerHTML = options;
+            } catch(e) { console.error("Gagal memuat API Wilayah:", e); }
+        }
+
+        document.getElementById('t-provinsi')?.addEventListener('change', async function() {
+            const kotaEl = document.getElementById('t-kota');
+            const kecEl = document.getElementById('t-kec');
+            const kelEl = document.getElementById('t-kel');
+            
+            kotaEl.innerHTML = '<option value="" disabled selected>Memuat...</option>'; kotaEl.disabled = true;
+            kecEl.innerHTML = '<option value="" disabled selected>Pilih Kota/Kab Dahulu...</option>'; kecEl.disabled = true;
+            kelEl.innerHTML = '<option value="" disabled selected>Pilih Kecamatan Dahulu...</option>'; kelEl.disabled = true;
+
+            try {
+                const res = await fetch(`${apiWilayah}/regencies/${this.value}.json`);
+                const data = await res.json();
+                let options = '<option value="" disabled selected>Pilih Kota / Kabupaten...</option>';
+                data.forEach(kota => { options += `<option value="${kota.id}">${kota.name}</option>`; });
+                kotaEl.innerHTML = options; kotaEl.disabled = false;
+            } catch(e) { console.error(e); }
+        });
+
+        document.getElementById('t-kota')?.addEventListener('change', async function() {
+            const kecEl = document.getElementById('t-kec');
+            const kelEl = document.getElementById('t-kel');
+            
+            kecEl.innerHTML = '<option value="" disabled selected>Memuat...</option>'; kecEl.disabled = true;
+            kelEl.innerHTML = '<option value="" disabled selected>Pilih Kecamatan Dahulu...</option>'; kelEl.disabled = true;
+
+            try {
+                const res = await fetch(`${apiWilayah}/districts/${this.value}.json`);
+                const data = await res.json();
+                let options = '<option value="" disabled selected>Pilih Kecamatan...</option>';
+                data.forEach(kec => { options += `<option value="${kec.id}">${kec.name}</option>`; });
+                kecEl.innerHTML = options; kecEl.disabled = false;
+            } catch(e) { console.error(e); }
+        });
+
+        document.getElementById('t-kec')?.addEventListener('change', async function() {
+            const kelEl = document.getElementById('t-kel');
+            kelEl.innerHTML = '<option value="" disabled selected>Memuat...</option>'; kelEl.disabled = true;
+
+            try {
+                const res = await fetch(`${apiWilayah}/villages/${this.value}.json`);
+                const data = await res.json();
+                let options = '<option value="" disabled selected>Pilih Kelurahan...</option>';
+                data.forEach(kel => { options += `<option value="${kel.id}">${kel.name}</option>`; });
+                kelEl.innerHTML = options; kelEl.disabled = false;
+            } catch(e) { console.error(e); }
+        });
+
+        initWilayah();
+
+        const inputKat = document.getElementById('prod-kat');
+        const inputHarga = document.getElementById('prod-harga');
+        const noteHarga = document.getElementById('prod-note');
+        if(inputKat){
+            inputKat.addEventListener('change', function() {
+                if (this.value === 'CCM') {
+                    inputHarga.value = 0; inputHarga.readOnly = true; inputHarga.classList.add('bg-gray-200', 'dark:bg-gray-700');
+                    noteHarga.innerText = "*Harga CCM diset Rp 0 (diisi manual saat Input Laporan Penjualan)";
+                } else {
+                    inputHarga.value = ''; inputHarga.readOnly = false; inputHarga.classList.remove('bg-gray-200', 'dark:bg-gray-700');
+                    noteHarga.innerText = "*Wajib diisi sesuai harga patokan";
+                }
+            });
+        }
+
+        const lapProduk = document.getElementById('lap-produk');
+        const lapHarga = document.getElementById('lap-harga');
+        const lapQty = document.getElementById('lap-qty');
+        const lapTotal = document.getElementById('lap-total');
+        
+        if(lapProduk) {
+            lapProduk.addEventListener('change', hitungTotal);
+            lapQty.addEventListener('input', hitungTotal);
+            lapHarga.addEventListener('input', hitungTotal);
+        }
+
+        function hitungTotal() {
+            if(lapProduk.selectedIndex <= 0) return;
+            const opt = lapProduk.options[lapProduk.selectedIndex];
+            const kat = opt.getAttribute('data-kat');
+            
+            if(kat !== 'CCM') {
+                lapHarga.value = opt.getAttribute('data-harga');
+                lapHarga.readOnly = true; lapHarga.classList.add('bg-gray-200', 'dark:bg-gray-700');
+            } else {
+                lapHarga.readOnly = false; lapHarga.classList.remove('bg-gray-200', 'dark:bg-gray-700');
+            }
+            const total = (parseFloat(lapQty.value) || 0) * (parseFloat(lapHarga.value) || 0);
+            lapTotal.value = "Rp " + total.toLocaleString('id-ID');
+        }
+    </script>
+    
+    <!-- Script WA Transparan saat di-scroll -->
+    <script>
+        const waBtn = document.getElementById('wa-btn');
+        let scrollTimeout;
+
+        function handleWaScroll() {
+            // Berlaku untuk semua layar tanpa batas ukuran (termasuk PC)
+            if (waBtn) {
+                // Buat transparan (opacity 30%) saat sedang scroll
+                waBtn.style.opacity = '0.3';
+                
+                // Clear timeout sebelumnya
+                clearTimeout(scrollTimeout);
+                
+                // Kembalikan ke normal (opacity 100%) setelah berhenti scroll selama 400ms
+                scrollTimeout = setTimeout(() => {
+                    waBtn.style.opacity = '1';
+                }, 400);
+            }
+        }
+
+        // Terapkan deteksi scroll pada area utama aplikasi (main dan auth)
+        document.querySelector('main').addEventListener('scroll', handleWaScroll);
+        document.getElementById('auth-wrapper').addEventListener('scroll', handleWaScroll);
+    </script>
+</body>
+</html>
