@@ -929,11 +929,12 @@
         let rawProdukListSPM = []; 
         window.globalUserData = null;
 
-        // Fungsi Helper untuk membersihkan nama produk dari varian warna (White, Black, Pastel, dll)
+        // Fungsi Helper untuk membersihkan nama produk dari varian warna & angka digit tunggal (ex: Putih 300 -> Putih, Vinilex Putih 300 -> Vinilex)
         function bersihkanNamaProdukFokus(namaAsli) {
             if (!namaAsli) return '';
             let bersih = namaAsli
-                .replace(/\b(White|Black|Pastel|Cream|Grey|Red|Blue|Green|Yellow|Clear|Transparent)\b/gi, '')
+                .replace(/\b(White|Black|Pastel|Cream|Grey|Red|Blue|Green|Yellow|Clear|Transparent|Putih|Hitam|Merah|Biru|Hijau|Kuning)\b/gi, '')
+                .replace(/\b\d+\b/g, '') // Menghapus angka sisa kode warna seperti 300
                 .replace(/\s+/g, ' ')
                 .trim();
             return bersih || namaAsli;
@@ -1055,7 +1056,8 @@
                     let b = bulanArray[d.getMonth()];
                     let y = d.getFullYear().toString();
                     
-                    let key = `${tgt.toko_id}_${tgt.produk}_${b}_${y}`;
+                    let bersihNama = bersihkanNamaProdukFokus(tgt.produk);
+                    let key = `${tgt.toko_id}_${bersihNama}_${b}_${y}`;
                     
                     if(!fokusMap[key]) {
                         fokusMap[key] = {
@@ -1063,7 +1065,7 @@
                             namaSpm: tInfo.nama,
                             bulan: b,
                             tahun: y,
-                            produk: bersihkanNamaProdukFokus(tgt.produk),
+                            produk: bersihNama,
                             targetVol: 0,
                             targetNilai: 0,
                             capaianVol: 0,
@@ -1085,7 +1087,7 @@
                         let f = fokusMap[key];
                         if(f.tokoId === spmId && f.bulan === lapBulan && f.tahun === lapTahun) {
                             let namaProdFokusLower = f.produk.toLowerCase();
-                            let lapNamaProdukLower = lap.nama_produk.toLowerCase();
+                            let lapNamaProdukLower = bersihkanNamaProdukFokus(lap.nama_produk).toLowerCase();
                             
                             // Menerapkan Substring Matching agar varian warna/kemasan ikut terhitung
                             if (lapNamaProdukLower.includes(namaProdFokusLower) || namaProdFokusLower.includes(lapNamaProdukLower)) {
@@ -1883,7 +1885,7 @@
                                 laporanList.forEach(l => {
                                     if(!l.nama_produk) return;
                                     let namaProdFokusLower = namaProdFokus.toLowerCase();
-                                    let lNamaProdukLower = l.nama_produk.toLowerCase();
+                                    let lNamaProdukLower = bersihkanNamaProdukFokus(l.nama_produk).toLowerCase();
                                     
                                     // Menerapkan Substring Matching di sisi SPM juga
                                     if (lNamaProdukLower.includes(namaProdFokusLower) || namaProdFokusLower.includes(lNamaProdukLower)) {
@@ -2570,7 +2572,7 @@
             const kelEl = document.getElementById('t-kel');
             
             kecEl.innerHTML = '<option value="" disabled selected>Memuat...</option>'; kecEl.disabled = true;
-            kelEl.innerHTML = '<option value="" disabled selected>Pilih Kecamatan Dahulu...</option>'; kelEl.disabled = true;
+            kelEl.innerHTML = '<option value="" disabled selected>Pilih Kota/Kab Dahulu...</option>'; kelEl.disabled = true;
 
             try {
                 const res = await fetch(`${apiWilayah}/districts/${this.value}.json`);
