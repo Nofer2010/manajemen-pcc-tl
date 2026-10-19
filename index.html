@@ -352,19 +352,22 @@
 
                         <div class="bg-white dark:bg-darkcard rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-800">
                             <div class="overflow-x-auto w-full">
-                                <table id="rekap-toko-table" class="w-full text-left whitespace-nowrap min-w-[600px]">
+                                <table id="rekap-toko-table" class="w-full text-left whitespace-nowrap min-w-[900px]">
                                     <thead class="bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur">
                                         <tr>
                                             <th class="p-4 text-xs font-bold text-gray-500 uppercase">Nama Toko</th>
                                             <th class="p-4 text-xs font-bold text-gray-500 uppercase">Nama SPM/G</th>
                                             <th class="p-4 text-xs font-bold text-gray-500 uppercase">Bulan / Tahun</th>
                                             <th class="p-4 text-xs font-bold text-gray-500 uppercase">Total Omzet (CCM)</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Total Omzet (RM)</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-blue-500">Total All Omzet</th>
                                             <th class="p-4 text-xs font-bold text-gray-500 uppercase">Target Toko</th>
-                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">% Capaian</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">% CCM</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-blue-500">% CCM+RM</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tl-rekap-toko-body" class="divide-y divide-gray-100 dark:divide-gray-800">
-                                        <tr><td colspan="6" class="p-6 text-center text-gray-500">Memuat rekap omzet...</td></tr>
+                                        <tr><td colspan="9" class="p-6 text-center text-gray-500">Memuat rekap omzet...</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -456,6 +459,44 @@
                                 </div>
                                 <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white p-3.5 rounded-xl font-bold shadow-md transition mt-4">Kirim Target Lain</button>
                             </form>
+                        </div>
+                        
+                        <!-- REKAP PENJUALAN TARGET FOKUS (BARU) -->
+                        <div class="mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800 dark:text-white"><i class="fas fa-list-alt text-orange-500 mr-2"></i> Rekap Penjualan Target Fokus</h3>
+                                <p class="text-sm text-gray-500 mt-1">Pantau pencapaian produk fokus per toko (Bulan & Tahun).</p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <select id="rekap-fokus-bulan" onchange="renderRekapFokusTable()" class="p-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none">
+                                    <option value="">Semua Bulan</option>
+                                    <option value="Januari">Januari</option><option value="Februari">Februari</option><option value="Maret">Maret</option><option value="April">April</option><option value="Mei">Mei</option><option value="Juni">Juni</option><option value="Juli">Juli</option><option value="Agustus">Agustus</option><option value="September">September</option><option value="Oktober">Oktober</option><option value="November">November</option><option value="Desember">Desember</option>
+                                </select>
+                                <input type="text" id="rekap-fokus-tahun" onkeyup="renderRekapFokusTable()" placeholder="Tahun (Cth: 2026)" class="w-32 p-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none">
+                                <button onclick="exportTableToExcel('rekap-fokus-table', 'Rekap_Target_Fokus.xls')" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition shadow-sm"><i class="fas fa-file-excel mr-1"></i> Excel</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-darkcard rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-800 mb-8">
+                            <div class="overflow-x-auto w-full custom-scroll">
+                                <table id="rekap-fokus-table" class="w-full text-left whitespace-nowrap min-w-[900px]">
+                                    <thead class="bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur">
+                                        <tr>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Nama Toko</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Nama SPM/G</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Bulan</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Tahun</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-orange-600">Produk Fokus</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Target Produk Fokus</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Pencapaian Produk Fokus</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-blue-500">% Produk Fokus</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tl-rekap-fokus-body" class="divide-y divide-gray-100 dark:divide-gray-800">
+                                        <tr><td colspan="8" class="p-6 text-center text-gray-500">Memuat rekap target fokus...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </section>
 
@@ -847,6 +888,7 @@
         let rawTokoProdukList = []; 
         let rawHistoriPenjualanList = [];
         let globalRekapTokoData = [];
+        let globalRekapFokusData = []; // <--- Ditambahkan untuk Rekap Fokus
         const bulanArray = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
         
         const formatRp = (angka) => "Rp " + parseInt(angka).toLocaleString('id-ID');
@@ -943,6 +985,67 @@
             let produkKatMap = {}; 
             let allProdukData = [];
             let storeMonthlyData = {};
+            let allTargetLainTL = [];
+            let allLaporanTL = [];
+
+            // Fungsi Kalkulasi Rekap Fokus yang dipanggil saat snapshot berubah
+            function kalkulasiRekapFokus() {
+                if (!allTargetLainTL.length || !Object.keys(tokoInfoMap).length) {
+                    globalRekapFokusData = [];
+                    if(window.renderRekapFokusTable) window.renderRekapFokusTable();
+                    return;
+                }
+                
+                let fokusMap = {};
+                
+                allTargetLainTL.forEach(tgt => {
+                    const tInfo = tokoInfoMap[tgt.toko_id] || { nama: 'Unknown', toko: 'Unknown' };
+                    if(tInfo.nama === 'VACANT') return;
+                    
+                    let d = tgt.tanggal ? new Date(tgt.tanggal) : new Date();
+                    let b = bulanArray[d.getMonth()];
+                    let y = d.getFullYear().toString();
+                    
+                    let key = `${tgt.toko_id}_${tgt.produk}_${b}_${y}`;
+                    
+                    if(!fokusMap[key]) {
+                        fokusMap[key] = {
+                            namaToko: tInfo.toko,
+                            namaSpm: tInfo.nama,
+                            bulan: b,
+                            tahun: y,
+                            produk: tgt.produk,
+                            targetNilai: 0,
+                            capaianNilai: 0,
+                            tokoId: tgt.toko_id
+                        };
+                    }
+                    fokusMap[key].targetNilai += (parseFloat(tgt.nilai) || 0);
+                });
+                
+                allLaporanTL.forEach(lap => {
+                    if(!lap.nama_produk) return;
+                    let lapBulan = lap.bulan;
+                    let lapTahun = lap.tahun;
+                    let spmId = lap.spm_id;
+                    
+                    for(let key in fokusMap) {
+                        let f = fokusMap[key];
+                        if(f.tokoId === spmId && f.bulan === lapBulan && f.tahun === lapTahun) {
+                            if(lap.nama_produk.includes(f.produk)) {
+                                f.capaianNilai += (parseFloat(lap.total) || 0);
+                            }
+                        }
+                    }
+                });
+                
+                globalRekapFokusData = Object.values(fokusMap).map(f => {
+                    let pct = f.targetNilai > 0 ? (f.capaianNilai / f.targetNilai * 100) : (f.capaianNilai > 0 ? 100 : 0);
+                    return { ...f, pct: pct };
+                });
+                
+                if(window.renderRekapFokusTable) window.renderRekapFokusTable();
+            }
 
             const qSpm = query(collection(db, "users"), where("tl_id", "==", uid), where("role", "==", "SPM"));
             onSnapshot(qSpm, (snapSpm) => {
@@ -998,6 +1101,16 @@
 
                 renderTabelListTokoProduk(rawTokoProdukList);
 
+                // Fetch Target Lain (Produk Fokus) untuk TL
+                const qTargetLainTL = query(collection(db, "target_lain"), where("tl_id", "==", uid));
+                onSnapshot(qTargetLainTL, (snapTarget) => {
+                    allTargetLainTL = [];
+                    snapTarget.forEach(doc => {
+                        allTargetLainTL.push({id: doc.id, ...doc.data()});
+                    });
+                    kalkulasiRekapFokus();
+                });
+
                 const qAllProd = query(collection(db, "produk"), where("tl_id", "==", uid));
                 onSnapshot(qAllProd, (snapProd) => {
                     allProdukData = [];
@@ -1037,22 +1150,27 @@
                             let capaianBulananArray = new Array(12).fill(0);
                             let totalCapaianGlobBulanIni = 0;
                             storeMonthlyData = {};
+                            allLaporanTL = []; // Simpan semua laporan untuk kalkulasi rekap fokus
+                            
                             for (let k in capaianMap) capaianMap[k] = 0;
 
                             snapLapAll.forEach(doc => {
                                 const lap = doc.data();
+                                allLaporanTL.push(lap);
+                                
                                 const kat = produkKatMap[lap.produk_id] || produkKatMap[lap.nama_produk] || '';
+                                const spmId = lap.spm_id;
+                                const bln = lap.bulan || '-';
+                                const thn = lap.tahun || '-';
+                                const totalVal = parseFloat(lap.total) || 0;
+                                
+                                const storeMonthKey = `${spmId}_${bln}_${thn}`;
+                                if(!storeMonthlyData[storeMonthKey]) {
+                                    storeMonthlyData[storeMonthKey] = { spmId: spmId, bulan: bln, tahun: thn, totalCCM: 0, totalRM: 0 };
+                                }
+
                                 if (kat === 'CCM') {
-                                    const spmId = lap.spm_id;
-                                    const bln = lap.bulan || '-';
-                                    const thn = lap.tahun || '-';
-                                    const totalVal = parseFloat(lap.total) || 0;
-                                    
-                                    const storeMonthKey = `${spmId}_${bln}_${thn}`;
-                                    if(!storeMonthlyData[storeMonthKey]) {
-                                        storeMonthlyData[storeMonthKey] = { spmId: spmId, bulan: bln, tahun: thn, total: 0 };
-                                    }
-                                    storeMonthlyData[storeMonthKey].total += totalVal;
+                                    storeMonthlyData[storeMonthKey].totalCCM += totalVal;
 
                                     if(thn === currentTahun) {
                                         const bIdx = bulanArray.indexOf(bln);
@@ -1062,6 +1180,8 @@
                                             totalCapaianGlobBulanIni += totalVal;
                                         }
                                     }
+                                } else if (kat === 'RM') {
+                                    storeMonthlyData[storeMonthKey].totalRM += totalVal;
                                 }
                             });
 
@@ -1082,14 +1202,16 @@
                                         bulan: item.bulan,
                                         tahun: item.tahun,
                                         periode: `${item.bulan} ${item.tahun}`,
-                                        omzet: 0,
+                                        omzetCCM: 0,
+                                        omzetRM: 0,
                                         target: 0
                                     };
                                 }
                                 if(!storeGroupedRekap[periodKey].spmList.includes(tInfo.nama)) {
                                     storeGroupedRekap[periodKey].spmList.push(tInfo.nama);
                                 }
-                                storeGroupedRekap[periodKey].omzet += item.total;
+                                storeGroupedRekap[periodKey].omzetCCM += item.totalCCM;
+                                storeGroupedRekap[periodKey].omzetRM += item.totalRM;
                             }
 
                             for(let sId in tokoInfoMap) {
@@ -1107,7 +1229,8 @@
                                         bulan: currentBulan,
                                         tahun: currentTahun,
                                         periode: `${currentBulan} ${currentTahun}`,
-                                        omzet: 0,
+                                        omzetCCM: 0,
+                                        omzetRM: 0,
                                         target: 0
                                     };
                                 }
@@ -1120,20 +1243,27 @@
                             globalRekapTokoData = [];
                             for(let k in storeGroupedRekap) {
                                 const item = storeGroupedRekap[k];
-                                const pct = item.target > 0 ? (item.omzet / item.target * 100) : (item.omzet > 0 ? 100 : 0);
+                                const pctCCM = item.target > 0 ? (item.omzetCCM / item.target * 100) : (item.omzetCCM > 0 ? 100 : 0);
+                                const totalAll = item.omzetCCM + item.omzetRM;
+                                const pctAll = item.target > 0 ? (totalAll / item.target * 100) : (totalAll > 0 ? 100 : 0);
+                                
                                 globalRekapTokoData.push({
                                     namaToko: item.namaToko,
                                     namaSpm: item.spmList.join(" & "),
                                     periode: item.periode,
                                     bulan: item.bulan,
                                     tahun: item.tahun,
-                                    omzet: item.omzet,
+                                    omzetCCM: item.omzetCCM,
+                                    omzetRM: item.omzetRM,
+                                    totalAll: totalAll,
                                     target: item.target,
-                                    persen: pct
+                                    persenCCM: pctCCM,
+                                    persenAll: pctAll
                                 });
                             }
 
                             window.renderRekapTokoTable();
+                            kalkulasiRekapFokus();
 
                             document.getElementById('tl-total-target').innerText = formatRp(totalTargetGlobBulanIni);
                             document.getElementById('tl-total-capaian').innerText = formatRp(totalCapaianGlobBulanIni);
@@ -1214,21 +1344,60 @@
 
                 let html = '';
                 filtered.forEach(item => {
-                    let badgeColor = item.persen >= 100 ? 'text-green-600 font-bold' : (item.persen >= 70 ? 'text-blue-600 font-bold' : 'text-orange-600 font-bold');
+                    let badgeCCM = item.persenCCM >= 100 ? 'text-green-600 font-bold' : (item.persenCCM >= 70 ? 'text-blue-600 font-bold' : 'text-orange-600 font-bold');
+                    let badgeAll = item.persenAll >= 100 ? 'text-green-600 font-bold' : (item.persenAll >= 70 ? 'text-blue-600 font-bold' : 'text-orange-600 font-bold');
+                    
                     html += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
                         <td class="p-4 text-sm font-bold text-indigo-600">${item.namaToko}</td>
                         <td class="p-4 text-sm font-medium">${item.namaSpm}</td>
                         <td class="p-4 text-sm font-semibold">${item.periode}</td>
-                        <td class="p-4 text-sm font-bold text-green-600">${formatRp(item.omzet)}</td>
+                        <td class="p-4 text-sm font-bold text-green-600">${formatRp(item.omzetCCM)}</td>
+                        <td class="p-4 text-sm font-bold text-orange-500">${formatRp(item.omzetRM)}</td>
+                        <td class="p-4 text-sm font-bold text-blue-600">${formatRp(item.totalAll)}</td>
                         <td class="p-4 text-sm">${formatRp(item.target)}</td>
-                        <td class="p-4 text-sm ${badgeColor}">${item.persen.toFixed(1)}%</td>
+                        <td class="p-4 text-sm ${badgeCCM}">${item.persenCCM.toFixed(1)}%</td>
+                        <td class="p-4 text-sm ${badgeAll}">${item.persenAll.toFixed(1)}%</td>
                     </tr>`;
                 });
 
                 if(filtered.length === 0) {
-                    html = '<tr><td colspan="6" class="p-6 text-center text-gray-500">Tidak ada data rekap omzet toko untuk filter ini.</td></tr>';
+                    html = '<tr><td colspan="9" class="p-6 text-center text-gray-500">Tidak ada data rekap omzet toko untuk filter ini.</td></tr>';
                 }
                 document.getElementById('tl-rekap-toko-body').innerHTML = html;
+            };
+            
+            // FUNGSI RENDER TABEL REKAP FOKUS
+            window.renderRekapFokusTable = function() {
+                const fMonth = document.getElementById('rekap-fokus-bulan')?.value || '';
+                const fYear = (document.getElementById('rekap-fokus-tahun')?.value || '').toLowerCase();
+
+                const filtered = globalRekapFokusData.filter(item => {
+                    let mMatch = !fMonth || item.bulan === fMonth;
+                    let yMatch = !fYear || item.tahun.toLowerCase().includes(fYear);
+                    return mMatch && yMatch;
+                });
+
+                let html = '';
+                filtered.forEach(item => {
+                    let badge = item.pct >= 100 ? 'text-green-600 font-bold' : (item.pct >= 70 ? 'text-blue-600 font-bold' : 'text-orange-600 font-bold');
+                    
+                    html += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                        <td class="p-4 text-sm font-bold text-indigo-600">${item.namaToko}</td>
+                        <td class="p-4 text-sm font-medium">${item.namaSpm}</td>
+                        <td class="p-4 text-sm font-semibold">${item.bulan}</td>
+                        <td class="p-4 text-sm font-semibold">${item.tahun}</td>
+                        <td class="p-4 text-sm font-bold text-orange-500">${item.produk}</td>
+                        <td class="p-4 text-sm">${formatRp(item.targetNilai)}</td>
+                        <td class="p-4 text-sm font-bold text-green-600">${formatRp(item.capaianNilai)}</td>
+                        <td class="p-4 text-sm ${badge}">${item.pct.toFixed(1)}%</td>
+                    </tr>`;
+                });
+
+                if(filtered.length === 0) {
+                    html = '<tr><td colspan="8" class="p-6 text-center text-gray-500">Tidak ada data rekap target fokus.</td></tr>';
+                }
+                const tbody = document.getElementById('tl-rekap-fokus-body');
+                if(tbody) tbody.innerHTML = html;
             };
 
             window.hapusTokoSPM = async function(id, namaToko) {
