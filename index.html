@@ -146,7 +146,7 @@
                     <li class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-3 mb-2 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">Inventory Toko</li>
                     <li><button onclick="bukaMenu('spm-produk', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-green-50 hover:text-green-600"><i class="fas fa-box-open w-5 text-center"></i> Tambah Produk</button></li>
                     <li><button onclick="bukaMenu('spm-rekap', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-green-50 hover:text-green-600"><i class="fas fa-list w-5 text-center"></i> Daftar Harga</button></li>
-                    <li><button onclick="bukaMenu('spm-po', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-green-50 hover:text-green-600"><i class="fas fa-file-invoice w-5 text-center text-blue-500"></i> Request PO <span class="ml-auto bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full">BARU</span></button></li>
+                    <li><button onclick="bukaMenu('spm-po', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-green-50 hover:text-green-600"><i class="fas fa-file-invoice w-5 text-center text-blue-500"></i> Request PO</button></li>
                 </ul>
             </aside>
 
@@ -440,7 +440,7 @@
                             <div class="p-3 bg-orange-100 dark:bg-orange-900/30 text-orange-600 rounded-xl"><i class="fas fa-star text-xl"></i></div>
                             <div>
                                 <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Tambah Target Fokus</h2>
-                                <p class="text-sm font-medium text-gray-500">Target tambahan berdasarkan volume / produk spesifik.</p>
+                                <p class="text-sm font-medium text-gray-500">Target tambahan berdasarkan berat/isi dan nilai produk spesifik.</p>
                             </div>
                         </div>
 
@@ -454,7 +454,7 @@
                                     </select>
                                 </div>
                                 <div class="grid grid-cols-2 gap-4">
-                                    <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Target Volume (Qty/Liter)</label><input type="number" id="lain-volume" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-orange-500 transition" placeholder="Cth: 50"></div>
+                                    <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Target Berat/Isi (Kg/Lt)</label><input type="number" id="lain-volume" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-orange-500 transition" placeholder="Cth: 50"></div>
                                     <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Target Nilai / Value (Rp)</label><input type="number" id="lain-nilai" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-orange-500 transition" placeholder="Cth: 5000000"></div>
                                 </div>
                                 <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white p-3.5 rounded-xl font-bold shadow-md transition mt-4">Kirim Target Lain</button>
@@ -465,7 +465,7 @@
                         <div class="mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
                             <div>
                                 <h3 class="text-xl font-bold text-gray-800 dark:text-white"><i class="fas fa-list-alt text-orange-500 mr-2"></i> Rekap Penjualan Target Fokus</h3>
-                                <p class="text-sm text-gray-500 mt-1">Pantau pencapaian produk fokus per toko (Bulan & Tahun).</p>
+                                <p class="text-sm text-gray-500 mt-1">Pantau pencapaian berat/isi dan nilai produk fokus per toko.</p>
                             </div>
                             <div class="flex flex-wrap items-center gap-2">
                                 <select id="rekap-fokus-bulan" onchange="renderRekapFokusTable()" class="p-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none">
@@ -482,14 +482,14 @@
                                 <table id="rekap-fokus-table" class="w-full text-left whitespace-nowrap min-w-[900px]">
                                     <thead class="bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur">
                                         <tr>
-                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Nama Toko</th>
-                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Nama SPM/G</th>
-                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Bulan</th>
-                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Tahun</th>
-                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-orange-600">Produk Fokus</th>
-                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Target Produk Fokus</th>
-                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Pencapaian Produk Fokus</th>
-                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-blue-500">% Produk Fokus</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Detail Target Toko</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Periode</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-center">Target Berat/Isi</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-center">Capaian Berat/Isi</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-center">% Berat/Isi</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-right">Target Rp</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-right">Capaian Rp</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-right">% Rp</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tl-rekap-fokus-body" class="divide-y divide-gray-100 dark:divide-gray-800">
@@ -513,18 +513,18 @@
                                 <p class="text-xs text-gray-500 font-bold uppercase">Target Bulanan</p><h4 id="spm-target-bulanan" class="text-lg font-bold mt-1 text-gray-800 dark:text-gray-100">Rp 0</h4>
                             </div>
                             <div class="bg-white dark:bg-darkcard p-5 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm border-l-4 border-l-green-500">
-                                <p class="text-xs text-gray-500 font-bold uppercase">Total Capaian (CCM)</p><h4 id="spm-total-capaian" class="text-lg font-bold mt-1 text-green-600">Rp 0 (0%)</h4>
+                                <p class="text-xs text-gray-500 font-bold uppercase">Total Pencapaian CCM (%)</p><h4 id="spm-total-capaian" class="text-lg font-bold mt-1 text-green-600">Rp 0 (0%)</h4>
                             </div>
                             <div class="bg-white dark:bg-darkcard p-5 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm border-l-4 border-l-orange-500">
                                 <p class="text-xs text-gray-500 font-bold uppercase">Target Harian</p><h4 id="spm-target-harian" class="text-lg font-bold mt-1 text-gray-800 dark:text-gray-100">Rp 0</h4>
                             </div>
                             <div class="bg-white dark:bg-darkcard p-5 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm border-l-4 border-l-blue-500">
-                                <p class="text-xs text-gray-500 font-bold uppercase">Capaian Hari Ini</p><h4 id="spm-capaian-hari-ini" class="text-lg font-bold mt-1 text-blue-600">Rp 0</h4>
+                                <p class="text-xs text-gray-500 font-bold uppercase">Pencapaian Hari Ini</p><h4 id="spm-capaian-hari-ini" class="text-lg font-bold mt-1 text-blue-600">Rp 0</h4>
                             </div>
                         </div>
 
                         <div class="mb-8">
-                            <h3 class="text-xl font-bold mb-4"><i class="fas fa-bullseye text-orange-500"></i> Target Produk Fokus (Dari TL)</h3>
+                            <h3 class="text-xl font-bold mb-4"><i class="fas fa-bullseye text-orange-500"></i> Target Produk Fokus</h3>
                             <div id="spm-target-fokus-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 <div class="bg-white dark:bg-darkcard p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 text-gray-500 text-sm">
                                     Memuat target produk fokus...
@@ -621,7 +621,7 @@
                                     <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Harga Satuan (Rp)</label><input type="number" id="lap-harga" required class="w-full p-3 mt-1 border rounded-xl bg-gray-100 dark:bg-gray-800 outline-none"></div>
                                 </div>
                                 <div class="mt-4 p-4 bg-green-50 dark:bg-green-900/10 rounded-xl border border-green-100 dark:border-green-900/30">
-                                    <label class="text-xs font-bold text-green-600 uppercase tracking-wider">Total Pendapatan Transaksi Ini</label>
+                                    <label class="text-xs font-bold text-green-600 uppercase tracking-wider">Total Transaksi</label>
                                     <input type="text" id="lap-total" readonly class="w-full p-2 mt-1 bg-transparent border-none font-black text-2xl text-green-700 dark:text-green-400 outline-none" value="Rp 0">
                                 </div>
                                 <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white p-4 mt-2 rounded-xl font-bold shadow-md transition transform hover:-translate-y-0.5"><i class="fas fa-paper-plane mr-2"></i>Kirim Laporan</button>
@@ -662,9 +662,38 @@
                                 </table>
                             </div>
                         </div>
+                        
+                        <!-- REKAP PRODUK FOKUS SPM -->
+                        <div class="mt-8 mb-4 flex justify-between items-end">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800 dark:text-white"><i class="fas fa-bullseye text-orange-500 mr-2"></i> Rekap Pencapaian Produk Fokus</h3>
+                                <p class="text-sm text-gray-500 mt-1">Pantau rincian target berat/isi dan nilai khusus produk fokus.</p>
+                            </div>
+                        </div>
+                        <div class="bg-white dark:bg-darkcard rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-800 mb-8">
+                            <div class="overflow-x-auto w-full custom-scroll">
+                                <table class="w-full text-left whitespace-nowrap min-w-[700px]">
+                                    <thead class="bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur">
+                                        <tr>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Produk Fokus</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-center">Target Berat/Isi</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-center">Capaian Berat/Isi</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-center">% Berat/Isi</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-right">Target Rp</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-right">Capaian Rp</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-right">% Rp</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="spm-rekap-fokus-body" class="divide-y divide-gray-100 dark:divide-gray-800">
+                                        <tr><td colspan="7" class="p-6 text-center text-gray-500">Memuat data produk fokus...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
                     </section>
                     
-                    <!-- SPM: FITUR PO KE SALES (BARU) -->
+                    <!-- SPM: FITUR PO KE SALES -->
                     <section id="spm-po" class="menu-section hidden fade-in">
                         <div class="flex items-center gap-3 mb-6">
                             <div class="p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-xl"><i class="fas fa-file-invoice text-xl"></i></div>
@@ -888,7 +917,7 @@
         let rawTokoProdukList = []; 
         let rawHistoriPenjualanList = [];
         let globalRekapTokoData = [];
-        let globalRekapFokusData = []; // <--- Ditambahkan untuk Rekap Fokus
+        let globalRekapFokusData = []; 
         const bulanArray = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
         
         const formatRp = (angka) => "Rp " + parseInt(angka).toLocaleString('id-ID');
@@ -899,6 +928,16 @@
 
         let rawProdukListSPM = []; 
         window.globalUserData = null;
+
+        // Fungsi Helper untuk membersihkan nama produk dari varian warna (White, Black, Pastel, dll)
+        function bersihkanNamaProdukFokus(namaAsli) {
+            if (!namaAsli) return '';
+            let bersih = namaAsli
+                .replace(/\b(White|Black|Pastel|Cream|Grey|Red|Blue|Green|Yellow|Clear|Transparent)\b/gi, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+            return bersih || namaAsli;
+        }
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -983,12 +1022,22 @@
             let targetMap = {}; 
             let capaianMap = {}; 
             let produkKatMap = {}; 
+            let produkSatuanMapTL = {}; 
             let allProdukData = [];
             let storeMonthlyData = {};
             let allTargetLainTL = [];
             let allLaporanTL = [];
 
-            // Fungsi Kalkulasi Rekap Fokus yang dipanggil saat snapshot berubah
+            function parseBeratIsi(satuanStr) {
+                if(!satuanStr) return 1;
+                let match = satuanStr.toString().match(/([\d,\.]+)/);
+                if(match) {
+                    return parseFloat(match[1].replace(',', '.')) || 1;
+                }
+                return 1;
+            }
+
+            // Kalkulasi Rekap Fokus dengan Pencocokan Parsial (Substring Matching)
             function kalkulasiRekapFokus() {
                 if (!allTargetLainTL.length || !Object.keys(tokoInfoMap).length) {
                     globalRekapFokusData = [];
@@ -1014,12 +1063,15 @@
                             namaSpm: tInfo.nama,
                             bulan: b,
                             tahun: y,
-                            produk: tgt.produk,
+                            produk: bersihkanNamaProdukFokus(tgt.produk),
+                            targetVol: 0,
                             targetNilai: 0,
+                            capaianVol: 0,
                             capaianNilai: 0,
                             tokoId: tgt.toko_id
                         };
                     }
+                    fokusMap[key].targetVol += (parseFloat(tgt.volume) || 0);
                     fokusMap[key].targetNilai += (parseFloat(tgt.nilai) || 0);
                 });
                 
@@ -1032,7 +1084,16 @@
                     for(let key in fokusMap) {
                         let f = fokusMap[key];
                         if(f.tokoId === spmId && f.bulan === lapBulan && f.tahun === lapTahun) {
-                            if(lap.nama_produk.includes(f.produk)) {
+                            let namaProdFokusLower = f.produk.toLowerCase();
+                            let lapNamaProdukLower = lap.nama_produk.toLowerCase();
+                            
+                            // Menerapkan Substring Matching agar varian warna/kemasan ikut terhitung
+                            if (lapNamaProdukLower.includes(namaProdFokusLower) || namaProdFokusLower.includes(lapNamaProdukLower)) {
+                                let satuanProduk = lap.satuan || lap.kemasan || produkSatuanMapTL[lap.produk_id] || produkSatuanMapTL[f.produk] || '1';
+                                let multiplier = parseBeratIsi(satuanProduk);
+                                let totalBeratIsiTerjual = (parseFloat(lap.qty) || 0) * multiplier;
+
+                                f.capaianVol += totalBeratIsiTerjual;
                                 f.capaianNilai += (parseFloat(lap.total) || 0);
                             }
                         }
@@ -1040,8 +1101,9 @@
                 });
                 
                 globalRekapFokusData = Object.values(fokusMap).map(f => {
-                    let pct = f.targetNilai > 0 ? (f.capaianNilai / f.targetNilai * 100) : (f.capaianNilai > 0 ? 100 : 0);
-                    return { ...f, pct: pct };
+                    let pctVol = f.targetVol > 0 ? (f.capaianVol / f.targetVol * 100) : (f.capaianVol > 0 ? 100 : 0);
+                    let pctNilai = f.targetNilai > 0 ? (f.capaianNilai / f.targetNilai * 100) : (f.capaianNilai > 0 ? 100 : 0);
+                    return { ...f, pctVol: pctVol, pctNilai: pctNilai };
                 });
                 
                 if(window.renderRekapFokusTable) window.renderRekapFokusTable();
@@ -1101,7 +1163,6 @@
 
                 renderTabelListTokoProduk(rawTokoProdukList);
 
-                // Fetch Target Lain (Produk Fokus) untuk TL
                 const qTargetLainTL = query(collection(db, "target_lain"), where("tl_id", "==", uid));
                 onSnapshot(qTargetLainTL, (snapTarget) => {
                     allTargetLainTL = [];
@@ -1118,7 +1179,11 @@
                         const p = docSnap.data();
                         allProdukData.push({ id: docSnap.id, ...p });
                         produkKatMap[docSnap.id] = p.kategori;
-                        produkKatMap[p.nama] = p.kategori; 
+                        produkKatMap[p.nama] = p.kategori;
+                        if(p.satuan) {
+                            produkSatuanMapTL[docSnap.id] = p.satuan;
+                            produkSatuanMapTL[p.nama] = p.satuan;
+                        }
                     });
 
                     const qTargetAll = query(collection(db, "target_reguler"), where("tl_id", "==", uid));
@@ -1150,7 +1215,7 @@
                             let capaianBulananArray = new Array(12).fill(0);
                             let totalCapaianGlobBulanIni = 0;
                             storeMonthlyData = {};
-                            allLaporanTL = []; // Simpan semua laporan untuk kalkulasi rekap fokus
+                            allLaporanTL = []; 
                             
                             for (let k in capaianMap) capaianMap[k] = 0;
 
@@ -1366,7 +1431,6 @@
                 document.getElementById('tl-rekap-toko-body').innerHTML = html;
             };
             
-            // FUNGSI RENDER TABEL REKAP FOKUS
             window.renderRekapFokusTable = function() {
                 const fMonth = document.getElementById('rekap-fokus-bulan')?.value || '';
                 const fYear = (document.getElementById('rekap-fokus-tahun')?.value || '').toLowerCase();
@@ -1379,17 +1443,22 @@
 
                 let html = '';
                 filtered.forEach(item => {
-                    let badge = item.pct >= 100 ? 'text-green-600 font-bold' : (item.pct >= 70 ? 'text-blue-600 font-bold' : 'text-orange-600 font-bold');
+                    let badgeVol = item.pctVol >= 100 ? 'text-green-600 font-bold' : (item.pctVol >= 70 ? 'text-blue-600 font-bold' : 'text-orange-600 font-bold');
+                    let badgeNilai = item.pctNilai >= 100 ? 'text-green-600 font-bold' : (item.pctNilai >= 70 ? 'text-blue-600 font-bold' : 'text-orange-600 font-bold');
                     
                     html += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
-                        <td class="p-4 text-sm font-bold text-indigo-600">${item.namaToko}</td>
-                        <td class="p-4 text-sm font-medium">${item.namaSpm}</td>
-                        <td class="p-4 text-sm font-semibold">${item.bulan}</td>
-                        <td class="p-4 text-sm font-semibold">${item.tahun}</td>
-                        <td class="p-4 text-sm font-bold text-orange-500">${item.produk}</td>
-                        <td class="p-4 text-sm">${formatRp(item.targetNilai)}</td>
-                        <td class="p-4 text-sm font-bold text-green-600">${formatRp(item.capaianNilai)}</td>
-                        <td class="p-4 text-sm ${badge}">${item.pct.toFixed(1)}%</td>
+                        <td class="p-4">
+                            <div class="font-bold text-indigo-600 text-sm">${item.namaToko}</div>
+                            <div class="text-xs text-gray-500 font-medium mb-1">${item.namaSpm}</div>
+                            <div class="text-[10px] font-black text-orange-500 uppercase tracking-widest border border-orange-200 bg-orange-50 inline-block px-1.5 py-0.5 rounded">${item.produk}</div>
+                        </td>
+                        <td class="p-4 text-sm font-semibold">${item.bulan} ${item.tahun}</td>
+                        <td class="p-4 text-sm text-center">${parseFloat(item.targetVol.toFixed(2))}</td>
+                        <td class="p-4 text-sm font-bold text-center">${parseFloat(item.capaianVol.toFixed(2))}</td>
+                        <td class="p-4 text-sm text-center ${badgeVol}">${item.pctVol.toFixed(1)}%</td>
+                        <td class="p-4 text-sm text-right">${formatRp(item.targetNilai)}</td>
+                        <td class="p-4 text-sm font-bold text-green-600 text-right">${formatRp(item.capaianNilai)}</td>
+                        <td class="p-4 text-sm text-right ${badgeNilai}">${item.pctNilai.toFixed(1)}%</td>
                     </tr>`;
                 });
 
@@ -1563,7 +1632,9 @@
                     let pOpts = '<option value="" disabled selected>Pilih Produk Fokus Toko...</option>';
                     snapProd.forEach(doc => {
                         const p = doc.data();
-                        pOpts += `<option value="${p.nama}" data-kat="${p.kategori}">${p.kategori} - ${p.nama} (${p.satuan})</option>`;
+                        // Hanya menampilkan nama dasar produk (dibersihkan dari varian warna/jenis)
+                        const namaBersih = bersihkanNamaProdukFokus(p.nama);
+                        pOpts += `<option value="${namaBersih}" data-kat="${p.kategori}">${p.kategori} - ${namaBersih} (${p.satuan})</option>`;
                     });
                     if(snapProd.empty) pOpts = '<option value="" disabled selected>Toko ini belum mendaftarkan produk.</option>';
                     produkSelect.innerHTML = pOpts;
@@ -1662,6 +1733,7 @@
             const workDays = (daysInMonth - 4) > 0 ? (daysInMonth - 4) : 1;
 
             let produkKatMapSPM = {};
+            let produkSatuanMapSPM = {}; 
           
             const namaTokoAktif = window.globalUserData?.toko || '';
             const qProd = query(collection(db, "produk"), where("toko", "==", namaTokoAktif));
@@ -1675,6 +1747,8 @@
                     rawProdukListSPM.push({ id: doc.id, ...p });
                     produkKatMapSPM[doc.id] = p.kategori;
                     produkKatMapSPM[p.nama] = p.kategori;
+                    produkSatuanMapSPM[doc.id] = p.satuan || '1';
+                    produkSatuanMapSPM[p.nama] = p.satuan || '1';
                     
                     pSelect += `<option value="${doc.id}" data-kat="${p.kategori}" data-nama="${p.nama}" data-satuan="${p.satuan}" data-harga="${p.harga}">${p.kategori} - ${p.nama} (${p.satuan})</option>`;
                 });
@@ -1686,7 +1760,6 @@
                 
                 renderTabelRekapSPM(rawProdukListSPM);
 
-                // --- Histori PO ---
                 const qPoHist = query(collection(db, "po_history"), where("spm_id", "==", uid));
                 onSnapshot(qPoHist, (snapHistPo) => {
                     let poHistHtml = '';
@@ -1721,7 +1794,6 @@
                     const elPoHist = document.getElementById('po-history-body');
                     if (elPoHist) elPoHist.innerHTML = poHistHtml;
                 });
-                // ------------------
 
                 const qTargetYear = query(collection(db, "target_reguler"), where("toko_id", "==", uid), where("tahun", "==", currentTahun));
                 onSnapshot(qTargetYear, (snapTargetYear) => {
@@ -1753,6 +1825,7 @@
                             const lapId = docSnap.id;
                             laporanList.push(lap);
                             const kat = produkKatMapSPM[lap.produk_id] || produkKatMapSPM[lap.nama_produk] || 'CCM';
+                            const satuanProd = produkSatuanMapSPM[lap.produk_id] || produkSatuanMapSPM[lap.nama_produk] || lap.satuan || lap.kemasan || '1';
                             
                             rawHistoriPenjualanList.push({
                                 id: lapId,
@@ -1762,6 +1835,7 @@
                                 tahun: lap.tahun || '',
                                 kategori: kat,
                                 namaProduk: lap.nama_produk || '-',
+                                satuan: satuanProd,
                                 qty: lap.qty || 0,
                                 total: lap.total || 0
                             });
@@ -1787,9 +1861,13 @@
 
                         const qTargetLain = query(collection(db, "target_lain"), where("toko_id", "==", uid));
                         onSnapshot(qTargetLain, (snapTgtLain) => {
-                            let fokusHtml = '';
+                            let fokusCardHtml = '';
+                            let tableFokusHtml = '';
+
                             if(snapTgtLain.empty) {
                                 document.getElementById('spm-target-fokus-container').innerHTML = '<div class="bg-white dark:bg-darkcard p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 text-gray-500 text-sm col-span-full">Belum ada Target Produk Fokus dari Team Leader.</div>';
+                                const tbodySpk = document.getElementById('spm-rekap-fokus-body');
+                                if(tbodySpk) tbodySpk.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-gray-500">Tidak ada data rekap target fokus.</td></tr>';
                                 return;
                             }
 
@@ -1797,20 +1875,31 @@
                                 const tFokus = docTgt.data();
                                 const targetVol = parseFloat(tFokus.volume) || 0;
                                 const targetNilai = parseFloat(tFokus.nilai) || 0;
-                                const namaProdFokus = tFokus.produk;
+                                const namaProdFokus = bersihkanNamaProdukFokus(tFokus.produk);
 
                                 let capVol = 0;
                                 let capNilai = 0;
+                                
                                 laporanList.forEach(l => {
-                                    if(l.nama_produk && l.nama_produk.includes(namaProdFokus)) {
-                                        capVol += parseFloat(l.qty) || 0;
+                                    if(!l.nama_produk) return;
+                                    let namaProdFokusLower = namaProdFokus.toLowerCase();
+                                    let lNamaProdukLower = l.nama_produk.toLowerCase();
+                                    
+                                    // Menerapkan Substring Matching di sisi SPM juga
+                                    if (lNamaProdukLower.includes(namaProdFokusLower) || namaProdFokusLower.includes(lNamaProdukLower)) {
+                                        let sat = produkSatuanMapSPM[l.produk_id] || produkSatuanMapSPM[l.nama_produk] || l.satuan || l.kemasan || '1';
+                                        let matchNum = sat.toString().match(/([\d,\.]+)/);
+                                        let multiplier = matchNum ? (parseFloat(matchNum[1].replace(',', '.')) || 1) : 1;
+                                        
+                                        capVol += (parseFloat(l.qty) || 0) * multiplier;
                                         capNilai += parseFloat(l.total) || 0;
                                     }
                                 });
 
-                                let pctNilai = targetNilai > 0 ? (capNilai / targetNilai * 100).toFixed(1) : 0;
+                                let pctVol = targetVol > 0 ? (capVol / targetVol * 100) : (capVol > 0 ? 100 : 0);
+                                let pctNilai = targetNilai > 0 ? (capNilai / targetNilai * 100) : (capNilai > 0 ? 100 : 0);
 
-                                fokusHtml += `
+                                fokusCardHtml += `
                                 <div class="bg-white dark:bg-darkcard p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
                                     <div class="flex justify-between items-start mb-3">
                                         <div>
@@ -1820,8 +1909,8 @@
                                     </div>
                                     <div class="space-y-2 text-sm">
                                         <div class="flex justify-between">
-                                            <span class="text-gray-500">Target Volume:</span>
-                                            <span class="font-bold">${capVol} / ${targetVol}</span>
+                                            <span class="text-gray-500">Target Berat/Isi:</span>
+                                            <span class="font-bold">${parseFloat(capVol.toFixed(2))} / ${targetVol}</span>
                                         </div>
                                         <div class="flex justify-between">
                                             <span class="text-gray-500">Target Nilai (Value):</span>
@@ -1830,12 +1919,28 @@
                                         <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mt-3 shadow-inner">
                                             <div class="bg-orange-500 h-2 rounded-full" style="width: ${Math.min(pctNilai, 100)}%"></div>
                                         </div>
-                                        <div class="text-right text-xs font-bold text-gray-500 mt-1">Capaian Nilai: ${pctNilai}%</div>
+                                        <div class="text-right text-xs font-bold text-gray-500 mt-1">Capaian Nilai: ${pctNilai.toFixed(1)}%</div>
                                     </div>
                                 </div>`;
+
+                                let badgeVol = pctVol >= 100 ? 'text-green-600 font-bold' : (pctVol >= 70 ? 'text-blue-600 font-bold' : 'text-orange-600 font-bold');
+                                let badgeNilai = pctNilai >= 100 ? 'text-green-600 font-bold' : (pctNilai >= 70 ? 'text-blue-600 font-bold' : 'text-orange-600 font-bold');
+
+                                tableFokusHtml += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                                    <td class="p-4 text-sm font-bold text-orange-600">${namaProdFokus}</td>
+                                    <td class="p-4 text-sm text-center">${targetVol}</td>
+                                    <td class="p-4 text-sm font-bold text-center">${parseFloat(capVol.toFixed(2))}</td>
+                                    <td class="p-4 text-sm text-center ${badgeVol}">${pctVol.toFixed(1)}%</td>
+                                    <td class="p-4 text-sm text-right">${formatRp(targetNilai)}</td>
+                                    <td class="p-4 text-sm font-bold text-right text-green-600">${formatRp(capNilai)}</td>
+                                    <td class="p-4 text-sm text-right ${badgeNilai}">${pctNilai.toFixed(1)}%</td>
+                                </tr>`;
                             });
 
-                            document.getElementById('spm-target-fokus-container').innerHTML = fokusHtml;
+                            document.getElementById('spm-target-fokus-container').innerHTML = fokusCardHtml;
+                            
+                            const tbodySpk = document.getElementById('spm-rekap-fokus-body');
+                            if(tbodySpk) tbodySpk.innerHTML = tableFokusHtml;
                         });
                     });
                 });
@@ -1968,7 +2073,6 @@
             }
         };
 
-        // Fungsi Tambahan Stok Otomatis Saat Barang PO Datang
         window.terimaBarangPO = async function(docId, produkId, qty) {
             const res = await Swal.fire({
                 title: 'Barang Sudah Datang?',
@@ -1990,7 +2094,6 @@
                         Toast.fire({ icon: 'success', title: 'Stok berhasil ditambahkan!' });
                     } else {
                         Swal.fire('Gagal', 'Data master produk sudah tidak ada, tidak dapat menambah stok otomatis.', 'error');
-                        // Status PO tetap diselesaikan agar tidak menggantung
                         await updateDoc(doc(db, "po_history", docId), { status: 'SELESAI' });
                     }
                 } catch(e) { 
@@ -2100,26 +2203,27 @@
             const select = document.getElementById('lap-produk');
             const produkId = select.value;
             const opt = select.options[select.selectedIndex];
-            const nmProduk = opt.text;
+            const nmProduk = opt.getAttribute('data-nama') || opt.text;
+            const satuanProd = opt.getAttribute('data-satuan') || '1';
             const qtyTerjual = parseFloat(document.getElementById('lap-qty').value) || 0;
             const namaTokoSnapshot = window.globalUserData?.toko || 'Tidak Diketahui';
 
             btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...`;
             try {
-                // 1. Simpan laporan penjualan
                 await addDoc(collection(db, "laporan"), {
                     spm_id: currentUser.uid, tl_id: currentTLId,
                     toko: namaTokoSnapshot, 
                     tanggal_lengkap: tgl,
                     bulan: bulanStr, tahun: thn,
                     produk_id: produkId, nama_produk: nmProduk,
+                    satuan: satuanProd,
+                    kemasan: satuanProd,
                     qty: qtyTerjual,
                     harga: parseFloat(document.getElementById('lap-harga').value),
                     total: parseFloat(document.getElementById('lap-total').value.replace(/[^0-9]/g, '')),
                     created_at: new Date()
                 });
 
-                // 2. Ambil data produk saat ini untuk mengurangi stok secara real-time
                 const produkRef = doc(db, "produk", produkId);
                 const produkSnap = await getDoc(produkRef);
                 
@@ -2127,7 +2231,6 @@
                     const stokSaatIni = parseFloat(produkSnap.data().qty) || 0;
                     const stokBaru = stokSaatIni - qtyTerjual;
 
-                    // 3. Update stok produk di database (minimal 0 agar tidak minus)
                     await updateDoc(produkRef, {
                         qty: stokBaru >= 0 ? stokBaru : 0
                     });
@@ -2145,10 +2248,8 @@
             }
         });
 
-        // VARIABEL ARRAY UNTUK MENAMPUNG LIST PO
         let poItemList = [];
 
-        // FUNGSI UNTUK MENAMBAH BARANG KE LIST
         window.tambahItemPO = function() {
             const selectProd = document.getElementById('po-produk');
             if(selectProd.selectedIndex <= 0) {
@@ -2162,7 +2263,6 @@
             const kemasan = opt.getAttribute('data-satuan') || '-';
             const qty = parseInt(document.getElementById('po-qty').value) || 1;
 
-            // Cek apakah barang dengan ID yang sama sudah ada di list
             const existIdx = poItemList.findIndex(item => item.produkId === produkId);
             if(existIdx >= 0) {
                 poItemList[existIdx].qty += qty;
@@ -2175,13 +2275,11 @@
             selectProd.selectedIndex = 0;
         };
 
-        // FUNGSI UNTUK MENGHAPUS BARANG DARI LIST
         window.hapusItemPO = function(idx) {
             poItemList.splice(idx, 1);
             renderPOList();
         };
 
-        // FUNGSI UNTUK MERENDER TABEL LIST DI LAYAR UI
         window.renderPOList = function() {
             const tbody = document.getElementById('po-list-body');
             if(poItemList.length === 0) {
@@ -2204,7 +2302,6 @@
             tbody.innerHTML = html;
         };
 
-        // LOGIKA UTAMA SAAT TOMBOL WA & PDF DITEKAN
         document.getElementById('form-po')?.addEventListener('submit', async(e) => {
             e.preventDefault();
             
@@ -2225,14 +2322,12 @@
             
             const tgl = new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'});
 
-            // Set Header Info Toko di PDF
             document.getElementById('pdf-header-toko').innerText = toko;
             document.getElementById('pdf-header-alamat').innerText = alamatLengkap;
             document.getElementById('pdf-right-toko').innerText = toko;
             document.getElementById('pdf-tgl-po').innerText = tgl;
             document.getElementById('pdf-ttd-nama').innerText = spm;
 
-            // Suntikkan Data Array ke Tabel Layout PDF
             let pdfRowsHtml = '';
             poItemList.forEach((item, idx) => {
                 pdfRowsHtml += `
@@ -2260,7 +2355,6 @@
             };
 
             html2pdf().set(optPdf).from(element).save().then(async () => {
-                // Simpan Riwayat PO ke Database
                 const tglPoIsos = new Date().toISOString();
                 for (let item of poItemList) {
                     try {
@@ -2280,7 +2374,6 @@
 
                 Swal.close();
                 
-                // Bentuk Text WhatsApp yang berisi list barang
                 let orderListText = '';
                 poItemList.forEach((item, idx) => {
                     orderListText += `${idx+1}. ${item.nama} (${item.kemasan}) - *${item.qty} Qty*\n`;
@@ -2291,7 +2384,6 @@
                 let waUrl = `https://wa.me/${noWa}?text=${encodeURIComponent(waText)}`;
                 window.open(waUrl, '_blank');
 
-                // Reset Form & Array Setelah Order Berhasil
                 poItemList = [];
                 renderPOList();
             });
@@ -2325,13 +2417,11 @@
             }
         });
 
-        // PERBAIKAN LOGOUT: Mereset form login & register beserta tombolnya agar tidak tersangkut "Memproses/Mendaftar..."
         document.getElementById('btn-logout').addEventListener('click', () => {
             Swal.fire({ title: 'Konfirmasi Keluar', text: "Sesi Anda akan diakhiri.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Ya, Keluar' }).then((res) => {
                 if (res.isConfirmed) { 
                     loader.classList.remove('hidden', 'opacity-0'); 
                     
-                    // Reset Login Form
                     document.getElementById('login-form').reset();
                     const loginBtn = document.querySelector('#login-form button[type="submit"]');
                     if(loginBtn) {
@@ -2339,7 +2429,6 @@
                         loginBtn.innerHTML = 'Masuk';
                     }
 
-                    // Reset Register Form
                     document.getElementById('register-form').reset();
                     const regBtn = document.querySelector('#register-form button[type="submit"]');
                     if(regBtn) {
@@ -2555,22 +2644,15 @@
         let scrollTimeout;
 
         function handleWaScroll() {
-            // Berlaku untuk semua layar tanpa batas ukuran (termasuk PC)
             if (waBtn) {
-                // Buat transparan (opacity 30%) saat sedang scroll
                 waBtn.style.opacity = '0.3';
-                
-                // Clear timeout sebelumnya
                 clearTimeout(scrollTimeout);
-                
-                // Kembalikan ke normal (opacity 100%) setelah berhenti scroll selama 400ms
                 scrollTimeout = setTimeout(() => {
                     waBtn.style.opacity = '1';
                 }, 400);
             }
         }
 
-        // Terapkan deteksi scroll pada area utama aplikasi (main dan auth)
         document.querySelector('main').addEventListener('scroll', handleWaScroll);
         document.getElementById('auth-wrapper').addEventListener('scroll', handleWaScroll);
     </script>
