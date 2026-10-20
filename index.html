@@ -28,7 +28,6 @@
         .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); }
         #initial-loader { backdrop-filter: blur(15px); background: rgba(17, 24, 39, 0.85); transition: opacity 0.3s ease-out; }
         .swal2-popup { border-radius: 1.5rem !important; }
-        /* Custom Scrollbar for better UI */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
@@ -51,7 +50,7 @@
         <div class="w-full max-w-md glass-panel rounded-3xl p-6 sm:p-8 fade-in my-8 shadow-2xl">
             <!-- Logo Brand Modern -->
             <div class="flex flex-col items-center justify-center mb-6">
-                <img src="logo.png" alt="Logo" class="w-20 h-20 object-contain mb-3 drop-shadow-md rounded-2xl">
+                <img src="logo.png" alt="Logo" class="w-20 h-20 object-contain mb-3 drop-shadow-md rounded-2xl" onerror="this.style.display='none'">
             </div>
 
             <!-- Login -->
@@ -121,7 +120,7 @@
         <div class="flex flex-1 overflow-hidden relative">
             <div id="sidebar-backdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden md:hidden transition-opacity duration-300"></div>
 
-            <!-- Sidebar Profesional -->
+            <!-- Sidebar -->
             <aside id="sidebar" class="fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 w-64 bg-white dark:bg-darkcard shadow-2xl md:shadow-none flex-shrink-0 z-50 overflow-y-auto border-r border-gray-200 dark:border-gray-800 transition-transform duration-300 ease-in-out h-full">
                 
                 <!-- MENU TL / SPV -->
@@ -249,7 +248,7 @@
                                 <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Email Login</label><input type="email" id="t-email" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-500 transition"></div>
                                 <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Password Login</label><input type="password" id="t-pass" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-500 transition"></div>
                                 
-                                <!-- Opsi Wilayah Dinamis dengan API EMSIFA -->
+                                <!-- Opsi Wilayah Dinamis -->
                                 <div>
                                     <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Provinsi</label>
                                     <select id="t-provinsi" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-500 transition">
@@ -462,7 +461,7 @@
                             </form>
                         </div>
                         
-                        <!-- REKAP PENJUALAN TARGET FOKUS (BARU - MENYAMPING) -->
+                        <!-- REKAP PENJUALAN TARGET FOKUS -->
                         <div class="mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
                             <div>
                                 <h3 class="text-xl font-bold text-gray-800 dark:text-white"><i class="fas fa-list-alt text-orange-500 mr-2"></i> Rekap Penjualan Target Fokus</h3>
@@ -483,7 +482,7 @@
                             <div class="overflow-x-auto w-full custom-scroll">
                                 <table id="rekap-fokus-table" class="w-full text-left whitespace-nowrap min-w-[900px]">
                                     <thead class="bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur" id="tl-rekap-fokus-head">
-                                        <!-- Header Akan Di-generate Otomatis oleh JS Berdasarkan Produk Fokus -->
+                                        <!-- Header Akan Di-generate Otomatis oleh JS -->
                                     </thead>
                                     <tbody id="tl-rekap-fokus-body" class="divide-y divide-gray-100 dark:divide-gray-800">
                                         <tr><td class="p-6 text-center text-gray-500">Memuat rekap target fokus...</td></tr>
@@ -819,7 +818,6 @@
                             </div>
                         </div>
                         <div class="bg-white dark:bg-darkcard rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-800">
-                            <!-- Tabel Harga dibuat bisa discroll otomatis -->
                             <div class="overflow-x-auto overflow-y-auto max-h-[400px] w-full custom-scroll">
                                 <table class="w-full text-left whitespace-nowrap min-w-[500px]">
                                     <thead class="bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur sticky top-0 z-10">
@@ -851,13 +849,13 @@
         </div>
     </div>
 
-    <!-- Floating WhatsApp Button (Selalu Tampil di Layar Semua Device) -->
+    <!-- Floating WhatsApp Button -->
     <a id="wa-btn" href="https://wa.me/6285719134016" target="_blank" class="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[100] flex items-center gap-1.5 bg-[#25D366] hover:bg-[#1ebd56] text-white px-3 py-2 rounded-full shadow-[0_10px_25px_rgba(37,211,102,0.4)] transition-all duration-300 transform hover:scale-105 border-2 border-white dark:border-darkbg">
         <i class="fab fa-whatsapp text-lg"></i>
         <span class="font-bold text-[10px] tracking-wide">Bang FER™</span>
     </a>
 
-    <!-- Template Tersembunyi Untuk Generate PDF (Off-Screen) -->
+    <!-- Template Tersembunyi Untuk Generate PDF -->
     <div style="position: absolute; left: -9999px; top: 0; width: 800px;">
         <div id="po-pdf-template" class="p-10 bg-white text-black w-full font-sans">
             <div class="text-center mb-8 border-b-4 border-black pb-4">
@@ -889,7 +887,6 @@
                     </tr>
                 </thead>
                 <tbody id="pdf-table-body">
-                    <!-- Baris tabel akan di-generate otomatis oleh JavaScript berdasarkan list PO -->
                 </tbody>
             </table>
 
@@ -924,7 +921,6 @@
         const appSecondary = initializeApp(firebaseConfig, "SecondaryApp");
         const authSecondary = getAuth(appSecondary);
 
-        // Setup Toast Alert UI Modern
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
@@ -956,18 +952,16 @@
         let rawProdukListSPM = []; 
         window.globalUserData = null;
 
-        // Fungsi Helper untuk membersihkan nama produk dari varian warna & angka digit (Mendukung semua warna Ready Mix & varian)
         function bersihkanNamaProdukFokus(namaAsli) {
             if (!namaAsli) return '';
             let bersih = namaAsli
                 .replace(/\b(White|Black|Pastel|Cream|Grey|Gray|Red|Blue|Green|Yellow|Clear|Transparent|Putih|Hitam|Merah|Biru|Hijau|Kuning|Pink|Orange|Oranye|Jingga|Purple|Ungu|Brown|Coklat|Cokelat|Gold|Golden|Emas|Silver|Perak|Navy|Maroon|Mocca|Mocha|Ivory|Gading|Olive|Zaitun|Teal|Magenta|Violet|Turquoise|Tosca|Cyan|Amber|Coral|Salmon|Peach|Lavender|Lilac|Mint|Sage|Khaki|Tan|Charcoal|Slate|Steel|Champagne|Bronze|Copper|Light|Dark|Bright|Deep|Soft|Pale|Muda|Tua|Cerah|Gelap)\b/gi, '')
-                .replace(/\b\d+\b/g, '') // Menghapus angka sisa kode warna
+                .replace(/\b\d+\b/g, '')
                 .replace(/\s+/g, ' ')
                 .trim();
             return bersih || namaAsli;
         }
 
-        // Fungsi Helper untuk pencocokan produk fokus agar semua warna / varian Ready Mix masuk ke omzet produk fokus
         function cekKecocokanProdukFokus(inputNama, fokusNama) {
             let bersihInput = bersihkanNamaProdukFokus(inputNama).toLowerCase();
             let bersihFokus = bersihkanNamaProdukFokus(fokusNama).toLowerCase();
@@ -993,7 +987,6 @@
                         currentTLId = data.tl_id || user.uid;
                         document.getElementById('user-profile-name').innerText = `${data.nama} (${data.jabatan || currentRole})`;
 
-                        // Set Indikator Toko di Form Laporan SPM
                         if(document.getElementById('indikator-toko-spm')) {
                             document.getElementById('indikator-toko-spm').innerText = data.toko || 'Toko Unknown';
                         }
@@ -1061,15 +1054,13 @@
             document.getElementById('rekap-filter-tahun').value = currentTahun;
 
             let tokoInfoMap = {}; 
-            let tokoKotaMap = {}; // TAMBAHAN: Map untuk menyimpan data kota berdasarkan nama toko
-            let targetMap = {}; 
-            let capaianMap = {}; 
+            let tokoKotaMap = {}; 
             let produkKatMap = {}; 
             let produkSatuanMapTL = {}; 
             let allProdukData = [];
-            let storeMonthlyData = {};
             let allTargetLainTL = [];
             let allLaporanTL = [];
+            let allTargetReguler = [];
 
             function parseBeratIsi(satuanStr) {
                 if(!satuanStr) return 1;
@@ -1080,7 +1071,6 @@
                 return 1;
             }
 
-            // Kalkulasi Rekap Fokus menggunakan cekKecocokanProdukFokus
             function kalkulasiRekapFokus() {
                 if (!allTargetLainTL.length || !Object.keys(tokoInfoMap).length) {
                     globalRekapFokusData = [];
@@ -1089,7 +1079,6 @@
                 }
                 
                 let fokusMap = {};
-                
                 allTargetLainTL.forEach(tgt => {
                     const tInfo = tokoInfoMap[tgt.toko_id] || { nama: 'Unknown', toko: 'Unknown' };
                     if(tInfo.nama === 'VACANT') return;
@@ -1103,16 +1092,9 @@
                     
                     if(!fokusMap[key]) {
                         fokusMap[key] = {
-                            namaToko: tInfo.toko,
-                            namaSpm: tInfo.nama,
-                            bulan: b,
-                            tahun: y,
-                            produk: bersihNama,
-                            targetVol: 0,
-                            targetNilai: 0,
-                            capaianVol: 0,
-                            capaianNilai: 0,
-                            tokoId: tgt.toko_id
+                            namaToko: tInfo.toko, namaSpm: tInfo.nama, bulan: b, tahun: y,
+                            produk: bersihNama, targetVol: 0, targetNilai: 0,
+                            capaianVol: 0, capaianNilai: 0, tokoId: tgt.toko_id
                         };
                     }
                     fokusMap[key].targetVol += (parseFloat(tgt.volume) || 0);
@@ -1121,20 +1103,15 @@
                 
                 allLaporanTL.forEach(lap => {
                     if(!lap.nama_produk) return;
-                    let lapBulan = lap.bulan;
-                    let lapTahun = lap.tahun;
-                    let spmId = lap.spm_id;
+                    let lapBulan = lap.bulan, lapTahun = lap.tahun, spmId = lap.spm_id;
                     
                     for(let key in fokusMap) {
                         let f = fokusMap[key];
                         if(f.tokoId === spmId && f.bulan === lapBulan && f.tahun === lapTahun) {
-                            // Menggunakan fungsi cekKecocokanProdukFokus yang diperbarui
                             if (cekKecocokanProdukFokus(lap.nama_produk, f.produk)) {
                                 let satuanProduk = lap.satuan || lap.kemasan || produkSatuanMapTL[lap.produk_id] || produkSatuanMapTL[f.produk] || '1';
                                 let multiplier = parseBeratIsi(satuanProduk);
-                                let totalBeratIsiTerjual = (parseFloat(lap.qty) || 0) * multiplier;
-
-                                f.capaianVol += totalBeratIsiTerjual;
+                                f.capaianVol += (parseFloat(lap.qty) || 0) * multiplier;
                                 f.capaianNilai += (parseFloat(lap.total) || 0);
                             }
                         }
@@ -1146,17 +1123,177 @@
                     let pctNilai = f.targetNilai > 0 ? (f.capaianNilai / f.targetNilai * 100) : (f.capaianNilai > 0 ? 100 : 0);
                     return { ...f, pctVol: pctVol, pctNilai: pctNilai };
                 });
-                
                 if(window.renderRekapFokusTable) window.renderRekapFokusTable();
             }
 
+            function renderTLData() {
+                let targetMap = {}; 
+                let targetDetailMap = {};
+                let targetBulananArray = new Array(12).fill(0);
+                let totalTargetGlobBulanIni = 0;
+                
+                allTargetReguler.forEach(trg => {
+                    const key = `${trg.toko_id}_${trg.bulan}_${trg.tahun}`;
+                    targetDetailMap[key] = parseFloat(trg.nominal) || 0;
+                    const bIdx = bulanArray.indexOf(trg.bulan);
+                    const nominal = parseFloat(trg.nominal) || 0;
+                    if(trg.tahun === currentTahun) {
+                        if(bIdx !== -1) targetBulananArray[bIdx] += nominal;
+                        if(trg.bulan === currentBulan) {
+                            targetMap[trg.toko_id] = (targetMap[trg.toko_id] || 0) + nominal;
+                            totalTargetGlobBulanIni += nominal;
+                        }
+                    }
+                });
+
+                let capaianMap = {};
+                let capaianBulananArray = new Array(12).fill(0);
+                let totalCapaianGlobBulanIni = 0;
+                let storeMonthlyData = {};
+
+                allLaporanTL.forEach(lap => {
+                    const kat = produkKatMap[lap.produk_id] || produkKatMap[lap.nama_produk] || '';
+                    const spmId = lap.spm_id;
+                    const bln = lap.bulan || '-';
+                    const thn = lap.tahun || '-';
+                    const totalVal = parseFloat(lap.total) || 0;
+                    
+                    const storeMonthKey = `${spmId}_${bln}_${thn}`;
+                    if(!storeMonthlyData[storeMonthKey]) {
+                        storeMonthlyData[storeMonthKey] = { spmId: spmId, bulan: bln, tahun: thn, totalCCM: 0, totalRM: 0 };
+                    }
+
+                    if (kat === 'CCM') {
+                        storeMonthlyData[storeMonthKey].totalCCM += totalVal;
+                        if(thn === currentTahun) {
+                            const bIdx = bulanArray.indexOf(bln);
+                            if(bIdx !== -1) capaianBulananArray[bIdx] += totalVal;
+                            if(bln === currentBulan) {
+                                capaianMap[spmId] = (capaianMap[spmId] || 0) + totalVal;
+                                totalCapaianGlobBulanIni += totalVal;
+                            }
+                        }
+                    } else if (kat === 'RM') {
+                        storeMonthlyData[storeMonthKey].totalRM += totalVal;
+                    }
+                });
+
+                let storeGroupedRekap = {};
+                for(let key in storeMonthlyData) {
+                    const item = storeMonthlyData[key];
+                    const tInfo = tokoInfoMap[item.spmId] || { nama: 'Unknown', toko: 'Unknown' };
+                    if(tInfo.nama === 'VACANT') continue;
+                    
+                    const namaToko = tInfo.toko;
+                    const periodKey = `${namaToko}_${item.bulan}_${item.tahun}`;
+
+                    if(!storeGroupedRekap[periodKey]) {
+                        storeGroupedRekap[periodKey] = {
+                            namaToko: namaToko, spmList: [], bulan: item.bulan, tahun: item.tahun,
+                            periode: `${item.bulan} ${item.tahun}`, omzetCCM: 0, omzetRM: 0, target: 0
+                        };
+                    }
+                    if(!storeGroupedRekap[periodKey].spmList.includes(tInfo.nama)) storeGroupedRekap[periodKey].spmList.push(tInfo.nama);
+                    storeGroupedRekap[periodKey].omzetCCM += item.totalCCM;
+                    storeGroupedRekap[periodKey].omzetRM += item.totalRM;
+                }
+
+                for(let sId in tokoInfoMap) {
+                    const tInfo = tokoInfoMap[sId];
+                    if(tInfo.nama === 'VACANT') continue;
+                    const periodKey = `${tInfo.toko}_${currentBulan}_${currentTahun}`;
+                    const trgKey = `${sId}_${currentBulan}_${currentTahun}`;
+                    const tVal = targetDetailMap[trgKey] || 0;
+
+                    if(!storeGroupedRekap[periodKey]) {
+                        storeGroupedRekap[periodKey] = {
+                            namaToko: tInfo.toko, spmList: [], bulan: currentBulan, tahun: currentTahun,
+                            periode: `${currentBulan} ${currentTahun}`, omzetCCM: 0, omzetRM: 0, target: 0
+                        };
+                    }
+                    if(!storeGroupedRekap[periodKey].spmList.includes(tInfo.nama)) storeGroupedRekap[periodKey].spmList.push(tInfo.nama);
+                    storeGroupedRekap[periodKey].target += tVal;
+                }
+
+                globalRekapTokoData = [];
+                for(let k in storeGroupedRekap) {
+                    const item = storeGroupedRekap[k];
+                    const pctCCM = item.target > 0 ? (item.omzetCCM / item.target * 100) : (item.omzetCCM > 0 ? 100 : 0);
+                    const totalAll = item.omzetCCM + item.omzetRM;
+                    const pctAll = item.target > 0 ? (totalAll / item.target * 100) : (totalAll > 0 ? 100 : 0);
+                    
+                    globalRekapTokoData.push({
+                        namaToko: item.namaToko, namaSpm: item.spmList.join(" & "),
+                        periode: item.periode, bulan: item.bulan, tahun: item.tahun,
+                        omzetCCM: item.omzetCCM, omzetRM: item.omzetRM, totalAll: totalAll,
+                        target: item.target, persenCCM: pctCCM, persenAll: pctAll
+                    });
+                }
+
+                if(window.renderRekapTokoTable) window.renderRekapTokoTable();
+                kalkulasiRekapFokus();
+
+                document.getElementById('tl-total-target').innerText = formatRp(totalTargetGlobBulanIni);
+                document.getElementById('tl-total-capaian').innerText = formatRp(totalCapaianGlobBulanIni);
+                let kurang = totalTargetGlobBulanIni - totalCapaianGlobBulanIni;
+                document.getElementById('tl-kekurangan').innerText = formatRp(kurang > 0 ? kurang : 0);
+                let persenGlob = totalTargetGlobBulanIni > 0 ? (totalCapaianGlobBulanIni / totalTargetGlobBulanIni * 100).toFixed(1) : 0;
+                document.getElementById('tl-persen-text').innerText = persenGlob + '%';
+                document.getElementById('tl-bar').style.width = Math.min(persenGlob, 100) + '%';
+                updateGrafikTahunanTL(targetBulananArray, capaianBulananArray, currentTahun);
+
+                let storeRankMap = {};
+                for (let tId in tokoInfoMap) {
+                    const tInfo = tokoInfoMap[tId];
+                    if (tInfo.nama === 'VACANT') continue;
+                    const namaToko = tInfo.toko;
+                    const tTgt = targetMap[tId] || 0;
+                    const tCap = capaianMap[tId] || 0;
+                    if (!storeRankMap[namaToko]) storeRankMap[namaToko] = { namaToko: namaToko, spmNames: [], target: 0, cap: 0 };
+                    if(!storeRankMap[namaToko].spmNames.includes(tInfo.nama)) storeRankMap[namaToko].spmNames.push(tInfo.nama);
+                    storeRankMap[namaToko].target += tTgt;
+                    storeRankMap[namaToko].cap += tCap;
+                }
+
+                let rankArr = [];
+                for (let tName in storeRankMap) {
+                    const store = storeRankMap[tName];
+                    const tPct = store.target > 0 ? (store.cap / store.target * 100) : (store.cap > 0 ? 100 : 0);
+                    rankArr.push({ nama: store.spmNames.join(" & "), toko: store.namaToko, target: store.target, cap: store.cap, pct: tPct });
+                }
+                rankArr.sort((a,b) => b.pct - a.pct);
+                globalKinerjaSPM = rankArr;
+                if(window.renderKinerjaSPMTable) window.renderKinerjaSPMTable();
+
+                let tbody = '';
+                rankArr.forEach((item, i) => {
+                    let icon = `#${i+1}`;
+                    if(i===0) icon = '<i class="fas fa-medal text-yellow-500 text-lg"></i> #1';
+                    else if(i===1) icon = '<i class="fas fa-medal text-gray-400 text-lg"></i> #2';
+                    else if(i===2) icon = '<i class="fas fa-medal text-orange-400 text-lg"></i> #3';
+
+                    let color = item.pct >= 100 ? 'text-green-500 font-bold' : (item.pct >= 70 ? 'text-blue-500 font-bold' : 'text-yellow-500 font-bold');
+                    tbody += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                        <td class="p-4 text-sm font-bold">${icon}</td>
+                        <td class="p-4 text-sm font-medium">${item.nama}</td>
+                        <td class="p-4 text-sm font-semibold text-indigo-600 dark:text-indigo-400">${item.toko}</td>
+                        <td class="p-4 text-sm">${formatRp(item.target)}</td>
+                        <td class="p-4 text-sm">${formatRp(item.cap)}</td>
+                        <td class="p-4 text-sm ${color}">${item.pct.toFixed(1)}%</td>
+                    </tr>`;
+                });
+                if(rankArr.length === 0) tbody = '<tr><td colspan="6" class="p-6 text-center text-gray-500">Belum ada tim yang didaftarkan.</td></tr>';
+                document.getElementById('tl-ranking-body').innerHTML = tbody;
+            }
+
+            // LISTENER DIPISAH AGAR TIDAK BERTUMPUK (MENGHILANGKAN BUG DATA HILANG)
             const qSpm = query(collection(db, "users"), where("tl_id", "==", uid), where("role", "==", "SPM"));
             onSnapshot(qSpm, (snapSpm) => {
                 let dropdownHtml = '<option value="">Pilih Toko & Tim...</option>';
                 let tableTokoHtml = '';
                 rawTokoProdukList = [];
                 tokoInfoMap = {};
-                tokoKotaMap = {}; // Reset map
+                tokoKotaMap = {};
                 let uniqueStores = new Set();
                 
                 snapSpm.forEach(docSnap => {
@@ -1167,23 +1304,13 @@
                     
                     if (t.toko && t.toko !== '-') {
                         uniqueStores.add(t.toko);
-                        // TAMBAHAN: Simpan kota toko tersebut ke dalam map
-                        if (!tokoKotaMap[t.toko] && t.kota) {
-                            tokoKotaMap[t.toko] = t.kota;
-                        }
+                        if (!tokoKotaMap[t.toko] && t.kota) tokoKotaMap[t.toko] = t.kota;
                     }
                     
-                    if(namaPegawai !== 'VACANT') {
-                        dropdownHtml += `<option value="${sId}">${t.toko} (${namaPegawai})</option>`;
-                    }
-                    
-                    capaianMap[sId] = 0; 
-                    targetMap[sId] = 0;
-
+                    if(namaPegawai !== 'VACANT') dropdownHtml += `<option value="${sId}">${t.toko} (${namaPegawai})</option>`;
                     rawTokoProdukList.push({ id: sId, namaToko: t.toko || '-', namaSpm: namaPegawai });
 
                     let badgeColor = namaPegawai === 'VACANT' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-green-50 text-green-600 border-green-100';
-
                     tableTokoHtml += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
                         <td class="p-4 text-sm font-bold text-indigo-600">${t.toko || '-'}</td>
                         <td class="p-4 text-sm font-medium ${namaPegawai === 'VACANT' ? 'text-red-500 italic' : ''}">${namaPegawai}</td>
@@ -1201,268 +1328,63 @@
                 document.getElementById('tl-toko-table-body').innerHTML = tableTokoHtml || '<tr><td colspan="5" class="p-6 text-center text-gray-500">Belum ada toko yang didaftarkan.</td></tr>';
                 
                 let datalistHtml = '';
-                uniqueStores.forEach(namaToko => {
-                    datalistHtml += `<option value="${namaToko}">`;
-                });
+                uniqueStores.forEach(namaToko => { datalistHtml += `<option value="${namaToko}">`; });
                 const datalistEl = document.getElementById('list-toko-terdaftar');
                 if (datalistEl) datalistEl.innerHTML = datalistHtml;
 
                 renderTabelListTokoProduk(rawTokoProdukList);
+                renderTLData();
+            });
 
-                const qTargetLainTL = query(collection(db, "target_lain"), where("tl_id", "==", uid));
-                onSnapshot(qTargetLainTL, (snapTarget) => {
-                    allTargetLainTL = [];
-                    snapTarget.forEach(doc => {
-                        allTargetLainTL.push({id: doc.id, ...doc.data()});
-                    });
-                    kalkulasiRekapFokus();
+            const qTargetLainTL = query(collection(db, "target_lain"), where("tl_id", "==", uid));
+            onSnapshot(qTargetLainTL, (snapTarget) => {
+                allTargetLainTL = [];
+                snapTarget.forEach(doc => { allTargetLainTL.push({id: doc.id, ...doc.data()}); });
+                renderTLData();
+            });
+
+            const qAllProd = query(collection(db, "produk"), where("tl_id", "==", uid));
+            onSnapshot(qAllProd, (snapProd) => {
+                allProdukData = [];
+                snapProd.forEach(docSnap => {
+                    const p = docSnap.data();
+                    allProdukData.push({ id: docSnap.id, ...p });
+                    produkKatMap[docSnap.id] = p.kategori;
+                    produkKatMap[p.nama] = p.kategori;
+                    if(p.satuan) {
+                        produkSatuanMapTL[docSnap.id] = p.satuan;
+                        produkSatuanMapTL[p.nama] = p.satuan;
+                    }
                 });
+                renderTLData();
+            });
 
-                const qAllProd = query(collection(db, "produk"), where("tl_id", "==", uid));
-                onSnapshot(qAllProd, (snapProd) => {
-                    allProdukData = [];
-                    snapProd.forEach(docSnap => {
-                        const p = docSnap.data();
-                        allProdukData.push({ id: docSnap.id, ...p });
-                        produkKatMap[docSnap.id] = p.kategori;
-                        produkKatMap[p.nama] = p.kategori;
-                        if(p.satuan) {
-                            produkSatuanMapTL[docSnap.id] = p.satuan;
-                            produkSatuanMapTL[p.nama] = p.satuan;
-                        }
-                    });
+            const qTargetAll = query(collection(db, "target_reguler"), where("tl_id", "==", uid));
+            onSnapshot(qTargetAll, (snapTargetAll) => {
+                allTargetReguler = [];
+                snapTargetAll.forEach(doc => allTargetReguler.push(doc.data()));
+                renderTLData();
+            });
 
-                    const qTargetAll = query(collection(db, "target_reguler"), where("tl_id", "==", uid));
-                    onSnapshot(qTargetAll, (snapTargetAll) => {
-                        let targetDetailMap = {};
-                        let targetBulananArray = new Array(12).fill(0);
-                        let totalTargetGlobBulanIni = 0;
-                        
-                        for (let k in targetMap) targetMap[k] = 0;
-
-                        snapTargetAll.forEach(doc => {
-                            const trg = doc.data();
-                            const key = `${trg.toko_id}_${trg.bulan}_${trg.tahun}`;
-                            targetDetailMap[key] = parseFloat(trg.nominal) || 0;
-
-                            const bIdx = bulanArray.indexOf(trg.bulan);
-                            const nominal = parseFloat(trg.nominal) || 0;
-                            if(trg.tahun === currentTahun) {
-                                if(bIdx !== -1) targetBulananArray[bIdx] += nominal;
-                                if(trg.bulan === currentBulan) {
-                                    targetMap[trg.toko_id] = (targetMap[trg.toko_id] || 0) + nominal;
-                                    totalTargetGlobBulanIni += nominal;
-                                }
-                            }
-                        });
-
-                        const qLapAll = query(collection(db, "laporan"), where("tl_id", "==", uid));
-                        onSnapshot(qLapAll, (snapLapAll) => {
-                            let capaianBulananArray = new Array(12).fill(0);
-                            let totalCapaianGlobBulanIni = 0;
-                            storeMonthlyData = {};
-                            allLaporanTL = []; 
-                            
-                            for (let k in capaianMap) capaianMap[k] = 0;
-
-                            snapLapAll.forEach(doc => {
-                                const lap = doc.data();
-                                allLaporanTL.push(lap);
-                                
-                                const kat = produkKatMap[lap.produk_id] || produkKatMap[lap.nama_produk] || '';
-                                const spmId = lap.spm_id;
-                                const bln = lap.bulan || '-';
-                                const thn = lap.tahun || '-';
-                                const totalVal = parseFloat(lap.total) || 0;
-                                
-                                const storeMonthKey = `${spmId}_${bln}_${thn}`;
-                                if(!storeMonthlyData[storeMonthKey]) {
-                                    storeMonthlyData[storeMonthKey] = { spmId: spmId, bulan: bln, tahun: thn, totalCCM: 0, totalRM: 0 };
-                                }
-
-                                if (kat === 'CCM') {
-                                    storeMonthlyData[storeMonthKey].totalCCM += totalVal;
-
-                                    if(thn === currentTahun) {
-                                        const bIdx = bulanArray.indexOf(bln);
-                                        if(bIdx !== -1) capaianBulananArray[bIdx] += totalVal;
-                                        if(bln === currentBulan) {
-                                            capaianMap[spmId] = (capaianMap[spmId] || 0) + totalVal;
-                                            totalCapaianGlobBulanIni += totalVal;
-                                        }
-                                    }
-                                } else if (kat === 'RM') {
-                                    storeMonthlyData[storeMonthKey].totalRM += totalVal;
-                                }
-                            });
-
-                            let storeGroupedRekap = {};
-
-                            for(let key in storeMonthlyData) {
-                                const item = storeMonthlyData[key];
-                                const tInfo = tokoInfoMap[item.spmId] || { nama: 'Unknown', toko: 'Unknown' };
-                                if(tInfo.nama === 'VACANT') continue;
-                                
-                                const namaToko = tInfo.toko;
-                                const periodKey = `${namaToko}_${item.bulan}_${item.tahun}`;
-
-                                if(!storeGroupedRekap[periodKey]) {
-                                    storeGroupedRekap[periodKey] = {
-                                        namaToko: namaToko,
-                                        spmList: [],
-                                        bulan: item.bulan,
-                                        tahun: item.tahun,
-                                        periode: `${item.bulan} ${item.tahun}`,
-                                        omzetCCM: 0,
-                                        omzetRM: 0,
-                                        target: 0
-                                    };
-                                }
-                                if(!storeGroupedRekap[periodKey].spmList.includes(tInfo.nama)) {
-                                    storeGroupedRekap[periodKey].spmList.push(tInfo.nama);
-                                }
-                                storeGroupedRekap[periodKey].omzetCCM += item.totalCCM;
-                                storeGroupedRekap[periodKey].omzetRM += item.totalRM;
-                            }
-
-                            for(let sId in tokoInfoMap) {
-                                const tInfo = tokoInfoMap[sId];
-                                if(tInfo.nama === 'VACANT') continue;
-
-                                const periodKey = `${tInfo.toko}_${currentBulan}_${currentTahun}`;
-                                const trgKey = `${sId}_${currentBulan}_${currentTahun}`;
-                                const tVal = targetDetailMap[trgKey] || 0;
-
-                                if(!storeGroupedRekap[periodKey]) {
-                                    storeGroupedRekap[periodKey] = {
-                                        namaToko: tInfo.toko,
-                                        spmList: [],
-                                        bulan: currentBulan,
-                                        tahun: currentTahun,
-                                        periode: `${currentBulan} ${currentTahun}`,
-                                        omzetCCM: 0,
-                                        omzetRM: 0,
-                                        target: 0
-                                    };
-                                }
-                                if(!storeGroupedRekap[periodKey].spmList.includes(tInfo.nama)) {
-                                    storeGroupedRekap[periodKey].spmList.push(tInfo.nama);
-                                }
-                                storeGroupedRekap[periodKey].target += tVal;
-                            }
-
-                            globalRekapTokoData = [];
-                            for(let k in storeGroupedRekap) {
-                                const item = storeGroupedRekap[k];
-                                const pctCCM = item.target > 0 ? (item.omzetCCM / item.target * 100) : (item.omzetCCM > 0 ? 100 : 0);
-                                const totalAll = item.omzetCCM + item.omzetRM;
-                                const pctAll = item.target > 0 ? (totalAll / item.target * 100) : (totalAll > 0 ? 100 : 0);
-                                
-                                globalRekapTokoData.push({
-                                    namaToko: item.namaToko,
-                                    namaSpm: item.spmList.join(" & "),
-                                    periode: item.periode,
-                                    bulan: item.bulan,
-                                    tahun: item.tahun,
-                                    omzetCCM: item.omzetCCM,
-                                    omzetRM: item.omzetRM,
-                                    totalAll: totalAll,
-                                    target: item.target,
-                                    persenCCM: pctCCM,
-                                    persenAll: pctAll
-                                });
-                            }
-
-                            window.renderRekapTokoTable();
-                            kalkulasiRekapFokus();
-
-                            document.getElementById('tl-total-target').innerText = formatRp(totalTargetGlobBulanIni);
-                            document.getElementById('tl-total-capaian').innerText = formatRp(totalCapaianGlobBulanIni);
-                            let kurang = totalTargetGlobBulanIni - totalCapaianGlobBulanIni;
-                            document.getElementById('tl-kekurangan').innerText = formatRp(kurang > 0 ? kurang : 0);
-                            let persenGlob = totalTargetGlobBulanIni > 0 ? (totalCapaianGlobBulanIni / totalTargetGlobBulanIni * 100).toFixed(1) : 0;
-                            document.getElementById('tl-persen-text').innerText = persenGlob + '%';
-                            document.getElementById('tl-bar').style.width = Math.min(persenGlob, 100) + '%';
-
-                            updateGrafikTahunanTL(targetBulananArray, capaianBulananArray, currentTahun);
-
-                            let storeRankMap = {};
-                            for (let tId in tokoInfoMap) {
-                                const tInfo = tokoInfoMap[tId];
-                                if (tInfo.nama === 'VACANT') continue;
-
-                                const namaToko = tInfo.toko;
-                                const tTgt = targetMap[tId] || 0;
-                                const tCap = capaianMap[tId] || 0;
-
-                                if (!storeRankMap[namaToko]) {
-                                    storeRankMap[namaToko] = { namaToko: namaToko, spmNames: [], target: 0, cap: 0 };
-                                }
-                                if(!storeRankMap[namaToko].spmNames.includes(tInfo.nama)) {
-                                    storeRankMap[namaToko].spmNames.push(tInfo.nama);
-                                }
-                                storeRankMap[namaToko].target += tTgt;
-                                storeRankMap[namaToko].cap += tCap;
-                            }
-
-                            let rankArr = [];
-                            for (let tName in storeRankMap) {
-                                const store = storeRankMap[tName];
-                                const tPct = store.target > 0 ? (store.cap / store.target * 100) : (store.cap > 0 ? 100 : 0);
-                                rankArr.push({
-                                    nama: store.spmNames.join(" & "),
-                                    toko: store.namaToko,
-                                    target: store.target,
-                                    cap: store.cap,
-                                    pct: tPct
-                                });
-                            }
-                            rankArr.sort((a,b) => b.pct - a.pct);
-
-                            // --- TAMBAHAN KODE KINERJA SPM/G ---
-                            globalKinerjaSPM = rankArr;
-                            if(window.renderKinerjaSPMTable) window.renderKinerjaSPMTable();
-                            // -----------------------------------
-
-                            let tbody = '';
-                            rankArr.forEach((item, i) => {
-                                let icon = `#${i+1}`;
-                                if(i===0) icon = '<i class="fas fa-medal text-yellow-500 text-lg"></i> #1';
-                                else if(i===1) icon = '<i class="fas fa-medal text-gray-400 text-lg"></i> #2';
-                                else if(i===2) icon = '<i class="fas fa-medal text-orange-400 text-lg"></i> #3';
-
-                                let color = item.pct >= 100 ? 'text-green-500 font-bold' : (item.pct >= 70 ? 'text-blue-500 font-bold' : 'text-yellow-500 font-bold');
-                                tbody += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
-                                    <td class="p-4 text-sm font-bold">${icon}</td>
-                                    <td class="p-4 text-sm font-medium">${item.nama}</td>
-                                    <td class="p-4 text-sm font-semibold text-indigo-600 dark:text-indigo-400">${item.toko}</td>
-                                    <td class="p-4 text-sm">${formatRp(item.target)}</td>
-                                    <td class="p-4 text-sm">${formatRp(item.cap)}</td>
-                                    <td class="p-4 text-sm ${color}">${item.pct.toFixed(1)}%</td>
-                                </tr>`;
-                            });
-                            if(rankArr.length === 0) tbody = '<tr><td colspan="6" class="p-6 text-center text-gray-500">Belum ada tim yang didaftarkan.</td></tr>';
-                            document.getElementById('tl-ranking-body').innerHTML = tbody;
-                        });
-                    });
-                });
+            const qLapAll = query(collection(db, "laporan"), where("tl_id", "==", uid));
+            onSnapshot(qLapAll, (snapLapAll) => {
+                allLaporanTL = [];
+                snapLapAll.forEach(doc => allLaporanTL.push(doc.data()));
+                renderTLData();
             });
 
             window.renderRekapTokoTable = function() {
                 const fMonth = document.getElementById('rekap-filter-bulan').value;
                 const fYear = document.getElementById('rekap-filter-tahun').value.toLowerCase();
-
                 const filtered = globalRekapTokoData.filter(item => {
                     let mMatch = !fMonth || item.bulan === fMonth;
                     let yMatch = !fYear || item.tahun.toLowerCase().includes(fYear);
                     return mMatch && yMatch;
                 });
-
                 let html = '';
                 filtered.forEach(item => {
                     let badgeCCM = item.persenCCM >= 100 ? 'text-green-600 font-bold' : (item.persenCCM >= 70 ? 'text-blue-600 font-bold' : 'text-orange-600 font-bold');
                     let badgeAll = item.persenAll >= 100 ? 'text-green-600 font-bold' : (item.persenAll >= 70 ? 'text-blue-600 font-bold' : 'text-orange-600 font-bold');
-                    
                     html += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
                         <td class="p-4 text-sm font-bold text-indigo-600">${item.namaToko}</td>
                         <td class="p-4 text-sm font-medium">${item.namaSpm}</td>
@@ -1475,14 +1397,10 @@
                         <td class="p-4 text-sm ${badgeAll}">${item.persenAll.toFixed(1)}%</td>
                     </tr>`;
                 });
-
-                if(filtered.length === 0) {
-                    html = '<tr><td colspan="9" class="p-6 text-center text-gray-500">Tidak ada data rekap omzet toko untuk filter ini.</td></tr>';
-                }
+                if(filtered.length === 0) html = '<tr><td colspan="9" class="p-6 text-center text-gray-500">Tidak ada data rekap omzet toko untuk filter ini.</td></tr>';
                 document.getElementById('tl-rekap-toko-body').innerHTML = html;
             };
             
-            // FUNGSI BARU UNTUK RENDER TABEL FOKUS SECARA MENYAMPING (TL)
             window.renderRekapFokusTable = function() {
                 const fMonth = document.getElementById('rekap-fokus-bulan')?.value || '';
                 const fYear = (document.getElementById('rekap-fokus-tahun')?.value || '').toLowerCase();
@@ -1504,27 +1422,19 @@
                     return;
                 }
 
-                // Dapatkan daftar produk fokus yang unik dari data yang sudah difilter
                 const uniqueProducts = [...new Set(filtered.map(item => item.produk))];
-
-                // Kelompokkan data berdasarkan Toko dan Periode
                 let grouped = {};
                 filtered.forEach(item => {
                     let key = `${item.tokoId}_${item.bulan}_${item.tahun}`;
                     if (!grouped[key]) {
                         grouped[key] = {
-                            namaToko: item.namaToko,
-                            namaSpm: item.namaSpm,
-                            periode: `${item.bulan} ${item.tahun}`,
-                            bulan: item.bulan,
-                            tahun: item.tahun,
-                            products: {}
+                            namaToko: item.namaToko, namaSpm: item.namaSpm, periode: `${item.bulan} ${item.tahun}`,
+                            bulan: item.bulan, tahun: item.tahun, products: {}
                         };
                     }
                     grouped[key].products[item.produk] = item;
                 });
 
-                // Bangun Struktur Header (Thead) Menyamping
                 let tr1 = `<tr>
                     <th rowspan="2" class="p-4 text-xs font-bold text-gray-500 uppercase align-middle bg-gray-50 dark:bg-gray-800/80 sticky left-0 z-20 shadow-[1px_0_0_#f3f4f6] dark:shadow-[1px_0_0_#1f2937]">Nama Toko & SPM</th>
                     <th rowspan="2" class="p-4 text-xs font-bold text-gray-500 uppercase align-middle text-center bg-gray-50 dark:bg-gray-800/80">Periode</th>
@@ -1532,24 +1442,18 @@
                 let tr2 = `<tr>`;
 
                 uniqueProducts.forEach(prod => {
-                    // Judul Produk
                     tr1 += `<th colspan="3" class="p-3 text-xs font-bold text-orange-600 dark:text-orange-400 uppercase text-center border-b border-gray-200 dark:border-gray-700 border-r border-gray-200 dark:border-gray-700 bg-orange-50 dark:bg-orange-900/10">${prod}</th>`;
-                    // Sub Header
                     tr2 += `
                         <th class="p-2 text-[10px] font-bold text-gray-500 uppercase text-center bg-gray-50 dark:bg-gray-800/80 border-b border-gray-200 dark:border-gray-700">Target</th>
                         <th class="p-2 text-[10px] font-bold text-gray-500 uppercase text-center bg-gray-50 dark:bg-gray-800/80 border-b border-gray-200 dark:border-gray-700">ACV</th>
                         <th class="p-2 text-[10px] font-bold text-gray-500 uppercase text-center bg-gray-50 dark:bg-gray-800/80 border-r border-b border-gray-200 dark:border-gray-700">%</th>
                     `;
                 });
-                tr1 += `</tr>`;
-                tr2 += `</tr>`;
-                
+                tr1 += `</tr>`; tr2 += `</tr>`;
                 if (thead) thead.innerHTML = tr1 + tr2;
 
-                // Bangun Struktur Body (Tbody)
                 let html = '';
                 Object.values(grouped).forEach(g => {
-                    // Cari total Achievment CCM reguler untuk toko dan bulan ini
                     let achCCM = 0;
                     if(globalRekapTokoData) {
                         let match = globalRekapTokoData.find(r => r.namaToko === g.namaToko && r.bulan === g.bulan && r.tahun === g.tahun);
@@ -1564,7 +1468,6 @@
                         <td class="p-3 text-sm font-semibold text-center border-r border-gray-100 dark:border-gray-800 whitespace-nowrap">${g.periode}</td>
                         <td class="p-3 text-sm font-black text-blue-600 text-right border-r border-gray-200 dark:border-gray-700 bg-blue-50/30 dark:bg-blue-900/10 whitespace-nowrap">${formatRp(achCCM)}</td>`;
                     
-                    // Looping isi nilai target untuk setiap kolom produk
                     uniqueProducts.forEach(prod => {
                         let pData = g.products[prod];
                         if (pData) {
@@ -1584,17 +1487,12 @@
                     });
                     html += `</tr>`;
                 });
-                
                 if (tbody) tbody.innerHTML = html;
             };
 
             window.renderKinerjaSPMTable = function() {
                 const keyword = (document.getElementById('search-kinerja-spm')?.value || '').toLowerCase();
-                const filtered = globalKinerjaSPM.filter(item => 
-                    item.toko.toLowerCase().includes(keyword) || 
-                    item.nama.toLowerCase().includes(keyword)
-                );
-                
+                const filtered = globalKinerjaSPM.filter(item => item.toko.toLowerCase().includes(keyword) || item.nama.toLowerCase().includes(keyword));
                 let tbody = '';
                 filtered.forEach((item, i) => {
                     let icon = `<span class="px-2 py-1 bg-gray-100 text-gray-500 rounded-md font-bold text-xs">#${i+1}</span>`;
@@ -1603,7 +1501,6 @@
                     else if(i===2) icon = '<i class="fas fa-medal text-orange-400 text-xl drop-shadow-sm"></i>';
 
                     let color = item.pct >= 100 ? 'text-green-600 font-black' : (item.pct >= 70 ? 'text-blue-600 font-bold' : 'text-red-500 font-bold');
-                    
                     tbody += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
                         <td class="p-4 text-center w-16">${icon}</td>
                         <td class="p-4 text-sm font-semibold text-indigo-600 dark:text-indigo-400">${item.toko}</td>
@@ -1613,11 +1510,7 @@
                         <td class="p-4 text-sm ${color}">${item.pct.toFixed(2)}%</td>
                     </tr>`;
                 });
-                
-                if(filtered.length === 0) {
-                    tbody = '<tr><td colspan="6" class="p-6 text-center text-gray-500">Tidak ada data SPM/G yang sesuai pencarian.</td></tr>';
-                }
-                
+                if(filtered.length === 0) tbody = '<tr><td colspan="6" class="p-6 text-center text-gray-500">Tidak ada data SPM/G yang sesuai pencarian.</td></tr>';
                 const tbodyEl = document.getElementById('tl-kinerja-spm-body');
                 if(tbodyEl) tbodyEl.innerHTML = tbody;
             };
@@ -1626,10 +1519,7 @@
                 const res = await Swal.fire({
                     title: 'Jadikan Toko VACANT?',
                     text: `Nama SPM/G pada toko ${namaToko} akan dihapus dan status berubah menjadi VACANT (kosong).`,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    confirmButtonText: 'Ya, Jadikan Vacant'
+                    icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Ya, Jadikan Vacant'
                 });
                 if(res.isConfirmed) {
                     try {
@@ -1640,7 +1530,6 @@
             };
 
             window.editTokoSPM = async function(id, toko, nama, jabatan, provinsi, kota, kecamatan, kelurahan) {
-                // Ambil daftar toko unik yang sudah terdaftar dari datalist
                 let opsiToko = '';
                 const datalist = document.getElementById('list-toko-terdaftar');
                 let tokoDitemukan = false;
@@ -1649,14 +1538,10 @@
                     options.forEach(opt => {
                         const isSelected = (opt.value === toko) ? 'selected' : '';
                         if (opt.value === toko) tokoDitemukan = true;
-                        
-                        // Ambil kota dari map yang sudah dibuat
                         const optKota = tokoKotaMap[opt.value] || '';
-                        // Tambahkan atribut data-kota
                         opsiToko += `<option value="${opt.value}" data-kota="${optKota}" ${isSelected}>${opt.value}</option>`;
                     });
                 }
-                // Jika toko saat ini tidak ada di list, pastikan tetap ditambahkan ke pilihan
                 if(!tokoDitemukan) {
                     const optKota = tokoKotaMap[toko] || kota;
                     opsiToko = `<option value="${toko}" data-kota="${optKota}" selected>${toko}</option>` + opsiToko;
@@ -1668,7 +1553,6 @@
                         <div class="text-left space-y-3">
                             <div>
                                 <label class="text-xs font-bold">Nama Toko</label>
-                                <!-- TAMBAHAN onchange: Update swal-kota sesuai data-kota dari option yang dipilih -->
                                 <select id="swal-toko" class="swal2-input !w-full !m-0 !text-sm !p-2 border bg-white" onchange="document.getElementById('swal-kota').value = this.options[this.selectedIndex].getAttribute('data-kota') || ''">
                                     ${opsiToko}
                                 </select>
@@ -1678,9 +1562,7 @@
                             <div><label class="text-xs font-bold">Kota / Kabupaten</label><input id="swal-kota" class="swal2-input !w-full !m-0 !text-sm !p-2 border" value="${kota}"></div>
                         </div>
                     `,
-                    focusConfirm: false,
-                    showCancelButton: true,
-                    confirmButtonText: 'Simpan Perubahan',
+                    focusConfirm: false, showCancelButton: true, confirmButtonText: 'Simpan Perubahan',
                     preConfirm: () => {
                         return {
                             toko: document.getElementById('swal-toko').value,
@@ -1693,12 +1575,7 @@
 
                 if (formValues) {
                     try {
-                        await updateDoc(doc(db, "users", id), {
-                            toko: formValues.toko,
-                            nama: formValues.nama,
-                            jabatan: formValues.jabatan,
-                            kota: formValues.kota
-                        });
+                        await updateDoc(doc(db, "users", id), { toko: formValues.toko, nama: formValues.nama, jabatan: formValues.jabatan, kota: formValues.kota });
                         Toast.fire({ icon: 'success', title: 'Data toko & personil berhasil disesuaikan!' });
                     } catch(e) { Swal.fire('Error', e.message, 'error'); }
                 }
@@ -1706,10 +1583,7 @@
 
             window.filterListToko = function() {
                 const keyword = document.getElementById('search-list-toko').value.toLowerCase();
-                const filtered = rawTokoProdukList.filter(t => 
-                    t.namaToko.toLowerCase().includes(keyword) || 
-                    t.namaSpm.toLowerCase().includes(keyword)
-                );
+                const filtered = rawTokoProdukList.filter(t => t.namaToko.toLowerCase().includes(keyword) || t.namaSpm.toLowerCase().includes(keyword));
                 renderTabelListTokoProduk(filtered);
             };
 
@@ -1717,12 +1591,8 @@
                 let grouped = {};
                 list.forEach(t => {
                     if(t.namaSpm === 'VACANT') return;
-                    if(!grouped[t.namaToko]) {
-                        grouped[t.namaToko] = { namaToko: t.namaToko, spms: [] };
-                    }
-                    if(!grouped[t.namaToko].spms.includes(t.namaSpm)) {
-                        grouped[t.namaToko].spms.push(t.namaSpm);
-                    }
+                    if(!grouped[t.namaToko]) grouped[t.namaToko] = { namaToko: t.namaToko, spms: [] };
+                    if(!grouped[t.namaToko].spms.includes(t.namaSpm)) grouped[t.namaToko].spms.push(t.namaSpm);
                 });
 
                 let html = '';
@@ -1739,9 +1609,7 @@
                         </td>
                     </tr>`;
                 }
-                if(Object.keys(grouped).length === 0) {
-                    html = '<tr><td colspan="3" class="p-6 text-center text-gray-500">Tidak ada toko yang sesuai.</td></tr>';
-                }
+                if(Object.keys(grouped).length === 0) html = '<tr><td colspan="3" class="p-6 text-center text-gray-500">Tidak ada toko yang sesuai.</td></tr>';
                 document.getElementById('tl-list-toko-produk-body').innerHTML = html;
             }
 
@@ -1763,27 +1631,18 @@
             function tampilkanStokGabungan(namaTokoAktif, keyword) {
                 let filteredProd = allProdukData.filter(p => {
                     let tInfo = tokoInfoMap[p.spm_id];
-                    return tInfo && tInfo.toko === namaTokoAktif && (
-                        p.nama.toLowerCase().includes(keyword) ||
-                        p.kategori.toLowerCase().includes(keyword)
-                    );
+                    return tInfo && tInfo.toko === namaTokoAktif && (p.nama.toLowerCase().includes(keyword) || p.kategori.toLowerCase().includes(keyword));
                 });
 
                 let prodMap = {};
                 filteredProd.forEach(p => {
                     let key = p.kategori + "_" + p.nama + "_" + p.satuan;
-                    if(!prodMap[key]) {
-                        prodMap[key] = { ...p, qty: 0 };
-                    }
+                    if(!prodMap[key]) prodMap[key] = { ...p, qty: 0 };
                     prodMap[key].qty += parseFloat(p.qty) || 0;
                 });
 
-                renderTabelDetailStok(Object.values(prodMap));
-            }
-
-            function renderTabelDetailStok(prodList) {
                 let detailTableHtml = '';
-                prodList.forEach(p => {
+                Object.values(prodMap).forEach(p => {
                     detailTableHtml += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
                         <td class="p-4 text-sm"><span class="px-2.5 py-1 bg-gray-100 dark:bg-gray-800 rounded text-xs font-bold border border-gray-200 dark:border-gray-700">${p.kategori}</span></td>
                         <td class="p-4 text-sm font-medium">${p.nama}</td>
@@ -1791,14 +1650,11 @@
                         <td class="p-4 text-sm text-gray-600 dark:text-gray-400 font-medium">${p.satuan || '-'}</td>
                     </tr>`;
                 });
-
-                if(prodList.length === 0) {
-                    detailTableHtml = '<tr><td colspan="4" class="p-6 text-center text-gray-500">Tidak ada produk yang sesuai dengan pencarian.</td></tr>';
-                }
-
+                if(Object.values(prodMap).length === 0) detailTableHtml = '<tr><td colspan="4" class="p-6 text-center text-gray-500">Tidak ada produk yang sesuai dengan pencarian.</td></tr>';
                 document.getElementById('tl-detail-stok-body').innerHTML = detailTableHtml;
             }
 
+            // Perbaikan untuk mencegah OnSnapshot bersarang pada event dropdown
             document.getElementById('lain-toko-select').addEventListener('change', function() {
                 const selectedTokoId = this.value;
                 const produkSelect = document.getElementById('lain-produk-select');
@@ -1807,19 +1663,19 @@
                 if(!selectedTokoId) return;
 
                 const namaTokoTerpilih = tokoInfoMap[selectedTokoId]?.toko || '';
-                const qProdToko = query(collection(db, "produk"), where("toko", "==", namaTokoTerpilih));
+                let pOpts = '<option value="" disabled selected>Pilih Produk Fokus Toko...</option>';
+                let hasProd = false;
 
-                onSnapshot(qProdToko, (snapProd) => {
-                    let pOpts = '<option value="" disabled selected>Pilih Produk Fokus Toko...</option>';
-                    snapProd.forEach(doc => {
-                        const p = doc.data();
-                        // Hanya menampilkan nama dasar produk (dibersihkan dari varian warna/jenis)
+                allProdukData.forEach(p => {
+                    if (p.toko === namaTokoTerpilih) {
+                        hasProd = true;
                         const namaBersih = bersihkanNamaProdukFokus(p.nama);
                         pOpts += `<option value="${namaBersih}" data-kat="${p.kategori}">${p.kategori} - ${namaBersih} (${p.satuan})</option>`;
-                    });
-                    if(snapProd.empty) pOpts = '<option value="" disabled selected>Toko ini belum mendaftarkan produk.</option>';
-                    produkSelect.innerHTML = pOpts;
+                    }
                 });
+
+                if(!hasProd) pOpts = '<option value="" disabled selected>Toko ini belum mendaftarkan produk.</option>';
+                produkSelect.innerHTML = pOpts;
             });
         }
 
@@ -1915,10 +1771,148 @@
 
             let produkKatMapSPM = {};
             let produkSatuanMapSPM = {}; 
-          
             const namaTokoAktif = window.globalUserData?.toko || '';
-            const qProd = query(collection(db, "produk"), where("toko", "==", namaTokoAktif));
 
+            // Pisahkan Variabel Data
+            let spmTargetRegulerData = [];
+            let spmLaporanData = [];
+            let spmTargetLainData = [];
+
+            function renderSPMData() {
+                // 1. Hitung Target Bulanan
+                let tBulananBulanIni = 0;
+                let targetBulananArray = new Array(12).fill(0);
+                spmTargetRegulerData.forEach(trg => {
+                    const bIdx = bulanArray.indexOf(trg.bulan);
+                    const nominal = parseFloat(trg.nominal) || 0;
+                    if(bIdx !== -1) targetBulananArray[bIdx] += nominal;
+                    if(trg.bulan === currentBulan) tBulananBulanIni += nominal;
+                });
+                const tHarian = tBulananBulanIni / workDays;
+                document.getElementById('spm-target-bulanan').innerText = formatRp(tBulananBulanIni);
+                document.getElementById('spm-target-harian').innerText = formatRp(tHarian);
+
+                // 2. Hitung Capaian
+                let capaianBulananArray = new Array(12).fill(0);
+                let totalCapBulanIni = 0;
+                let capHariIni = 0;
+                rawHistoriPenjualanList = [];
+
+                spmLaporanData.forEach(lap => {
+                    const kat = produkKatMapSPM[lap.produk_id] || produkKatMapSPM[lap.nama_produk] || 'CCM';
+                    const satuanProd = produkSatuanMapSPM[lap.produk_id] || produkSatuanMapSPM[lap.nama_produk] || lap.satuan || lap.kemasan || '1';
+                    
+                    rawHistoriPenjualanList.push({
+                        id: lap.id, toko: lap.toko || '-', tanggal: lap.tanggal_lengkap || '',
+                        bulan: lap.bulan || '', tahun: lap.tahun || '', kategori: kat,
+                        namaProduk: lap.nama_produk || '-', satuan: satuanProd,
+                        qty: lap.qty || 0, total: lap.total || 0
+                    });
+
+                    if(kat === 'CCM') {
+                        const bIdx = bulanArray.indexOf(lap.bulan);
+                        const tot = parseFloat(lap.total) || 0;
+                        if(bIdx !== -1) capaianBulananArray[bIdx] += tot;
+                        if(lap.bulan === currentBulan) {
+                            totalCapBulanIni += tot;
+                            if(lap.tanggal_lengkap === todayStr) capHariIni += tot; 
+                        }
+                    }
+                });
+
+                if(window.renderTabelHistori) renderTabelHistori(rawHistoriPenjualanList);
+
+                let pct = tBulananBulanIni > 0 ? (totalCapBulanIni / tBulananBulanIni * 100).toFixed(1) : 0;
+                document.getElementById('spm-total-capaian').innerText = `${formatRp(totalCapBulanIni)} (${pct}%)`;
+                document.getElementById('spm-capaian-hari-ini').innerText = formatRp(capHariIni);
+                updateGrafikTahunanSPM(targetBulananArray, capaianBulananArray, currentTahun);
+
+                // 3. Kalkulasi Produk Fokus
+                let fokusCardHtml = '';
+                let tr1 = `<tr><th rowspan="2" class="p-4 text-xs font-bold text-gray-500 uppercase align-middle bg-gray-50 dark:bg-gray-800/80 border-r border-gray-200 dark:border-gray-700">Periode</th>`;
+                let tr2 = `<tr>`;
+                let bodyRow = `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition"><td class="p-4 text-sm font-semibold border-r border-gray-100 dark:border-gray-800">${currentBulan} ${currentTahun}</td>`;
+
+                if(spmTargetLainData.length === 0) {
+                    document.getElementById('spm-target-fokus-container').innerHTML = '<div class="bg-white dark:bg-darkcard p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 text-gray-500 text-sm col-span-full">Belum ada Target Produk Fokus dari Team Leader.</div>';
+                    const spmThead = document.getElementById('spm-rekap-fokus-head');
+                    const spmTbody = document.getElementById('spm-rekap-fokus-body');
+                    if(spmThead) spmThead.innerHTML = `<tr><th class="p-4 text-xs font-bold text-gray-500 uppercase">Data Target Fokus</th></tr>`;
+                    if(spmTbody) spmTbody.innerHTML = '<tr><td class="p-6 text-center text-gray-500">Tidak ada data rekap target fokus.</td></tr>';
+                } else {
+                    spmTargetLainData.forEach(tFokus => {
+                        const targetVol = parseFloat(tFokus.volume) || 0;
+                        const targetNilai = parseFloat(tFokus.nilai) || 0;
+                        const namaProdFokus = bersihkanNamaProdukFokus(tFokus.produk);
+
+                        let capVol = 0;
+                        let capNilai = 0;
+                        
+                        spmLaporanData.forEach(l => {
+                            if(!l.nama_produk) return;
+                            if (cekKecocokanProdukFokus(l.nama_produk, namaProdFokus)) {
+                                let sat = produkSatuanMapSPM[l.produk_id] || produkSatuanMapSPM[l.nama_produk] || l.satuan || l.kemasan || '1';
+                                let matchNum = sat.toString().match(/([\d,\.]+)/);
+                                let multiplier = matchNum ? (parseFloat(matchNum[1].replace(',', '.')) || 1) : 1;
+                                capVol += (parseFloat(l.qty) || 0) * multiplier;
+                                capNilai += parseFloat(l.total) || 0;
+                            }
+                        });
+
+                        let pctVol = targetVol > 0 ? (capVol / targetVol * 100) : (capVol > 0 ? 100 : 0);
+                        let pctNilai = targetNilai > 0 ? (capNilai / targetNilai * 100) : (capNilai > 0 ? 100 : 0);
+
+                        fokusCardHtml += `
+                        <div class="bg-white dark:bg-darkcard p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <span class="px-2.5 py-1 bg-orange-50 text-orange-600 rounded text-xs font-bold border border-orange-100">Fokus Produk</span>
+                                    <h4 class="font-bold text-base mt-1 text-gray-800 dark:text-gray-100">${namaProdFokus}</h4>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Target Berat/Isi:</span>
+                                    <span class="font-bold">${parseFloat(capVol.toFixed(2))} / ${targetVol}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Target Nilai (Value):</span>
+                                    <span class="font-bold text-indigo-600">${formatRp(capNilai)} / ${formatRp(targetNilai)}</span>
+                                </div>
+                                <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mt-3 shadow-inner">
+                                    <div class="bg-orange-500 h-2 rounded-full" style="width: ${Math.min(pctNilai, 100)}%"></div>
+                                </div>
+                                <div class="text-right text-xs font-bold text-gray-500 mt-1">Capaian Nilai: ${pctNilai.toFixed(1)}%</div>
+                            </div>
+                        </div>`;
+
+                        tr1 += `<th colspan="3" class="p-3 text-xs font-bold text-orange-600 dark:text-orange-400 uppercase text-center border-b border-gray-200 dark:border-gray-700 border-r border-gray-200 dark:border-gray-700 bg-orange-50 dark:bg-orange-900/10">${namaProdFokus}</th>`;
+                        tr2 += `
+                            <th class="p-2 text-[10px] font-bold text-gray-500 uppercase text-center bg-gray-50 dark:bg-gray-800/80 border-b border-gray-200 dark:border-gray-700">Target</th>
+                            <th class="p-2 text-[10px] font-bold text-gray-500 uppercase text-center bg-gray-50 dark:bg-gray-800/80 border-b border-gray-200 dark:border-gray-700">ACV</th>
+                            <th class="p-2 text-[10px] font-bold text-gray-500 uppercase text-center bg-gray-50 dark:bg-gray-800/80 border-r border-b border-gray-200 dark:border-gray-700">%</th>
+                        `;
+
+                        let badgeVol = pctVol >= 100 ? 'text-green-600 font-bold' : (pctVol >= 70 ? 'text-blue-600 font-bold' : 'text-orange-600 font-bold');
+                        bodyRow += `
+                            <td class="p-4 text-sm text-center border-gray-100 dark:border-gray-800">${targetVol}</td>
+                            <td class="p-4 text-sm font-bold text-center border-gray-100 dark:border-gray-800">${parseFloat(capVol.toFixed(2))}</td>
+                            <td class="p-4 text-sm text-center ${badgeVol} bg-gray-50/50 dark:bg-gray-800/30 border-r border-gray-100 dark:border-gray-800">${pctVol.toFixed(1)}%</td>
+                        `;
+                    });
+
+                    document.getElementById('spm-target-fokus-container').innerHTML = fokusCardHtml;
+                    tr1 += `</tr>`; tr2 += `</tr>`; bodyRow += `</tr>`;
+
+                    const spmThead = document.getElementById('spm-rekap-fokus-head');
+                    const spmTbody = document.getElementById('spm-rekap-fokus-body');
+                    if (spmThead) spmThead.innerHTML = tr1 + tr2;
+                    if (spmTbody) spmTbody.innerHTML = bodyRow;
+                }
+            }
+
+            // LISTENER DIPISAH
+            const qProd = query(collection(db, "produk"), where("toko", "==", namaTokoAktif));
             onSnapshot(qProd, (snapProd) => {
                 let pSelect = '<option value="" disabled selected>Pilih Produk (Tersedia)...</option>';
                 rawProdukListSPM = [];
@@ -1935,208 +1929,62 @@
                 });
                 
                 document.getElementById('lap-produk').innerHTML = pSelect;
-                if(document.getElementById('po-produk')) {
-                    document.getElementById('po-produk').innerHTML = pSelect;
-                }
-                
+                if(document.getElementById('po-produk')) document.getElementById('po-produk').innerHTML = pSelect;
                 renderTabelRekapSPM(rawProdukListSPM);
+                renderSPMData();
+            });
 
-                const qPoHist = query(collection(db, "po_history"), where("spm_id", "==", uid));
-                onSnapshot(qPoHist, (snapHistPo) => {
-                    let poHistHtml = '';
-                    let histArr = [];
-                    snapHistPo.forEach(doc => {
-                        histArr.push({ id: doc.id, ...doc.data() });
-                    });
+            const qTargetYear = query(collection(db, "target_reguler"), where("toko_id", "==", uid), where("tahun", "==", currentTahun));
+            onSnapshot(qTargetYear, (snapTargetYear) => {
+                spmTargetRegulerData = [];
+                snapTargetYear.forEach(doc => spmTargetRegulerData.push(doc.data()));
+                renderSPMData();
+            });
+
+            const qLapYear = query(collection(db, "laporan"), where("spm_id", "==", uid), where("tahun", "==", currentTahun));
+            onSnapshot(qLapYear, (snapLapYear) => {
+                spmLaporanData = [];
+                snapLapYear.forEach(docSnap => spmLaporanData.push({ id: docSnap.id, ...docSnap.data() }));
+                renderSPMData();
+            });
+
+            const qTargetLain = query(collection(db, "target_lain"), where("toko_id", "==", uid));
+            onSnapshot(qTargetLain, (snapTgtLain) => {
+                spmTargetLainData = [];
+                snapTgtLain.forEach(doc => spmTargetLainData.push(doc.data()));
+                renderSPMData();
+            });
+
+            const qPoHist = query(collection(db, "po_history"), where("spm_id", "==", uid));
+            onSnapshot(qPoHist, (snapHistPo) => {
+                let poHistHtml = '';
+                let histArr = [];
+                snapHistPo.forEach(doc => histArr.push({ id: doc.id, ...doc.data() }));
+                histArr.sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal));
+
+                histArr.forEach(data => {
+                    const d = new Date(data.tanggal);
+                    const tglFormat = d.toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'});
                     
-                    histArr.sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal));
-
-                    histArr.forEach(data => {
-                        const d = new Date(data.tanggal);
-                        const tglFormat = d.toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'});
+                    let statusBadge = data.status === 'SELESAI' 
+                        ? '<span class="px-2 py-1 bg-green-100 text-green-700 rounded text-[10px] font-bold border border-green-200 uppercase">Selesai</span>'
+                        : '<span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-[10px] font-bold border border-yellow-200 uppercase">Menunggu</span>';
                         
-                        let statusBadge = data.status === 'SELESAI' 
-                            ? '<span class="px-2 py-1 bg-green-100 text-green-700 rounded text-[10px] font-bold border border-green-200 uppercase">Selesai</span>'
-                            : '<span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-[10px] font-bold border border-yellow-200 uppercase">Menunggu</span>';
-                            
-                        let actionBtn = data.status === 'PENDING'
-                            ? `<button onclick="terimaBarangPO('${data.id}', '${data.produk_id}', ${data.qty_order})" class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-xs font-bold transition shadow-sm whitespace-nowrap"><i class="fas fa-box-open mr-1"></i> Datang</button>`
-                            : `<span class="text-xs font-bold text-gray-400 whitespace-nowrap"><i class="fas fa-check-double"></i> Diterima</span>`;
+                    let actionBtn = data.status === 'PENDING'
+                        ? `<button onclick="terimaBarangPO('${data.id}', '${data.produk_id}', ${data.qty_order})" class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-xs font-bold transition shadow-sm whitespace-nowrap"><i class="fas fa-box-open mr-1"></i> Datang</button>`
+                        : `<span class="text-xs font-bold text-gray-400 whitespace-nowrap"><i class="fas fa-check-double"></i> Diterima</span>`;
 
-                        poHistHtml += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
-                            <td class="p-3 text-xs text-gray-500">${tglFormat}</td>
-                            <td class="p-3 text-sm font-semibold">${data.nama_produk} <span class="text-[10px] font-bold text-blue-600 border border-blue-200 bg-blue-50 rounded px-1 ml-1">${data.kemasan}</span></td>
-                            <td class="p-3 text-sm text-center font-black text-indigo-600">${data.qty_order}</td>
-                            <td class="p-3 text-sm text-center">${statusBadge}</td>
-                            <td class="p-3 text-center">${actionBtn}</td>
-                        </tr>`;
-                    });
-                    if(histArr.length === 0) poHistHtml = '<tr><td colspan="5" class="p-6 text-center text-gray-500 italic">Belum ada histori PO direkam.</td></tr>';
-                    const elPoHist = document.getElementById('po-history-body');
-                    if (elPoHist) elPoHist.innerHTML = poHistHtml;
+                    poHistHtml += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                        <td class="p-3 text-xs text-gray-500">${tglFormat}</td>
+                        <td class="p-3 text-sm font-semibold">${data.nama_produk} <span class="text-[10px] font-bold text-blue-600 border border-blue-200 bg-blue-50 rounded px-1 ml-1">${data.kemasan}</span></td>
+                        <td class="p-3 text-sm text-center font-black text-indigo-600">${data.qty_order}</td>
+                        <td class="p-3 text-sm text-center">${statusBadge}</td>
+                        <td class="p-3 text-center">${actionBtn}</td>
+                    </tr>`;
                 });
-
-                const qTargetYear = query(collection(db, "target_reguler"), where("toko_id", "==", uid), where("tahun", "==", currentTahun));
-                onSnapshot(qTargetYear, (snapTargetYear) => {
-                    let targetBulananArray = new Array(12).fill(0);
-                    let tBulananBulanIni = 0;
-
-                    snapTargetYear.forEach(doc => {
-                        const trg = doc.data();
-                        const bIdx = bulanArray.indexOf(trg.bulan);
-                        const nominal = parseFloat(trg.nominal) || 0;
-                        if(bIdx !== -1) targetBulananArray[bIdx] += nominal;
-                        if(trg.bulan === currentBulan) tBulananBulanIni += nominal;
-                    });
-
-                    const tHarian = tBulananBulanIni / workDays;
-                    document.getElementById('spm-target-bulanan').innerText = formatRp(tBulananBulanIni);
-                    document.getElementById('spm-target-harian').innerText = formatRp(tHarian);
-
-                    const qLapYear = query(collection(db, "laporan"), where("spm_id", "==", uid), where("tahun", "==", currentTahun));
-                    onSnapshot(qLapYear, (snapLapYear) => {
-                        let capaianBulananArray = new Array(12).fill(0);
-                        let totalCapBulanIni = 0;
-                        let capHariIni = 0;
-                        let laporanList = [];
-                        rawHistoriPenjualanList = [];
-                        
-                        snapLapYear.forEach(docSnap => {
-                            const lap = docSnap.data();
-                            const lapId = docSnap.id;
-                            laporanList.push(lap);
-                            const kat = produkKatMapSPM[lap.produk_id] || produkKatMapSPM[lap.nama_produk] || 'CCM';
-                            const satuanProd = produkSatuanMapSPM[lap.produk_id] || produkSatuanMapSPM[lap.nama_produk] || lap.satuan || lap.kemasan || '1';
-                            
-                            rawHistoriPenjualanList.push({
-                                id: lapId,
-                                toko: lap.toko || '-',
-                                tanggal: lap.tanggal_lengkap || '',
-                                bulan: lap.bulan || '',
-                                tahun: lap.tahun || '',
-                                kategori: kat,
-                                namaProduk: lap.nama_produk || '-',
-                                satuan: satuanProd,
-                                qty: lap.qty || 0,
-                                total: lap.total || 0
-                            });
-
-                            if(kat === 'CCM') {
-                                const bIdx = bulanArray.indexOf(lap.bulan);
-                                const tot = parseFloat(lap.total) || 0;
-                                if(bIdx !== -1) capaianBulananArray[bIdx] += tot;
-                                if(lap.bulan === currentBulan) {
-                                    totalCapBulanIni += tot;
-                                    if(lap.tanggal_lengkap === todayStr) capHariIni += tot; 
-                                }
-                            }
-                        });
-
-                        renderTabelHistori(rawHistoriPenjualanList);
-
-                        let pct = tBulananBulanIni > 0 ? (totalCapBulanIni / tBulananBulanIni * 100).toFixed(1) : 0;
-                        document.getElementById('spm-total-capaian').innerText = `${formatRp(totalCapBulanIni)} (${pct}%)`;
-                        document.getElementById('spm-capaian-hari-ini').innerText = formatRp(capHariIni);
-
-                        updateGrafikTahunanSPM(targetBulananArray, capaianBulananArray, currentTahun);
-
-                        const qTargetLain = query(collection(db, "target_lain"), where("toko_id", "==", uid));
-                        onSnapshot(qTargetLain, (snapTgtLain) => {
-                            let fokusCardHtml = '';
-                            
-                            // Pembuatan Tabel Menyamping khusus untuk SPM
-                            let tr1 = `<tr><th rowspan="2" class="p-4 text-xs font-bold text-gray-500 uppercase align-middle bg-gray-50 dark:bg-gray-800/80 border-r border-gray-200 dark:border-gray-700">Periode</th>`;
-                            let tr2 = `<tr>`;
-                            let bodyRow = `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition"><td class="p-4 text-sm font-semibold border-r border-gray-100 dark:border-gray-800">${currentBulan} ${currentTahun}</td>`;
-
-                            if(snapTgtLain.empty) {
-                                document.getElementById('spm-target-fokus-container').innerHTML = '<div class="bg-white dark:bg-darkcard p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 text-gray-500 text-sm col-span-full">Belum ada Target Produk Fokus dari Team Leader.</div>';
-                                const spmThead = document.getElementById('spm-rekap-fokus-head');
-                                const spmTbody = document.getElementById('spm-rekap-fokus-body');
-                                if(spmThead) spmThead.innerHTML = `<tr><th class="p-4 text-xs font-bold text-gray-500 uppercase">Data Target Fokus</th></tr>`;
-                                if(spmTbody) spmTbody.innerHTML = '<tr><td class="p-6 text-center text-gray-500">Tidak ada data rekap target fokus.</td></tr>';
-                                return;
-                            }
-
-                            snapTgtLain.forEach(docTgt => {
-                                const tFokus = docTgt.data();
-                                const targetVol = parseFloat(tFokus.volume) || 0;
-                                const targetNilai = parseFloat(tFokus.nilai) || 0;
-                                const namaProdFokus = bersihkanNamaProdukFokus(tFokus.produk);
-
-                                let capVol = 0;
-                                let capNilai = 0;
-                                
-                                laporanList.forEach(l => {
-                                    if(!l.nama_produk) return;
-                                    // Menggunakan cekKecocokanProdukFokus pada sisi SPM
-                                    if (cekKecocokanProdukFokus(l.nama_produk, namaProdFokus)) {
-                                        let sat = produkSatuanMapSPM[l.produk_id] || produkSatuanMapSPM[l.nama_produk] || l.satuan || l.kemasan || '1';
-                                        let matchNum = sat.toString().match(/([\d,\.]+)/);
-                                        let multiplier = matchNum ? (parseFloat(matchNum[1].replace(',', '.')) || 1) : 1;
-                                        
-                                        capVol += (parseFloat(l.qty) || 0) * multiplier;
-                                        capNilai += parseFloat(l.total) || 0;
-                                    }
-                                });
-
-                                let pctVol = targetVol > 0 ? (capVol / targetVol * 100) : (capVol > 0 ? 100 : 0);
-                                let pctNilai = targetNilai > 0 ? (capNilai / targetNilai * 100) : (capNilai > 0 ? 100 : 0);
-
-                                fokusCardHtml += `
-                                <div class="bg-white dark:bg-darkcard p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
-                                    <div class="flex justify-between items-start mb-3">
-                                        <div>
-                                            <span class="px-2.5 py-1 bg-orange-50 text-orange-600 rounded text-xs font-bold border border-orange-100">Fokus Produk</span>
-                                            <h4 class="font-bold text-base mt-1 text-gray-800 dark:text-gray-100">${namaProdFokus}</h4>
-                                        </div>
-                                    </div>
-                                    <div class="space-y-2 text-sm">
-                                        <div class="flex justify-between">
-                                            <span class="text-gray-500">Target Berat/Isi:</span>
-                                            <span class="font-bold">${parseFloat(capVol.toFixed(2))} / ${targetVol}</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span class="text-gray-500">Target Nilai (Value):</span>
-                                            <span class="font-bold text-indigo-600">${formatRp(capNilai)} / ${formatRp(targetNilai)}</span>
-                                        </div>
-                                        <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mt-3 shadow-inner">
-                                            <div class="bg-orange-500 h-2 rounded-full" style="width: ${Math.min(pctNilai, 100)}%"></div>
-                                        </div>
-                                        <div class="text-right text-xs font-bold text-gray-500 mt-1">Capaian Nilai: ${pctNilai.toFixed(1)}%</div>
-                                    </div>
-                                </div>`;
-
-                                // Table Building (Menyamping)
-                                tr1 += `<th colspan="3" class="p-3 text-xs font-bold text-orange-600 dark:text-orange-400 uppercase text-center border-b border-gray-200 dark:border-gray-700 border-r border-gray-200 dark:border-gray-700 bg-orange-50 dark:bg-orange-900/10">${namaProdFokus}</th>`;
-                                tr2 += `
-                                    <th class="p-2 text-[10px] font-bold text-gray-500 uppercase text-center bg-gray-50 dark:bg-gray-800/80 border-b border-gray-200 dark:border-gray-700">Target</th>
-                                    <th class="p-2 text-[10px] font-bold text-gray-500 uppercase text-center bg-gray-50 dark:bg-gray-800/80 border-b border-gray-200 dark:border-gray-700">ACV</th>
-                                    <th class="p-2 text-[10px] font-bold text-gray-500 uppercase text-center bg-gray-50 dark:bg-gray-800/80 border-r border-b border-gray-200 dark:border-gray-700">%</th>
-                                `;
-
-                                let badgeVol = pctVol >= 100 ? 'text-green-600 font-bold' : (pctVol >= 70 ? 'text-blue-600 font-bold' : 'text-orange-600 font-bold');
-                                bodyRow += `
-                                    <td class="p-4 text-sm text-center border-gray-100 dark:border-gray-800">${targetVol}</td>
-                                    <td class="p-4 text-sm font-bold text-center border-gray-100 dark:border-gray-800">${parseFloat(capVol.toFixed(2))}</td>
-                                    <td class="p-4 text-sm text-center ${badgeVol} bg-gray-50/50 dark:bg-gray-800/30 border-r border-gray-100 dark:border-gray-800">${pctVol.toFixed(1)}%</td>
-                                `;
-                            });
-
-                            document.getElementById('spm-target-fokus-container').innerHTML = fokusCardHtml;
-                            
-                            tr1 += `</tr>`;
-                            tr2 += `</tr>`;
-                            bodyRow += `</tr>`;
-
-                            const spmThead = document.getElementById('spm-rekap-fokus-head');
-                            const spmTbody = document.getElementById('spm-rekap-fokus-body');
-                            
-                            if (spmThead) spmThead.innerHTML = tr1 + tr2;
-                            if (spmTbody) spmTbody.innerHTML = bodyRow;
-                        });
-                    });
-                });
+                if(histArr.length === 0) poHistHtml = '<tr><td colspan="5" class="p-6 text-center text-gray-500 italic">Belum ada histori PO direkam.</td></tr>';
+                const elPoHist = document.getElementById('po-history-body');
+                if (elPoHist) elPoHist.innerHTML = poHistHtml;
             });
         }
 
@@ -2176,18 +2024,13 @@
                     </td>
                 </tr>`;
             });
-            if(list.length === 0) {
-                historiHtml = '<tr><td colspan="7" class="p-6 text-center text-gray-500">Belum ada transaksi direkam.</td></tr>';
-            }
+            if(list.length === 0) historiHtml = '<tr><td colspan="7" class="p-6 text-center text-gray-500">Belum ada transaksi direkam.</td></tr>';
             document.getElementById('spm-histori-body').innerHTML = historiHtml;
         }
 
         window.filterRekapProduk = function() {
             const keyword = document.getElementById('search-rekap-produk').value.toLowerCase();
-            const filtered = rawProdukListSPM.filter(p => 
-                p.nama.toLowerCase().includes(keyword) || 
-                p.kategori.toLowerCase().includes(keyword)
-            );
+            const filtered = rawProdukListSPM.filter(p => p.nama.toLowerCase().includes(keyword) || p.kategori.toLowerCase().includes(keyword));
             renderTabelRekapSPM(filtered);
         };
 
@@ -2206,9 +2049,7 @@
                     </td>
                 </tr>`;
             });
-            if(list.length === 0) {
-                pTable = '<tr><td colspan="6" class="p-6 text-center text-gray-500">Tidak ada produk yang sesuai dengan pencarian.</td></tr>';
-            }
+            if(list.length === 0) pTable = '<tr><td colspan="6" class="p-6 text-center text-gray-500">Tidak ada produk yang sesuai dengan pencarian.</td></tr>';
             document.getElementById('spm-produk-body').innerHTML = pTable;
         }
 
@@ -2242,9 +2083,7 @@
                         <div><label class="text-xs font-bold">Harga (Rp)</label><input id="swal-harga" type="number" class="swal2-input !w-full !m-0 !text-sm !p-2 border" value="${harga}"></div>
                     </div>
                 `,
-                focusConfirm: false,
-                showCancelButton: true,
-                confirmButtonText: 'Simpan Perubahan',
+                focusConfirm: false, showCancelButton: true, confirmButtonText: 'Simpan Perubahan',
                 preConfirm: () => {
                     return {
                         nama: document.getElementById('swal-nama').value,
@@ -2256,11 +2095,7 @@
 
             if (formValues) {
                 try {
-                    await updateDoc(doc(db, "produk", id), {
-                        nama: formValues.nama,
-                        qty: formValues.qty,
-                        harga: formValues.harga
-                    });
+                    await updateDoc(doc(db, "produk", id), { nama: formValues.nama, qty: formValues.qty, harga: formValues.harga });
                     Toast.fire({ icon: 'success', title: 'Produk diperbarui!' });
                 } catch(e) { Swal.fire('Error', e.message, 'error'); }
             }
@@ -2268,12 +2103,8 @@
 
         window.terimaBarangPO = async function(docId, produkId, qty) {
             const res = await Swal.fire({
-                title: 'Barang Sudah Datang?',
-                text: `Stok produk ini akan otomatis bertambah sebanyak ${qty}.`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#10b981',
-                confirmButtonText: 'Ya, Tambah Stok'
+                title: 'Barang Sudah Datang?', text: `Stok produk ini akan otomatis bertambah sebanyak ${qty}.`, icon: 'question',
+                showCancelButton: true, confirmButtonColor: '#10b981', confirmButtonText: 'Ya, Tambah Stok'
             });
             
             if(res.isConfirmed) {
@@ -2289,9 +2120,7 @@
                         Swal.fire('Gagal', 'Data master produk sudah tidak ada, tidak dapat menambah stok otomatis.', 'error');
                         await updateDoc(doc(db, "po_history", docId), { status: 'SELESAI' });
                     }
-                } catch(e) { 
-                    Swal.fire('Error', e.message, 'error'); 
-                }
+                } catch(e) { Swal.fire('Error', e.message, 'error'); }
             }
         };
 
@@ -2349,12 +2178,9 @@
                 const namaProduk = selectProd.value;
                 
                 await addDoc(collection(db, "target_lain"), {
-                    tl_id: currentUser.uid,
-                    toko_id: document.getElementById('lain-toko-select').value,
-                    produk: namaProduk,
-                    volume: parseFloat(document.getElementById('lain-volume').value) || 0,
-                    nilai: parseFloat(document.getElementById('lain-nilai').value) || 0,
-                    tanggal: new Date().toISOString()
+                    tl_id: currentUser.uid, toko_id: document.getElementById('lain-toko-select').value,
+                    produk: namaProduk, volume: parseFloat(document.getElementById('lain-volume').value) || 0,
+                    nilai: parseFloat(document.getElementById('lain-nilai').value) || 0, tanggal: new Date().toISOString()
                 });
                 Toast.fire({ icon: 'success', title: 'Target Fokus Produk berhasil dikirim!' });
                 e.target.reset();
@@ -2368,15 +2194,10 @@
             btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...`;
             try {
                 await addDoc(collection(db, "produk"), {
-                    spm_id: currentUser.uid,
-                    tl_id: currentTLId,
-                    toko: window.globalUserData?.toko || '',
-                    kategori: document.getElementById('prod-kat').value,
-                    nama: document.getElementById('prod-nama').value,
-                    satuan: document.getElementById('prod-vol').value,
-                    qty: parseFloat(document.getElementById('prod-qty').value),
-                    harga: parseFloat(document.getElementById('prod-harga').value || 0),
-                    created_at: new Date()
+                    spm_id: currentUser.uid, tl_id: currentTLId, toko: window.globalUserData?.toko || '',
+                    kategori: document.getElementById('prod-kat').value, nama: document.getElementById('prod-nama').value,
+                    satuan: document.getElementById('prod-vol').value, qty: parseFloat(document.getElementById('prod-qty').value),
+                    harga: parseFloat(document.getElementById('prod-harga').value || 0), created_at: new Date()
                 });
                 Toast.fire({ icon: 'success', title: 'Data Produk ditambahkan!' });
                 e.target.reset();
@@ -2404,17 +2225,10 @@
             btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...`;
             try {
                 await addDoc(collection(db, "laporan"), {
-                    spm_id: currentUser.uid, tl_id: currentTLId,
-                    toko: namaTokoSnapshot, 
-                    tanggal_lengkap: tgl,
-                    bulan: bulanStr, tahun: thn,
-                    produk_id: produkId, nama_produk: nmProduk,
-                    satuan: satuanProd,
-                    kemasan: satuanProd,
-                    qty: qtyTerjual,
-                    harga: parseFloat(document.getElementById('lap-harga').value),
-                    total: parseFloat(document.getElementById('lap-total').value.replace(/[^0-9]/g, '')),
-                    created_at: new Date()
+                    spm_id: currentUser.uid, tl_id: currentTLId, toko: namaTokoSnapshot, tanggal_lengkap: tgl,
+                    bulan: bulanStr, tahun: thn, produk_id: produkId, nama_produk: nmProduk, satuan: satuanProd,
+                    kemasan: satuanProd, qty: qtyTerjual, harga: parseFloat(document.getElementById('lap-harga').value),
+                    total: parseFloat(document.getElementById('lap-total').value.replace(/[^0-9]/g, '')), created_at: new Date()
                 });
 
                 const produkRef = doc(db, "produk", produkId);
@@ -2423,10 +2237,7 @@
                 if (produkSnap.exists()) {
                     const stokSaatIni = parseFloat(produkSnap.data().qty) || 0;
                     const stokBaru = stokSaatIni - qtyTerjual;
-
-                    await updateDoc(produkRef, {
-                        qty: stokBaru >= 0 ? stokBaru : 0
-                    });
+                    await updateDoc(produkRef, { qty: stokBaru >= 0 ? stokBaru : 0 });
                 }
 
                 Toast.fire({ icon: 'success', title: 'Laporan & Pengurangan Stok Berhasil!' });
@@ -2436,8 +2247,7 @@
             } catch(e){ 
                 Swal.fire('Error', e.message, 'error'); 
             } finally { 
-                btn.disabled = false; 
-                btn.innerHTML = `<i class="fas fa-paper-plane mr-2"></i>Kirim Laporan`; 
+                btn.disabled = false; btn.innerHTML = `<i class="fas fa-paper-plane mr-2"></i>Kirim Laporan`; 
             }
         });
 
@@ -2446,8 +2256,7 @@
         window.tambahItemPO = function() {
             const selectProd = document.getElementById('po-produk');
             if(selectProd.selectedIndex <= 0) {
-                Swal.fire('Perhatian', 'Silakan pilih produk terlebih dahulu.', 'warning');
-                return;
+                Swal.fire('Perhatian', 'Silakan pilih produk terlebih dahulu.', 'warning'); return;
             }
             const produkId = selectProd.value;
             const opt = selectProd.options[selectProd.selectedIndex];
@@ -2457,27 +2266,20 @@
             const qty = parseInt(document.getElementById('po-qty').value) || 1;
 
             const existIdx = poItemList.findIndex(item => item.produkId === produkId);
-            if(existIdx >= 0) {
-                poItemList[existIdx].qty += qty;
-            } else {
-                poItemList.push({ produkId, kategori, nama: produkNama, kemasan, qty });
-            }
+            if(existIdx >= 0) { poItemList[existIdx].qty += qty; } 
+            else { poItemList.push({ produkId, kategori, nama: produkNama, kemasan, qty }); }
 
             renderPOList();
             document.getElementById('po-qty').value = 1;
             selectProd.selectedIndex = 0;
         };
 
-        window.hapusItemPO = function(idx) {
-            poItemList.splice(idx, 1);
-            renderPOList();
-        };
+        window.hapusItemPO = function(idx) { poItemList.splice(idx, 1); renderPOList(); };
 
         window.renderPOList = function() {
             const tbody = document.getElementById('po-list-body');
             if(poItemList.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-gray-400 text-xs italic">Belum ada barang ditambahkan.</td></tr>';
-                return;
+                tbody.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-gray-400 text-xs italic">Belum ada barang ditambahkan.</td></tr>'; return;
             }
             let html = '';
             poItemList.forEach((item, idx) => {
@@ -2497,22 +2299,15 @@
 
         document.getElementById('form-po')?.addEventListener('submit', async(e) => {
             e.preventDefault();
-            
-            if(poItemList.length === 0) {
-                Swal.fire('Daftar PO Kosong', 'Silakan tambahkan minimal 1 barang ke dalam daftar order.', 'warning');
-                return;
-            }
+            if(poItemList.length === 0) { Swal.fire('Daftar PO Kosong', 'Silakan tambahkan minimal 1 barang ke dalam daftar order.', 'warning'); return; }
             
             const noWaRaw = document.getElementById('po-wa').value;
             const noWa = noWaRaw.replace(/[^0-9]/g, ''); 
-            
             const user = window.globalUserData;
             const toko = user?.toko || 'Toko Tidak Diketahui';
             const spm = user?.nama || 'SPM';
-            
             let alamatArr = [user?.kelurahan, user?.kecamatan ? `Kec. ${user.kecamatan}` : null, user?.kota, user?.provinsi].filter(Boolean);
             const alamatLengkap = alamatArr.join(', ') || '-';
-            
             const tgl = new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'});
 
             document.getElementById('pdf-header-toko').innerText = toko;
@@ -2538,47 +2333,27 @@
             Swal.fire({ title: 'Membuat Dokumen PO...', text: 'Tunggu sebentar, sedang generate PDF.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
             const element = document.getElementById('po-pdf-template');
-            
-            const optPdf = {
-                margin:       0.5,
-                filename:     `PO_${toko.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
-                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-            };
+            const optPdf = { margin: 0.5, filename: `PO_${toko.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } };
 
             html2pdf().set(optPdf).from(element).save().then(async () => {
                 const tglPoIsos = new Date().toISOString();
                 for (let item of poItemList) {
                     try {
                         await addDoc(collection(db, "po_history"), {
-                            spm_id: currentUser.uid,
-                            toko: toko,
-                            produk_id: item.produkId,
-                            nama_produk: item.nama,
-                            kategori: item.kategori,
-                            kemasan: item.kemasan,
-                            qty_order: item.qty,
-                            tanggal: tglPoIsos,
-                            status: 'PENDING'
+                            spm_id: currentUser.uid, toko: toko, produk_id: item.produkId, nama_produk: item.nama,
+                            kategori: item.kategori, kemasan: item.kemasan, qty_order: item.qty, tanggal: tglPoIsos, status: 'PENDING'
                         });
                     } catch(err) { console.error("Gagal simpan histori PO:", err); }
                 }
 
                 Swal.close();
-                
                 let orderListText = '';
-                poItemList.forEach((item, idx) => {
-                    orderListText += `${idx+1}. ${item.nama} (${item.kemasan}) - *${item.qty} Qty*\n`;
-                });
-                
+                poItemList.forEach((item, idx) => { orderListText += `${idx+1}. ${item.nama} (${item.kemasan}) - *${item.qty} Qty*\n`; });
                 let waText = `Halo Tim Sales,\n\nSaya dari toko *${toko}* ingin melakukan Purchase Order (PO) untuk restock barang.\n\n*Daftar Order:*\n${orderListText}\nMohon bantuannya untuk diproses. *File PDF bukti PO akan saya kirimkan setelah pesan ini.*\n\nTerima kasih.`;
                 
                 let waUrl = `https://wa.me/${noWa}?text=${encodeURIComponent(waText)}`;
                 window.open(waUrl, '_blank');
-
-                poItemList = [];
-                renderPOList();
+                poItemList = []; renderPOList();
             });
         });
 
@@ -2589,10 +2364,8 @@
             try {
                 const userCred = await createUserWithEmailAndPassword(auth, document.getElementById('reg-email').value, document.getElementById('reg-password').value);
                 await setDoc(doc(db, "users", userCred.user.uid), {
-                    nama: document.getElementById('reg-nama').value,
-                    jabatan: document.getElementById('reg-jabatan').value,
-                    role: document.getElementById('reg-jabatan').value,
-                    email: document.getElementById('reg-email').value
+                    nama: document.getElementById('reg-nama').value, jabatan: document.getElementById('reg-jabatan').value,
+                    role: document.getElementById('reg-jabatan').value, email: document.getElementById('reg-email').value
                 });
             } catch (err) { Swal.fire('Gagal', err.message, 'error'); btn.disabled=false; btn.innerHTML = 'Buat Akun'; }
         });
@@ -2604,8 +2377,7 @@
             try {
                 await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-password').value);
             } catch (err) { 
-                btn.disabled = false;
-                btn.innerHTML = 'Masuk';
+                btn.disabled = false; btn.innerHTML = 'Masuk';
                 Swal.fire('Gagal Masuk', 'Pastikan Email atau Password benar!', 'error'); 
             }
         });
@@ -2614,20 +2386,13 @@
             Swal.fire({ title: 'Konfirmasi Keluar', text: "Sesi Anda akan diakhiri.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Ya, Keluar' }).then((res) => {
                 if (res.isConfirmed) { 
                     loader.classList.remove('hidden', 'opacity-0'); 
-                    
                     document.getElementById('login-form').reset();
                     const loginBtn = document.querySelector('#login-form button[type="submit"]');
-                    if(loginBtn) {
-                        loginBtn.disabled = false;
-                        loginBtn.innerHTML = 'Masuk';
-                    }
+                    if(loginBtn) { loginBtn.disabled = false; loginBtn.innerHTML = 'Masuk'; }
 
                     document.getElementById('register-form').reset();
                     const regBtn = document.querySelector('#register-form button[type="submit"]');
-                    if(regBtn) {
-                        regBtn.disabled = false;
-                        regBtn.innerHTML = 'Buat Akun';
-                    }
+                    if(regBtn) { regBtn.disabled = false; regBtn.innerHTML = 'Buat Akun'; }
 
                     signOut(auth); 
                 }
@@ -2658,16 +2423,9 @@
                 const newUid = newSPMCred.user.uid;
 
                 await setDoc(doc(db, "users", newUid), {
-                    nama: document.getElementById('t-pegawai').value, 
-                    toko: document.getElementById('t-nama').value,
-                    provinsi: provName,      
-                    kota: kotaName,          
-                    kecamatan: kecName,      
-                    kelurahan: kelName,      
-                    jabatan: jabSPM, 
-                    role: 'SPM', 
-                    email: emailSPM, 
-                    tl_id: currentUser.uid
+                    nama: document.getElementById('t-pegawai').value, toko: document.getElementById('t-nama').value,
+                    provinsi: provName, kota: kotaName, kecamatan: kecName, kelurahan: kelName,      
+                    jabatan: jabSPM, role: 'SPM', email: emailSPM, tl_id: currentUser.uid
                 });
                 await signOut(authSecondary);
                 Toast.fire({ icon: 'success', title: 'Toko & Akun Tim berhasil dibuat!' });
@@ -2851,3 +2609,4 @@
     </script>
 </body>
 </html>
+
