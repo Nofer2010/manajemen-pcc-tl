@@ -567,15 +567,18 @@
                                 <div>
                                     <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Kemasan / Satuan</label>
                                     <select id="prod-vol" class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-green-500 transition">
+                                        <option value="1 Kg">1 Kg</option>
                                         <option value="1 Lt">1 Lt</option>
                                         <option value="2.5 Lt">2.5 Lt</option>
                                         <option value="4 Kg">4 Kg</option>
+                                        <option value="4.5 Kg">4.5 Kg</option>
                                         <option value="5 Kg">5 Kg</option>
                                         <option value="15 Kg">15 Kg</option>
                                         <option value="15 Lt">15 Lt</option>
                                         <option value="20 Kg">20 Kg</option>
                                         <option value="20 Lt">20 Lt</option>
                                         <option value="22 Kg">22 Kg</option>
+                                        <option value="22.5 Kg">22.5 Kg</option>
                                         <option value="25 Kg">25 Kg</option>
                                         <option value="1 Pcs">1 Pcs</option>
                                         <option value="1 Set">1 Set</option>
@@ -929,15 +932,29 @@
         let rawProdukListSPM = []; 
         window.globalUserData = null;
 
-        // Fungsi Helper untuk membersihkan nama produk dari varian warna & angka digit tunggal (ex: Putih 300 -> Putih, Vinilex Putih 300 -> Vinilex)
+        // Fungsi Helper untuk membersihkan nama produk dari varian warna & angka digit (Mendukung semua warna Ready Mix & varian)
         function bersihkanNamaProdukFokus(namaAsli) {
             if (!namaAsli) return '';
             let bersih = namaAsli
-                .replace(/\b(White|Black|Pastel|Cream|Grey|Red|Blue|Green|Yellow|Clear|Transparent|Putih|Hitam|Merah|Biru|Hijau|Kuning)\b/gi, '')
-                .replace(/\b\d+\b/g, '') // Menghapus angka sisa kode warna seperti 300
+                .replace(/\b(White|Black|Pastel|Cream|Grey|Gray|Red|Blue|Green|Yellow|Clear|Transparent|Putih|Hitam|Merah|Biru|Hijau|Kuning|Pink|Orange|Oranye|Jingga|Purple|Ungu|Brown|Coklat|Cokelat|Gold|Golden|Emas|Silver|Perak|Navy|Maroon|Mocca|Mocha|Ivory|Gading|Olive|Zaitun|Teal|Magenta|Violet|Turquoise|Tosca|Cyan|Amber|Coral|Salmon|Peach|Lavender|Lilac|Mint|Sage|Khaki|Tan|Charcoal|Slate|Steel|Champagne|Bronze|Copper|Light|Dark|Bright|Deep|Soft|Pale|Muda|Tua|Cerah|Gelap)\b/gi, '')
+                .replace(/\b\d+\b/g, '') // Menghapus angka sisa kode warna
                 .replace(/\s+/g, ' ')
                 .trim();
             return bersih || namaAsli;
+        }
+
+        // Fungsi Helper untuk pencocokan produk fokus agar semua warna / varian Ready Mix masuk ke omzet produk fokus
+        function cekKecocokanProdukFokus(inputNama, fokusNama) {
+            let bersihInput = bersihkanNamaProdukFokus(inputNama).toLowerCase();
+            let bersihFokus = bersihkanNamaProdukFokus(fokusNama).toLowerCase();
+            if (bersihInput.includes(bersihFokus) || bersihFokus.includes(bersihInput)) return true;
+            
+            let tokensFokus = bersihFokus.split(' ').filter(t => t.length > 1);
+            let tokensInput = bersihInput.split(' ').filter(t => t.length > 1);
+            if (tokensFokus.length > 0 && tokensFokus.every(token => tokensInput.includes(token))) {
+                return true;
+            }
+            return false;
         }
 
         onAuthStateChanged(auth, async (user) => {
@@ -1038,7 +1055,7 @@
                 return 1;
             }
 
-            // Kalkulasi Rekap Fokus dengan Pencocokan Parsial (Substring Matching)
+            // Kalkulasi Rekap Fokus menggunakan cekKecocokanProdukFokus
             function kalkulasiRekapFokus() {
                 if (!allTargetLainTL.length || !Object.keys(tokoInfoMap).length) {
                     globalRekapFokusData = [];
@@ -1086,11 +1103,8 @@
                     for(let key in fokusMap) {
                         let f = fokusMap[key];
                         if(f.tokoId === spmId && f.bulan === lapBulan && f.tahun === lapTahun) {
-                            let namaProdFokusLower = f.produk.toLowerCase();
-                            let lapNamaProdukLower = bersihkanNamaProdukFokus(lap.nama_produk).toLowerCase();
-                            
-                            // Menerapkan Substring Matching agar varian warna/kemasan ikut terhitung
-                            if (lapNamaProdukLower.includes(namaProdFokusLower) || namaProdFokusLower.includes(lapNamaProdukLower)) {
+                            // Menggunakan fungsi cekKecocokanProdukFokus yang diperbarui
+                            if (cekKecocokanProdukFokus(lap.nama_produk, f.produk)) {
                                 let satuanProduk = lap.satuan || lap.kemasan || produkSatuanMapTL[lap.produk_id] || produkSatuanMapTL[f.produk] || '1';
                                 let multiplier = parseBeratIsi(satuanProduk);
                                 let totalBeratIsiTerjual = (parseFloat(lap.qty) || 0) * multiplier;
@@ -1489,11 +1503,33 @@
             };
 
             window.editTokoSPM = async function(id, toko, nama, jabatan, provinsi, kota, kecamatan, kelurahan) {
+                // Ambil daftar toko unik yang sudah terdaftar dari datalist
+                let opsiToko = '';
+                const datalist = document.getElementById('list-toko-terdaftar');
+                let tokoDitemukan = false;
+                if(datalist) {
+                    const options = datalist.querySelectorAll('option');
+                    options.forEach(opt => {
+                        const isSelected = (opt.value === toko) ? 'selected' : '';
+                        if (opt.value === toko) tokoDitemukan = true;
+                        opsiToko += `<option value="${opt.value}" ${isSelected}>${opt.value}</option>`;
+                    });
+                }
+                // Jika toko saat ini tidak ada di list, pastikan tetap ditambahkan ke pilihan
+                if(!tokoDitemukan) {
+                    opsiToko = `<option value="${toko}" selected>${toko}</option>` + opsiToko;
+                }
+
                 const { value: formValues } = await Swal.fire({
                     title: 'Edit Toko & SPM/G Pengganti',
                     html: `
                         <div class="text-left space-y-3">
-                            <div><label class="text-xs font-bold">Nama Toko</label><input id="swal-toko" class="swal2-input !w-full !m-0 !text-sm !p-2 border" value="${toko}"></div>
+                            <div>
+                                <label class="text-xs font-bold">Nama Toko</label>
+                                <select id="swal-toko" class="swal2-input !w-full !m-0 !text-sm !p-2 border bg-white">
+                                    ${opsiToko}
+                                </select>
+                            </div>
                             <div><label class="text-xs font-bold">Nama SPM/G Baru / Pengganti</label><input id="swal-nama" class="swal2-input !w-full !m-0 !text-sm !p-2 border" placeholder="Nama SPM baru..." value="${nama === 'VACANT' ? '' : nama}"></div>
                             <div><label class="text-xs font-bold">Jabatan</label><select id="swal-jabatan" class="swal2-input !w-full !m-0 !text-sm !p-2 border bg-white"><option ${jabatan==='SPM'?'selected':''}>SPM</option><option ${jabatan==='SPB'?'selected':''}>SPB</option><option ${jabatan==='SPG'?'selected':''}>SPG</option></select></div>
                             <div><label class="text-xs font-bold">Kota / Kabupaten</label><input id="swal-kota" class="swal2-input !w-full !m-0 !text-sm !p-2 border" value="${kota}"></div>
@@ -1520,7 +1556,7 @@
                             jabatan: formValues.jabatan,
                             kota: formValues.kota
                         });
-                        Toast.fire({ icon: 'success', title: 'Data toko disesuaikan!' });
+                        Toast.fire({ icon: 'success', title: 'Data toko & personil berhasil disesuaikan!' });
                     } catch(e) { Swal.fire('Error', e.message, 'error'); }
                 }
             };
@@ -1884,11 +1920,8 @@
                                 
                                 laporanList.forEach(l => {
                                     if(!l.nama_produk) return;
-                                    let namaProdFokusLower = namaProdFokus.toLowerCase();
-                                    let lNamaProdukLower = bersihkanNamaProdukFokus(l.nama_produk).toLowerCase();
-                                    
-                                    // Menerapkan Substring Matching di sisi SPM juga
-                                    if (lNamaProdukLower.includes(namaProdFokusLower) || namaProdFokusLower.includes(lNamaProdukLower)) {
+                                    // Menggunakan cekKecocokanProdukFokus pada sisi SPM
+                                    if (cekKecocokanProdukFokus(l.nama_produk, namaProdFokus)) {
                                         let sat = produkSatuanMapSPM[l.produk_id] || produkSatuanMapSPM[l.nama_produk] || l.satuan || l.kemasan || '1';
                                         let matchNum = sat.toString().match(/([\d,\.]+)/);
                                         let multiplier = matchNum ? (parseFloat(matchNum[1].replace(',', '.')) || 1) : 1;
