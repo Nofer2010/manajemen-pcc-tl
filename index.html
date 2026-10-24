@@ -2193,18 +2193,46 @@
         document.getElementById('form-produk')?.addEventListener('submit', async(e)=>{
             e.preventDefault();
             const btn = e.target.querySelector('button'); btn.disabled=true;
+            
+            const inputKategori = document.getElementById('prod-kat').value;
+            const inputNama = document.getElementById('prod-nama').value;
+            const inputSatuan = document.getElementById('prod-vol').value;
+            const inputQty = parseFloat(document.getElementById('prod-qty').value);
+            const inputHarga = parseFloat(document.getElementById('prod-harga').value || 0);
+
+            // Cek apakah produk dengan nama dan kemasan yang sama persis sudah ada di toko ini
+            const isDuplicate = rawProdukListSPM.some(p => 
+                p.nama.toLowerCase().trim() === inputNama.toLowerCase().trim() && 
+                p.satuan === inputSatuan
+            );
+
+            if (isDuplicate) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Produk Sudah Ada!',
+                    html: `Produk <b>${inputNama}</b> dengan kemasan <b>${inputSatuan}</b> sudah terdaftar di toko ini. Silakan edit stok produk yang sudah ada di menu <b>Daftar Harga</b>.`
+                });
+                btn.disabled = false;
+                return; // Batalkan proses simpan
+            }
+
             btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...`;
             try {
                 await addDoc(collection(db, "produk"), {
                     spm_id: currentUser.uid, tl_id: currentTLId, toko: window.globalUserData?.toko || '',
-                    kategori: document.getElementById('prod-kat').value, nama: document.getElementById('prod-nama').value,
-                    satuan: document.getElementById('prod-vol').value, qty: parseFloat(document.getElementById('prod-qty').value),
-                    harga: parseFloat(document.getElementById('prod-harga').value || 0), created_at: new Date()
+                    kategori: inputKategori, nama: inputNama,
+                    satuan: inputSatuan, qty: inputQty,
+                    harga: inputHarga, created_at: new Date()
                 });
                 Toast.fire({ icon: 'success', title: 'Data Produk ditambahkan!' });
                 e.target.reset();
                 document.getElementById('prod-harga').readOnly = false;
-            } catch(e){ Swal.fire('Error',e.message,'error'); } finally { btn.disabled=false; btn.innerHTML = 'Simpan Produk'; }
+            } catch(e){ 
+                Swal.fire('Error',e.message,'error'); 
+            } finally { 
+                btn.disabled=false; 
+                btn.innerHTML = 'Simpan Produk'; 
+            }
         });
 
         document.getElementById('form-laporan')?.addEventListener('submit', async(e)=>{
@@ -2611,4 +2639,3 @@
     </script>
 </body>
 </html>
-
