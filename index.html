@@ -138,10 +138,14 @@
                 </ul>
 
                 <!-- MENU SPM / SPG -->
-                <ul id="menu-spm" class="hidden p-4 space-y-2">
+              <ul id="menu-spm" class="hidden p-4 space-y-2">
                     <li class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-3 mb-2">Kinerja & Laporan</li>
                     <li><button id="btn-spm-dash" onclick="bukaMenu('spm-dash', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-green-50 hover:text-green-600"><i class="fas fa-chart-pie w-5 text-center"></i> Dashboard Anda</button></li>
                     <li><button onclick="bukaMenu('spm-laporan', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-green-50 hover:text-green-600"><i class="fas fa-edit w-5 text-center"></i> Laporan Harian</button></li>
+                    
+                    <!-- DUA MENU BARU -->
+                    <li><button onclick="bukaMenu('spm-tinta', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-purple-50 hover:text-purple-600"><i class="fas fa-tint w-5 text-center"></i> Pemakaian Tinta</button></li>
+                    <li><button onclick="bukaMenu('spm-fokus', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-orange-50 hover:text-orange-600"><i class="fas fa-bullseye w-5 text-center"></i> Target Fokus</button></li>
                     
                     <li class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-3 mb-2 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">Inventory Toko</li>
                     <li><button onclick="bukaMenu('spm-produk', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-green-50 hover:text-green-600"><i class="fas fa-box-open w-5 text-center"></i> Tambah Produk</button></li>
@@ -697,14 +701,53 @@
                                 </table>
                             </div>
                         </div>
-                        
-                        <!-- REKAP PRODUK FOKUS SPM (MENYAMPING) -->
-                        <div class="mt-8 mb-4 flex justify-between items-end">
+                                   
+                    </section>
+
+                                      <!-- ============================================== -->
+                    <!-- SECTION BARU: SPM - LAPORAN PEMAKAIAN TINTA -->
+                    <!-- ============================================== -->
+                    <section id="spm-tinta" class="menu-section hidden fade-in">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="p-3 bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded-xl"><i class="fas fa-tint text-xl"></i></div>
                             <div>
-                                <h3 class="text-xl font-bold text-gray-800 dark:text-white"><i class="fas fa-bullseye text-orange-500 mr-2"></i> Rekap Pencapaian Produk Fokus</h3>
-                                <p class="text-sm text-gray-500 mt-1">Pantau rincian target berat/isi produk fokus secara menyamping.</p>
+                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Laporan Pemakaian Tinta</h2>
+                                <p class="text-sm font-medium text-gray-500">Rekap data pemakaian khusus produk Colourant (Tidak dihitung sebagai Omzet).</p>
                             </div>
                         </div>
+
+                        <div class="bg-white dark:bg-darkcard rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-800 mb-8">
+                            <div class="overflow-x-auto w-full custom-scroll">
+                                <table class="w-full text-left whitespace-nowrap min-w-[700px]">
+                                    <thead class="bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur">
+                                        <tr>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Tanggal. Bulan. Tahun</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Description</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Qty Pemakaian</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Sisa Stock</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-center">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="spm-tinta-body" class="divide-y divide-gray-100 dark:divide-gray-800">
+                                        <tr><td colspan="5" class="p-6 text-center text-gray-500">Memuat laporan tinta...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ============================================== -->
+                    <!-- SECTION BARU: SPM - PENCAPAIAN PRODUK FOKUS -->
+                    <!-- ============================================== -->
+                    <section id="spm-fokus" class="menu-section hidden fade-in">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="p-3 bg-orange-100 dark:bg-orange-900/30 text-orange-600 rounded-xl"><i class="fas fa-bullseye text-xl"></i></div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Rekap Pencapaian Produk Fokus</h2>
+                                <p class="text-sm font-medium text-gray-500">Pantau rincian target berat/isi produk fokus secara menyamping.</p>
+                            </div>
+                        </div>
+
                         <div class="bg-white dark:bg-darkcard rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-800 mb-8">
                             <div class="overflow-x-auto w-full custom-scroll">
                                 <table id="spm-rekap-fokus-table" class="w-full text-left whitespace-nowrap min-w-[700px]">
@@ -717,8 +760,8 @@
                                 </table>
                             </div>
                         </div>
-
                     </section>
+
                     
                     <!-- SPM: FITUR PO KE SALES -->
                     <section id="spm-po" class="menu-section hidden fade-in">
@@ -1165,6 +1208,10 @@
                 let storeMonthlyData = {};
 
                 allLaporanTL.forEach(lap => {
+                    // Bypass colourant agar omzet tidak masuk ke dashboard TL
+                    const isColourant = (lap.nama_produk || '').toLowerCase().includes('colourant');
+                    if(isColourant) return; 
+
                     const kat = produkKatMap[lap.produk_id] || produkKatMap[lap.nama_produk] || '';
                     const spmId = lap.spm_id;
                     const bln = lap.bulan || '-';
@@ -1810,8 +1857,36 @@
                 let totalCapBulanIni = 0;
                 let capHariIni = 0;
                 rawHistoriPenjualanList = [];
+                let tintaHtml = ''; // Variabel penampung tabel tinta
 
                 spmLaporanData.forEach(lap => {
+                    // Deteksi jika nama produk mengandung kata "Colourant"
+                    const isColourant = (lap.nama_produk || '').toLowerCase().includes('colourant');
+
+                    if (isColourant) {
+                        // Cari sisa stok di database master produk
+                        const prodInfo = rawProdukListSPM.find(p => p.id === lap.produk_id);
+                        const sisaStok = prodInfo ? prodInfo.qty : '-';
+                        
+                        // Format: Tanggal. Bulan. Tahun
+                        let formatTgl = '-';
+                        if (lap.tanggal_lengkap) {
+                            const parts = lap.tanggal_lengkap.split('-'); 
+                            if (parts.length === 3) formatTgl = `${parts[2]}. ${lap.bulan}. ${parts[0]}`;
+                        }
+                        
+                        tintaHtml += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                            <td class="p-4 text-sm font-medium text-gray-700 dark:text-gray-300">${formatTgl}</td>
+                            <td class="p-4 text-sm font-semibold">${lap.nama_produk}</td>
+                            <td class="p-4 text-sm font-black text-purple-600">${lap.qty}</td>
+                            <td class="p-4 text-sm font-bold text-gray-600">${sisaStok}</td>
+                            <td class="p-4 text-center">
+                                <button onclick="hapusLaporan('${lap.id}')" class="px-3 py-1.5 bg-red-50 hover:bg-red-500 hover:text-white text-red-600 rounded-lg text-xs font-bold transition border border-red-100 shadow-sm"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>`;
+                        return; // Hentikan proses disini agar TIDAK MASUK ke Omzet / Histori Utama
+                    }
+
                     const kat = produkKatMapSPM[lap.produk_id] || produkKatMapSPM[lap.nama_produk] || 'CCM';
                     const satuanProd = produkSatuanMapSPM[lap.produk_id] || produkSatuanMapSPM[lap.nama_produk] || lap.satuan || lap.kemasan || '1';
                     
@@ -1832,6 +1907,11 @@
                         }
                     }
                 });
+
+                // Cetak tabel Tinta ke HTML
+                if(tintaHtml === '') tintaHtml = '<tr><td colspan="5" class="p-6 text-center text-gray-500">Belum ada pemakaian tinta/colourant.</td></tr>';
+                const elTinta = document.getElementById('spm-tinta-body');
+                if(elTinta) elTinta.innerHTML = tintaHtml;
 
                 if(window.renderTabelHistori) renderTabelHistori(rawHistoriPenjualanList);
 
