@@ -250,7 +250,7 @@
                                 <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Nama SPM/G</label><input type="text" id="t-pegawai" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-500 transition"></div>
                                 <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Jabatan</label><select id="t-jab" class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-500 transition"><option>SPM</option><option>SPB</option><option>SPG</option></select></div>
                                 <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Email Login</label><input type="email" id="t-email" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-500 transition"></div>
-                                <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Password Login</label><input type="password" id="t-pass" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-500 transition"></div>
+                                <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Password Login</label><input type="password" id="t-pass" required minlength="6" class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-500 transition"></div>
                                 
                                 <!-- Opsi Wilayah Dinamis -->
                                 <div>
@@ -651,7 +651,13 @@
                                 <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Tanggal Penjualan</label><input type="date" id="lap-tgl" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-green-500 transition"></div>
                                 <div>
                                     <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Pilih Produk</label>
-                                    <select id="lap-produk" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-green-500 transition">
+                                    <!-- Tambahan Kolom Pencarian -->
+                                    <div class="relative mt-1 mb-2">
+                                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400"><i class="fas fa-search"></i></span>
+                                        <input type="text" id="search-lap-produk" onkeyup="filterLaporanProduk()" placeholder="Ketik nama produk untuk mencari..." class="w-full pl-10 pr-4 py-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none focus:bg-white focus:ring-2 focus:ring-green-500 transition border-gray-200 dark:border-gray-700">
+                                    </div>
+                                    <!-- Dropdown Pilih Produk -->
+                                    <select id="lap-produk" required class="w-full p-3 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-green-500 transition">
                                         <option value="" disabled selected>Memuat Data Produk Toko...</option>
                                     </select>
                                 </div>
@@ -1008,6 +1014,33 @@
         let rawProdukListSPM = []; 
         window.globalUserData = null;
 
+        window.handleLainTokoChange = function(selectedTokoId) {
+            const produkSelect = document.getElementById('lain-produk-select');
+            produkSelect.innerHTML = '<option value="" disabled selected>Memuat produk toko...</option>';
+            if(!selectedTokoId) return;
+
+            let pOpts = '<option value="" disabled selected>Pilih Produk Fokus Toko...</option>';
+            let hasProd = false;
+
+            // Pastikan global ini tersedia dengan mengekstrak dari rawTokoProdukList atau mapping saat snapshot
+            const targetToko = rawTokoProdukList.find(t => t.id === selectedTokoId);
+            const namaTokoTerpilih = targetToko ? targetToko.namaToko : '';
+
+            // Ambil allProdukData dari global TL (bisa menggunakan logika filter by id/namaToko)
+            if(window.globalAllProdukData) {
+                window.globalAllProdukData.forEach(p => {
+                    if (p.toko === namaTokoTerpilih) {
+                        hasProd = true;
+                        const namaBersih = bersihkanNamaProdukFokus(p.nama);
+                        pOpts += `<option value="${namaBersih}" data-kat="${p.kategori}">${p.kategori} - ${namaBersih} (${p.satuan})</option>`;
+                    }
+                });
+            }
+
+            if(!hasProd) pOpts = '<option value="" disabled selected>Toko ini belum mendaftarkan produk.</option>';
+            produkSelect.innerHTML = pOpts;
+        };
+
         function bersihkanNamaProdukFokus(namaAsli) {
             if (!namaAsli) return '';
             let bersih = namaAsli
@@ -1114,9 +1147,15 @@
             let produkKatMap = {}; 
             let produkSatuanMapTL = {}; 
             let allProdukData = [];
+            window.globalAllProdukData = allProdukData; 
             let allTargetLainTL = [];
             let allLaporanTL = [];
             let allTargetReguler = [];
+
+            // Event listener diletakkan sebagai onchange agar tidak menumpuk
+            document.getElementById('lain-toko-select').onchange = function() {
+                window.handleLainTokoChange(this.value);
+            };
 
             function parseBeratIsi(satuanStr) {
                 if(!satuanStr) return 1;
@@ -1346,7 +1385,6 @@
                 document.getElementById('tl-ranking-body').innerHTML = tbody;
             }
 
-            // LISTENER DIPISAH AGAR TIDAK BERTUMPUK (MENGHILANGKAN BUG DATA HILANG)
             const qSpm = query(collection(db, "users"), where("tl_id", "==", uid), where("role", "==", "SPM"));
             onSnapshot(qSpm, (snapSpm) => {
                 let dropdownHtml = '<option value="">Pilih Toko & Tim...</option>';
@@ -1416,6 +1454,7 @@
                         produkSatuanMapTL[p.nama] = p.satuan;
                     }
                 });
+                window.globalAllProdukData = allProdukData;
                 renderTLData();
             });
 
@@ -1713,30 +1752,6 @@
                 if(Object.values(prodMap).length === 0) detailTableHtml = '<tr><td colspan="4" class="p-6 text-center text-gray-500">Tidak ada produk yang sesuai dengan pencarian.</td></tr>';
                 document.getElementById('tl-detail-stok-body').innerHTML = detailTableHtml;
             }
-
-            // Perbaikan untuk mencegah OnSnapshot bersarang pada event dropdown
-            document.getElementById('lain-toko-select').addEventListener('change', function() {
-                const selectedTokoId = this.value;
-                const produkSelect = document.getElementById('lain-produk-select');
-                produkSelect.innerHTML = '<option value="" disabled selected>Memuat produk toko...</option>';
-                
-                if(!selectedTokoId) return;
-
-                const namaTokoTerpilih = tokoInfoMap[selectedTokoId]?.toko || '';
-                let pOpts = '<option value="" disabled selected>Pilih Produk Fokus Toko...</option>';
-                let hasProd = false;
-
-                allProdukData.forEach(p => {
-                    if (p.toko === namaTokoTerpilih) {
-                        hasProd = true;
-                        const namaBersih = bersihkanNamaProdukFokus(p.nama);
-                        pOpts += `<option value="${namaBersih}" data-kat="${p.kategori}">${p.kategori} - ${namaBersih} (${p.satuan})</option>`;
-                    }
-                });
-
-                if(!hasProd) pOpts = '<option value="" disabled selected>Toko ini belum mendaftarkan produk.</option>';
-                produkSelect.innerHTML = pOpts;
-            });
         }
 
         window.exportTableToCSV = function(tableId, filename) {
@@ -1746,7 +1761,8 @@
                 let row = [], cols = rows[i].querySelectorAll("td, th");
                 for (let j = 0; j < cols.length; j++) {
                     let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, "").replace(/(\s\s)/gm, " ");
-                    row.push('"' + data + '"');
+                    // Escape kutip ganda agar format CSV tidak pecah
+                    row.push('"' + data.replace(/"/g, '""') + '"');
                 }
                 csv.push(row.join(","));
             }
@@ -1772,7 +1788,9 @@
                 cell.style.padding = "8px";
             });
 
-            let tableHTML = clonedTable.outerHTML.replace(/ /g, '%20');
+            // PERBAIKAN: Jangan gunakan replace ' ' dengan '%20' pada struktur HTML,
+            // hal tersebut merusak syntax HTML dari Tailwind. Gunakan encodeURIComponent penuh.
+            let tableHTML = clonedTable.outerHTML;
             
             filename = filename ? filename+'\.xls' : 'excel_data.xls';
             downloadLink = document.createElement("a");
@@ -1782,7 +1800,7 @@
                 let blob = new Blob(['\ufeff', tableHTML], { type: dataType });
                 navigator.msSaveOrOpenBlob(blob, filename);
             } else{
-                downloadLink.href = 'data:' + dataType + ', ' + '\ufeff' + tableHTML;
+                downloadLink.href = 'data:' + dataType + ', ' + encodeURIComponent('\ufeff' + tableHTML);
                 downloadLink.download = filename;
                 downloadLink.click();
             }
@@ -2081,6 +2099,41 @@
             });
         }
 
+                window.filterLaporanProduk = function() {
+            const keyword = document.getElementById('search-lap-produk').value.toLowerCase();
+            let pSelect = '<option value="" disabled selected>Pilih Produk (Tersedia)...</option>';
+            
+            // Filter data dari master array rawProdukListSPM
+            const filtered = rawProdukListSPM.filter(p => {
+                // PERBAIKAN: Mencari berdasarkan Nama, Kategori, dan Kemasan/Satuan sekaligus
+                // Mendukung pencarian multi-kata spasi (contoh: "vini 1" atau "vini 5 kg")
+                const searchString = `${p.kategori || ''} ${p.nama || ''} ${p.satuan || ''}`.toLowerCase();
+                const keywords = keyword.split(' ').filter(k => k.trim() !== '');
+                return keywords.every(kw => searchString.includes(kw));
+            });
+            
+            // Generate ulang isi dropdown
+            filtered.forEach(p => {
+                pSelect += `<option value="${p.id}" data-kat="${p.kategori}" data-nama="${p.nama}" data-satuan="${p.satuan}" data-harga="${p.harga}">${p.kategori} - ${p.nama} (${p.satuan})</option>`;
+            });
+            
+            const lapProduk = document.getElementById('lap-produk');
+            lapProduk.innerHTML = pSelect;
+            
+            // PERBAIKAN: Auto-Select jika hasil pencarian hanya menyisakan 1 produk yang cocok
+            if (keyword !== '' && filtered.length === 1) {
+                lapProduk.selectedIndex = 1; // Otomatis pilih produk tersebut
+                if (typeof window.hitungTotal === 'function') {
+                    window.hitungTotal(); // Otomatis munculkan harga
+                }
+            } else {
+                // Reset kolom harga & total jika pengguna mengetik pencarian baru
+                document.getElementById('lap-harga').value = '';
+                document.getElementById('lap-total').value = 'Rp 0';
+            }
+        };
+
+
         window.filterHistoriPenjualan = function() {
             const fTgl = document.getElementById('filter-search-tgl').value;
             const fBulan = document.getElementById('filter-search-bulan').value;
@@ -2122,21 +2175,19 @@
         }
 
         window.filterRekapProduk = function() {
-    const keyword = document.getElementById('search-rekap-produk').value.toLowerCase();
-    const kategoriValue = document.getElementById('filter-kategori-produk').value.toLowerCase();
-    
-    const filtered = rawProdukListSPM.filter(p => {
-        // Cek kecocokan teks pencarian (nama atau kategori)
-        const matchKeyword = p.nama.toLowerCase().includes(keyword) || p.kategori.toLowerCase().includes(keyword);
-        // Cek kecocokan dropdown filter kategori
-        const matchKategori = kategoriValue === "" || p.kategori.toLowerCase() === kategoriValue;
-        
-        return matchKeyword && matchKategori;
-    });
-    
-    renderTabelRekapSPM(filtered);
-};
-
+            const keyword = document.getElementById('search-rekap-produk').value.toLowerCase();
+            const kategoriValue = document.getElementById('filter-kategori-produk').value.toLowerCase();
+            
+            const filtered = rawProdukListSPM.filter(p => {
+                // PERBAIKAN: Proteksi undefined dengan || ''
+                const matchKeyword = (p.nama || '').toLowerCase().includes(keyword) || (p.kategori || '').toLowerCase().includes(keyword);
+                const matchKategori = kategoriValue === "" || (p.kategori || '').toLowerCase() === kategoriValue;
+                
+                return matchKeyword && matchKategori;
+            });
+            
+            renderTabelRekapSPM(filtered);
+        };
 
         function renderTabelRekapSPM(list) {
             let pTable = '';
@@ -2158,11 +2209,25 @@
         }
 
         window.hapusLaporan = async function(id) {
-            const res = await Swal.fire({ title: 'Hapus Histori?', text: "Data penjualan ini akan dihapus dari sistem.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Ya, Hapus' });
+            // PERBAIKAN: Fitur Kembalikan Stok Barang saat Laporan Dihapus
+            const res = await Swal.fire({ title: 'Hapus Histori?', text: "Data penjualan ini akan dihapus dari sistem, dan stok produk akan dikembalikan secara otomatis.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Ya, Hapus & Restock' });
             if(res.isConfirmed) {
                 try {
-                    await deleteDoc(doc(db, "laporan", id));
-                    Toast.fire({ icon: 'success', title: 'Histori berhasil dihapus.' });
+                    const lapRef = doc(db, "laporan", id);
+                    const lapSnap = await getDoc(lapRef);
+                    if (lapSnap.exists()) {
+                        const lapData = lapSnap.data();
+                        if (lapData.produk_id && lapData.qty) {
+                            const produkRef = doc(db, "produk", lapData.produk_id);
+                            const produkSnap = await getDoc(produkRef);
+                            if (produkSnap.exists()) {
+                                const currentQty = parseFloat(produkSnap.data().qty) || 0;
+                                await updateDoc(produkRef, { qty: currentQty + parseFloat(lapData.qty) });
+                            }
+                        }
+                    }
+                    await deleteDoc(lapRef);
+                    Toast.fire({ icon: 'success', title: 'Histori dihapus & Stok barang dikembalikan.' });
                 } catch(e) { Swal.fire('Error', e.message, 'error'); }
             }
         };
@@ -2304,7 +2369,7 @@
 
             // Cek apakah produk dengan nama dan kemasan yang sama persis sudah ada di toko ini
             const isDuplicate = rawProdukListSPM.some(p => 
-                p.nama.toLowerCase().trim() === inputNama.toLowerCase().trim() && 
+                (p.nama || '').toLowerCase().trim() === inputNama.toLowerCase().trim() && 
                 p.satuan === inputSatuan
             );
 
@@ -2359,7 +2424,7 @@
                 await addDoc(collection(db, "laporan"), {
                     spm_id: currentUser.uid, tl_id: currentTLId, toko: namaTokoSnapshot, tanggal_lengkap: tgl,
                     bulan: bulanStr, tahun: thn, produk_id: produkId, nama_produk: nmProduk, satuan: satuanProd,
-                    kemasan: satuanProd, qty: qtyTerjual, harga: parseFloat(document.getElementById('lap-harga').value),
+                    kemasan: satuanProd, qty: qtyTerjual, harga: parseFloat(document.getElementById('lap-harga').value || 0),
                     total: parseFloat(document.getElementById('lap-total').value.replace(/[^0-9]/g, '')), created_at: new Date()
                 });
 
@@ -2376,6 +2441,13 @@
                 document.getElementById('lap-qty').value = '1';
                 document.getElementById('lap-harga').value = '';
                 document.getElementById('lap-total').value = 'Rp 0';
+                
+                // Reset kolom pencarian & dropdown kembali ke awal
+                const searchLapEl = document.getElementById('search-lap-produk');
+                if(searchLapEl) {
+                    searchLapEl.value = '';
+                    window.filterLaporanProduk(); 
+                }
             } catch(e){ 
                 Swal.fire('Error', e.message, 'error'); 
             } finally { 
