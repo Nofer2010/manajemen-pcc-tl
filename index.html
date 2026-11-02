@@ -1935,7 +1935,12 @@
                 const elTinta = document.getElementById('spm-tinta-body');
                 if(elTinta) elTinta.innerHTML = tintaHtml;
 
-                if(window.renderTabelHistori) renderTabelHistori(rawHistoriPenjualanList);
+                // FIX: Panggil filterHistoriPenjualan agar histori update realtime dan filter tetap berfungsi
+                if(typeof window.filterHistoriPenjualan === 'function') {
+                          window.filterHistoriPenjualan();
+                  } else {
+                          renderTabelHistori(rawHistoriPenjualanList);
+                          }
 
                 let pct = tBulananBulanIni > 0 ? (totalCapBulanIni / tBulananBulanIni * 100).toFixed(1) : 0;
                 document.getElementById('spm-total-capaian').innerText = `${formatRp(totalCapBulanIni)} (${pct}%)`;
