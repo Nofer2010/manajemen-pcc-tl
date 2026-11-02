@@ -710,7 +710,7 @@
                                    
                     </section>
 
-                                      <!-- ============================================== -->
+                    <!-- ============================================== -->
                     <!-- SECTION BARU: SPM - LAPORAN PEMAKAIAN TINTA -->
                     <!-- ============================================== -->
                     <section id="spm-tinta" class="menu-section hidden fade-in">
@@ -792,7 +792,15 @@
                                     <div class="space-y-3">
                                         <div>
                                             <label class="text-xs font-semibold text-gray-600 dark:text-gray-400">Pilih Produk</label>
-                                            <select id="po-produk" class="w-full p-2.5 mt-1 border rounded-lg bg-white dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition text-sm">
+                                            
+                                            <!-- TAMBAHAN Kolom Pencarian Khusus PO -->
+                                            <div class="relative mt-1 mb-2">
+                                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400"><i class="fas fa-search"></i></span>
+                                                <input type="text" id="search-po-produk" onkeyup="filterPOProduk()" placeholder="Ketik nama produk untuk mencari..." class="w-full pl-10 pr-4 py-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 transition border-gray-200 dark:border-gray-700">
+                                            </div>
+                                            
+                                            <!-- Dropdown PO -->
+                                            <select id="po-produk" class="w-full p-2.5 border rounded-lg bg-white dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition text-sm">
                                                 <option value="" disabled selected>Memuat Data Produk Toko...</option>
                                             </select>
                                         </div>
@@ -1022,11 +1030,9 @@
             let pOpts = '<option value="" disabled selected>Pilih Produk Fokus Toko...</option>';
             let hasProd = false;
 
-            // Pastikan global ini tersedia dengan mengekstrak dari rawTokoProdukList atau mapping saat snapshot
             const targetToko = rawTokoProdukList.find(t => t.id === selectedTokoId);
             const namaTokoTerpilih = targetToko ? targetToko.namaToko : '';
 
-            // Ambil allProdukData dari global TL (bisa menggunakan logika filter by id/namaToko)
             if(window.globalAllProdukData) {
                 window.globalAllProdukData.forEach(p => {
                     if (p.toko === namaTokoTerpilih) {
@@ -1152,7 +1158,6 @@
             let allLaporanTL = [];
             let allTargetReguler = [];
 
-            // Event listener diletakkan sebagai onchange agar tidak menumpuk
             document.getElementById('lain-toko-select').onchange = function() {
                 window.handleLainTokoChange(this.value);
             };
@@ -1247,7 +1252,6 @@
                 let storeMonthlyData = {};
 
                 allLaporanTL.forEach(lap => {
-                    // Bypass colourant agar omzet tidak masuk ke dashboard TL
                     const isColourant = (lap.nama_produk || '').toLowerCase().includes('colourant');
                     if(isColourant) return; 
 
@@ -1788,8 +1792,6 @@
                 cell.style.padding = "8px";
             });
 
-            // PERBAIKAN: Jangan gunakan replace ' ' dengan '%20' pada struktur HTML,
-            // hal tersebut merusak syntax HTML dari Tailwind. Gunakan encodeURIComponent penuh.
             let tableHTML = clonedTable.outerHTML;
             
             filename = filename ? filename+'\.xls' : 'excel_data.xls';
@@ -1838,7 +1840,8 @@
             const currentBulanIndex = date.getMonth();
             const currentBulan = bulanArray[currentBulanIndex];
             const currentTahun = date.getFullYear().toString();
-            const todayStr = date.toISOString().split('T')[0];
+            // PERBAIKAN WAKTU LOKAL (BUKAN UTC)
+            const todayStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
             
             document.getElementById('spm-bulan-title').innerText = `(${currentBulan} ${currentTahun})`;
             document.getElementById('spm-chart-year').innerText = currentTahun;
@@ -2025,7 +2028,8 @@
             // LISTENER DIPISAH
             const qProd = query(collection(db, "produk"), where("toko", "==", namaTokoAktif));
             onSnapshot(qProd, (snapProd) => {
-                let pSelect = '<option value="" disabled selected>Pilih Produk (Tersedia)...</option>';
+                let pSelectLap = '<option value="" disabled selected>Pilih Produk (Tersedia)...</option>';
+                let pSelectPO = '<option value="" disabled selected>Pilih Produk (Tersedia)...</option>';
                 rawProdukListSPM = [];
                 
                 snapProd.forEach(doc => {
@@ -2036,11 +2040,14 @@
                     produkSatuanMapSPM[doc.id] = p.satuan || '1';
                     produkSatuanMapSPM[p.nama] = p.satuan || '1';
                     
-                    pSelect += `<option value="${doc.id}" data-kat="${p.kategori}" data-nama="${p.nama}" data-satuan="${p.satuan}" data-harga="${p.harga}">${p.kategori} - ${p.nama} (${p.satuan})</option>`;
+                    // Dropdown untuk Laporan Penjualan Harian
+                    pSelectLap += `<option value="${doc.id}" data-kat="${p.kategori}" data-nama="${p.nama}" data-satuan="${p.satuan}" data-harga="${p.harga}">${p.kategori} - ${p.nama} (${p.satuan})</option>`;
+                    // Dropdown untuk PO dengan Keterangan [Stok: X]
+                    pSelectPO += `<option value="${doc.id}" data-kat="${p.kategori}" data-nama="${p.nama}" data-satuan="${p.satuan}" data-harga="${p.harga}">${p.kategori} - ${p.nama} (${p.satuan}) - [Stok: ${p.qty}]</option>`;
                 });
                 
-                document.getElementById('lap-produk').innerHTML = pSelect;
-                if(document.getElementById('po-produk')) document.getElementById('po-produk').innerHTML = pSelect;
+                document.getElementById('lap-produk').innerHTML = pSelectLap;
+                if(document.getElementById('po-produk')) document.getElementById('po-produk').innerHTML = pSelectPO;
                 renderTabelRekapSPM(rawProdukListSPM);
                 renderSPMData();
             });
@@ -2099,20 +2106,16 @@
             });
         }
 
-                window.filterLaporanProduk = function() {
+        window.filterLaporanProduk = function() {
             const keyword = document.getElementById('search-lap-produk').value.toLowerCase();
             let pSelect = '<option value="" disabled selected>Pilih Produk (Tersedia)...</option>';
             
-            // Filter data dari master array rawProdukListSPM
             const filtered = rawProdukListSPM.filter(p => {
-                // PERBAIKAN: Mencari berdasarkan Nama, Kategori, dan Kemasan/Satuan sekaligus
-                // Mendukung pencarian multi-kata spasi (contoh: "vini 1" atau "vini 5 kg")
                 const searchString = `${p.kategori || ''} ${p.nama || ''} ${p.satuan || ''}`.toLowerCase();
                 const keywords = keyword.split(' ').filter(k => k.trim() !== '');
                 return keywords.every(kw => searchString.includes(kw));
             });
             
-            // Generate ulang isi dropdown
             filtered.forEach(p => {
                 pSelect += `<option value="${p.id}" data-kat="${p.kategori}" data-nama="${p.nama}" data-satuan="${p.satuan}" data-harga="${p.harga}">${p.kategori} - ${p.nama} (${p.satuan})</option>`;
             });
@@ -2120,19 +2123,41 @@
             const lapProduk = document.getElementById('lap-produk');
             lapProduk.innerHTML = pSelect;
             
-            // PERBAIKAN: Auto-Select jika hasil pencarian hanya menyisakan 1 produk yang cocok
             if (keyword !== '' && filtered.length === 1) {
-                lapProduk.selectedIndex = 1; // Otomatis pilih produk tersebut
+                lapProduk.selectedIndex = 1; 
                 if (typeof window.hitungTotal === 'function') {
-                    window.hitungTotal(); // Otomatis munculkan harga
+                    window.hitungTotal();
                 }
             } else {
-                // Reset kolom harga & total jika pengguna mengetik pencarian baru
                 document.getElementById('lap-harga').value = '';
                 document.getElementById('lap-total').value = 'Rp 0';
             }
         };
 
+        // FUNGSI PENCARIAN KHUSUS PO
+        window.filterPOProduk = function() {
+            const keyword = document.getElementById('search-po-produk').value.toLowerCase();
+            let pSelect = '<option value="" disabled selected>Pilih Produk (Tersedia)...</option>';
+            
+            const filtered = rawProdukListSPM.filter(p => {
+                const searchString = `${p.kategori || ''} ${p.nama || ''} ${p.satuan || ''}`.toLowerCase();
+                const keywords = keyword.split(' ').filter(k => k.trim() !== '');
+                return keywords.every(kw => searchString.includes(kw));
+            });
+            
+            filtered.forEach(p => {
+                // Info stok dimasukkan ke text dropdown
+                pSelect += `<option value="${p.id}" data-kat="${p.kategori}" data-nama="${p.nama}" data-satuan="${p.satuan}" data-harga="${p.harga}">${p.kategori} - ${p.nama} (${p.satuan}) - [Stok: ${p.qty}]</option>`;
+            });
+            
+            const poProduk = document.getElementById('po-produk');
+            if(poProduk) {
+                poProduk.innerHTML = pSelect;
+                if (keyword !== '' && filtered.length === 1) {
+                    poProduk.selectedIndex = 1; 
+                }
+            }
+        };
 
         window.filterHistoriPenjualan = function() {
             const fTgl = document.getElementById('filter-search-tgl').value;
@@ -2179,7 +2204,6 @@
             const kategoriValue = document.getElementById('filter-kategori-produk').value.toLowerCase();
             
             const filtered = rawProdukListSPM.filter(p => {
-                // PERBAIKAN: Proteksi undefined dengan || ''
                 const matchKeyword = (p.nama || '').toLowerCase().includes(keyword) || (p.kategori || '').toLowerCase().includes(keyword);
                 const matchKategori = kategoriValue === "" || (p.kategori || '').toLowerCase() === kategoriValue;
                 
@@ -2209,7 +2233,6 @@
         }
 
         window.hapusLaporan = async function(id) {
-            // PERBAIKAN: Fitur Kembalikan Stok Barang saat Laporan Dihapus
             const res = await Swal.fire({ title: 'Hapus Histori?', text: "Data penjualan ini akan dihapus dari sistem, dan stok produk akan dikembalikan secara otomatis.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Ya, Hapus & Restock' });
             if(res.isConfirmed) {
                 try {
@@ -2442,7 +2465,6 @@
                 document.getElementById('lap-harga').value = '';
                 document.getElementById('lap-total').value = 'Rp 0';
                 
-                // Reset kolom pencarian & dropdown kembali ke awal
                 const searchLapEl = document.getElementById('search-lap-produk');
                 if(searchLapEl) {
                     searchLapEl.value = '';
