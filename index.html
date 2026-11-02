@@ -140,7 +140,7 @@
                 <!-- MENU SPM / SPG -->
               <ul id="menu-spm" class="hidden p-4 space-y-2">
                     <li class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-3 mb-2">Kinerja & Laporan</li>
-                    <li><button id="btn-spm-dash" onclick="bukaMenu('spm-dash', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-green-50 hover:text-green-600"><i class="fas fa-chart-pie w-5 text-center"></i> Dashboard Anda</button></li>
+                    <li><button id="btn-spm-dash" onclick="bukaMenu('spm-dash', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-green-50 hover:text-green-600"><i class="fas fa-chart-pie w-5 text-center"></i> Dashboard</button></li>
                     <li><button onclick="bukaMenu('spm-laporan', this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition font-semibold text-gray-600 dark:text-gray-300 hover:bg-green-50 hover:text-green-600"><i class="fas fa-edit w-5 text-center"></i> Laporan Harian</button></li>
                     
                     <!-- DUA MENU BARU -->
@@ -444,7 +444,7 @@
                             <div class="p-3 bg-orange-100 dark:bg-orange-900/30 text-orange-600 rounded-xl"><i class="fas fa-star text-xl"></i></div>
                             <div>
                                 <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Tambah Target Fokus</h2>
-                                <p class="text-sm font-medium text-gray-500">Target tambahan berdasarkan berat/isi dan nilai produk spesifik.</p>
+                                <p class="text-sm font-medium text-gray-500">Target tambahan khusus Produk Kategori RM (Ready Mix).</p>
                             </div>
                         </div>
 
@@ -452,7 +452,7 @@
                             <form id="form-target-lain" class="space-y-5">
                                 <div><label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Pilih Toko</label><select id="lain-toko-select" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-orange-500 transition"><option value="">Pilih Toko Terlebih Dahulu...</option></select></div>
                                 <div>
-                                    <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Pilih Produk</label>
+                                    <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Pilih Produk (Khusus Kategori RM)</label>
                                     <select id="lain-produk-select" required class="w-full p-3 mt-1 border rounded-xl bg-gray-50 dark:bg-gray-900 focus:bg-white outline-none focus:ring-2 focus:ring-orange-500 transition">
                                         <option value="" disabled selected>Pilih Toko Dahulu...</option>
                                     </select>
@@ -558,7 +558,7 @@
                         </div>
 
                         <div class="mb-8">
-                            <h3 class="text-xl font-bold mb-4"><i class="fas fa-bullseye text-orange-500"></i> Target Produk Fokus</h3>
+                            <h3 class="text-xl font-bold mb-4"><i class="fas fa-bullseye text-orange-500"></i> Target Produk Fokus (RM)</h3>
                             <div id="spm-target-fokus-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 <div class="bg-white dark:bg-darkcard p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 text-gray-500 text-sm">
                                     Memuat target produk fokus...
@@ -688,16 +688,15 @@
                         </div>
 
                         <div class="bg-white dark:bg-darkcard rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-800 mb-8">
-                            <div class="overflow-x-auto overflow-y-auto max-h-[400px] w-full custom-scroll"> <!-- Tambah max-h dan scroll -->
+                            <div class="overflow-x-auto overflow-y-auto max-h-[400px] w-full custom-scroll">
                             <table class="w-full text-left whitespace-nowrap min-w-[800px]">
-              <!-- Tambah sticky top-0 z-10 agar header tetap melayang saat di-scroll -->
                       <thead class="bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur sticky top-0 z-10 shadow-sm">
                         <tr>
                 <th class="p-4 text-xs font-bold text-gray-500 uppercase">Tanggal</th>
                 <th class="p-4 text-xs font-bold text-gray-500 uppercase">Toko</th>
                 <th class="p-4 text-xs font-bold text-gray-500 uppercase">Kategori</th>
                 <th class="p-4 text-xs font-bold text-gray-500 uppercase">Detail Produk</th>
-                <th class="p-4 text-xs font-bold text-gray-500 uppercase">Kemasan</th> <!-- Tambahan Kolom Kemasan -->
+                <th class="p-4 text-xs font-bold text-gray-500 uppercase">Kemasan</th>
                 <th class="p-4 text-xs font-bold text-gray-500 uppercase">Qty</th>
                 <th class="p-4 text-xs font-bold text-gray-500 uppercase">Total Rp</th>
                 <th class="p-4 text-xs font-bold text-gray-500 uppercase text-center">Aksi</th>
@@ -711,9 +710,7 @@
                         </div>                         
                     </section>
 
-                    <!-- ============================================== -->
-                    <!-- SECTION BARU: SPM - LAPORAN PEMAKAIAN TINTA -->
-                    <!-- ============================================== -->
+                    <!-- SECTION SPM - LAPORAN PEMAKAIAN TINTA -->
                     <section id="spm-tinta" class="menu-section hidden fade-in">
                         <div class="flex items-center gap-3 mb-6">
                             <div class="p-3 bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded-xl"><i class="fas fa-tint text-xl"></i></div>
@@ -743,15 +740,23 @@
                         </div>
                     </section>
 
-                    <!-- ============================================== -->
-                    <!-- SECTION BARU: SPM - PENCAPAIAN PRODUK FOKUS -->
-                    <!-- ============================================== -->
+                    <!-- SECTION SPM - PENCAPAIAN PRODUK FOKUS -->
                     <section id="spm-fokus" class="menu-section hidden fade-in">
-                        <div class="flex items-center gap-3 mb-6">
-                            <div class="p-3 bg-orange-100 dark:bg-orange-900/30 text-orange-600 rounded-xl"><i class="fas fa-bullseye text-xl"></i></div>
-                            <div>
-                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Rekap Pencapaian Produk Fokus</h2>
-                                <p class="text-sm font-medium text-gray-500">Pantau rincian target berat/isi produk fokus secara menyamping.</p>
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+                            <div class="flex items-center gap-3">
+                                <div class="p-3 bg-orange-100 dark:bg-orange-900/30 text-orange-600 rounded-xl"><i class="fas fa-bullseye text-xl"></i></div>
+                                <div>
+                                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Rekap Pencapaian Produk Fokus</h2>
+                                    <p class="text-sm font-medium text-gray-500">Pantau rincian target berat/isi produk fokus secara menyamping.</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <select id="spm-rekap-fokus-bulan" onchange="renderSPMRekapFokusTable()" class="p-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none">
+                                    <option value="">Semua Bulan</option>
+                                    <option value="Januari">Januari</option><option value="Februari">Februari</option><option value="Maret">Maret</option><option value="April">April</option><option value="Mei">Mei</option><option value="Juni">Juni</option><option value="Juli">Juli</option><option value="Agustus">Agustus</option><option value="September">September</option><option value="Oktober">Oktober</option><option value="November">November</option><option value="Desember">Desember</option>
+                                </select>
+                                <input type="text" id="spm-rekap-fokus-tahun" onkeyup="renderSPMRekapFokusTable()" placeholder="Tahun (Cth: 2026)" class="w-32 p-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none">
+                                <button onclick="exportTableToExcel('spm-rekap-fokus-table', 'Rekap_Penjualan_Target_Fokus_SPM.xls')" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition shadow-sm"><i class="fas fa-file-excel mr-1"></i> Excel</button>
                             </div>
                         </div>
 
@@ -769,7 +774,6 @@
                         </div>
                     </section>
 
-                    
                     <!-- SPM: FITUR PO KE SALES -->
                     <section id="spm-po" class="menu-section hidden fade-in">
                         <div class="flex items-center gap-3 mb-6">
@@ -793,14 +797,10 @@
                                     <div class="space-y-3">
                                         <div>
                                             <label class="text-xs font-semibold text-gray-600 dark:text-gray-400">Pilih Produk</label>
-                                            
-                                            <!-- TAMBAHAN Kolom Pencarian Khusus PO -->
                                             <div class="relative mt-1 mb-2">
                                                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400"><i class="fas fa-search"></i></span>
                                                 <input type="text" id="search-po-produk" onkeyup="filterPOProduk()" placeholder="Ketik nama produk untuk mencari..." class="w-full pl-10 pr-4 py-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 transition border-gray-200 dark:border-gray-700">
                                             </div>
-                                            
-                                            <!-- Dropdown PO -->
                                             <select id="po-produk" class="w-full p-2.5 border rounded-lg bg-white dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition text-sm">
                                                 <option value="" disabled selected>Memuat Data Produk Toko...</option>
                                             </select>
@@ -869,24 +869,21 @@
                     <!-- SPM: Daftar Harga & Produk -->
                     <section id="spm-rekap" class="menu-section hidden fade-in">
                         <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-3">
-    <h2 class="text-2xl font-bold">Daftar Produk & Harga</h2>
-    <div class="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
-        <!-- Dropdown Filter Kategori -->
-        <select id="filter-kategori-produk" onchange="filterRekapProduk()" class="w-full sm:w-40 p-2 py-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none focus:ring-2 focus:ring-green-500 border-gray-200 dark:border-gray-700 transition">
-            <option value="">Semua Kategori</option>
-            <option value="CCM">CCM</option>
-            <option value="RM">Ready Mix (RM)</option>
-            <option value="ALAT">Alat</option>
-            <option value="DLL">Lain-lain</option>
-        </select>
-        
-        <!-- Input Pencarian Nama -->
-        <div class="relative w-full sm:w-64">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400"><i class="fas fa-search"></i></span>
-            <input type="text" id="search-rekap-produk" onkeyup="filterRekapProduk()" placeholder="Cari nama produk..." class="w-full pl-10 pr-4 py-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none focus:ring-2 focus:ring-green-500 border-gray-200 dark:border-gray-700 transition">
-        </div>
-    </div>
-</div>
+                            <h2 class="text-2xl font-bold">Daftar Produk & Harga</h2>
+                            <div class="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
+                                <select id="filter-kategori-produk" onchange="filterRekapProduk()" class="w-full sm:w-40 p-2 py-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none focus:ring-2 focus:ring-green-500 border-gray-200 dark:border-gray-700 transition">
+                                    <option value="">Semua Kategori</option>
+                                    <option value="CCM">CCM</option>
+                                    <option value="RM">Ready Mix (RM)</option>
+                                    <option value="ALAT">Alat</option>
+                                    <option value="DLL">Lain-lain</option>
+                                </select>
+                                <div class="relative w-full sm:w-64">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400"><i class="fas fa-search"></i></span>
+                                    <input type="text" id="search-rekap-produk" onkeyup="filterRekapProduk()" placeholder="Cari nama produk..." class="w-full pl-10 pr-4 py-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none focus:ring-2 focus:ring-green-500 border-gray-200 dark:border-gray-700 transition">
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="bg-white dark:bg-darkcard rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-800">
                             <div class="overflow-x-auto overflow-y-auto max-h-[400px] w-full custom-scroll">
@@ -1025,10 +1022,10 @@
 
         window.handleLainTokoChange = function(selectedTokoId) {
             const produkSelect = document.getElementById('lain-produk-select');
-            produkSelect.innerHTML = '<option value="" disabled selected>Memuat produk toko...</option>';
+            produkSelect.innerHTML = '<option value="" disabled selected>Memuat produk toko (Kategori RM)...</option>';
             if(!selectedTokoId) return;
 
-            let pOpts = '<option value="" disabled selected>Pilih Produk Fokus Toko...</option>';
+            let pOpts = '<option value="" disabled selected>Pilih Produk Fokus Toko (RM Only)...</option>';
             let hasProd = false;
 
             const targetToko = rawTokoProdukList.find(t => t.id === selectedTokoId);
@@ -1036,7 +1033,8 @@
 
             if(window.globalAllProdukData) {
                 window.globalAllProdukData.forEach(p => {
-                    if (p.toko === namaTokoTerpilih) {
+                    // FILTER REVISI: HANYA PRODUK KATEGORI RM YANG BISA DIJADIKAN TARGET FOKUS
+                    if (p.toko === namaTokoTerpilih && (p.kategori || '').toUpperCase() === 'RM') {
                         hasProd = true;
                         const namaBersih = bersihkanNamaProdukFokus(p.nama);
                         pOpts += `<option value="${namaBersih}" data-kat="${p.kategori}">${p.kategori} - ${namaBersih} (${p.satuan})</option>`;
@@ -1044,7 +1042,7 @@
                 });
             }
 
-            if(!hasProd) pOpts = '<option value="" disabled selected>Toko ini belum mendaftarkan produk.</option>';
+            if(!hasProd) pOpts = '<option value="" disabled selected>Toko ini tidak memiliki produk RM (Ready Mix).</option>';
             produkSelect.innerHTML = pOpts;
         };
 
@@ -1181,6 +1179,10 @@
                 
                 let fokusMap = {};
                 allTargetLainTL.forEach(tgt => {
+                    // FILTER REVISI: Pastikan Kategori Produk Fokus Hanya RM (Bila ada data lama CCM/Lain, abaikan)
+                    const katProduk = produkKatMap[tgt.produk] || 'RM';
+                    if(katProduk === 'CCM') return;
+
                     const tInfo = tokoInfoMap[tgt.toko_id] || { nama: 'Unknown', toko: 'Unknown' };
                     if(tInfo.nama === 'VACANT') return;
                     
@@ -1206,6 +1208,10 @@
                     if(!lap.nama_produk) return;
                     let lapBulan = lap.bulan, lapTahun = lap.tahun, spmId = lap.spm_id;
                     
+                    // Filter laporan: hanya transaksi kategori RM yang masuk ke pencapaian fokus
+                    const katLap = produkKatMap[lap.produk_id] || produkKatMap[lap.nama_produk] || '';
+                    if (katLap === 'CCM') return;
+
                     for(let key in fokusMap) {
                         let f = fokusMap[key];
                         if(f.tokoId === spmId && f.bulan === lapBulan && f.tahun === lapTahun) {
@@ -1506,9 +1512,18 @@
             };
             
             window.renderRekapFokusTable = function() {
-                const fMonth = document.getElementById('rekap-fokus-bulan')?.value || '';
-                const fYear = (document.getElementById('rekap-fokus-tahun')?.value || '').toLowerCase();
+                const date = new Date();
+                const defaultBulan = bulanArray[date.getMonth()];
+                const defaultTahun = date.getFullYear().toString();
+
+                const fMonth = document.getElementById('rekap-fokus-bulan')?.value || defaultBulan;
+                const fYear = (document.getElementById('rekap-fokus-tahun')?.value || defaultTahun).toLowerCase();
                 const fToko = (document.getElementById('rekap-fokus-search-toko')?.value || '').toLowerCase();
+
+                const elBulan = document.getElementById('rekap-fokus-bulan');
+                if(elBulan && !elBulan.value) { elBulan.value = defaultBulan; }
+                const elTahun = document.getElementById('rekap-fokus-tahun');
+                if(elTahun && !elTahun.value) { elTahun.value = defaultTahun; }
 
                 const filtered = globalRekapFokusData.filter(item => {
                     let mMatch = !fMonth || item.bulan === fMonth;
@@ -1522,7 +1537,7 @@
 
                 if(filtered.length === 0) {
                     if (thead) thead.innerHTML = `<tr><th class="p-4 text-xs font-bold text-gray-500 uppercase">Data Target Fokus</th></tr>`;
-                    if (tbody) tbody.innerHTML = '<tr><td class="p-6 text-center text-gray-500">Tidak ada data rekap target fokus yang sesuai.</td></tr>';
+                    if (tbody) tbody.innerHTML = `<tr><td class="p-6 text-center text-gray-500">Tidak ada data target fokus untuk bulan ${fMonth} ${fYear}.</td></tr>`;
                     return;
                 }
 
@@ -1766,7 +1781,6 @@
                 let row = [], cols = rows[i].querySelectorAll("td, th");
                 for (let j = 0; j < cols.length; j++) {
                     let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, "").replace(/(\s\s)/gm, " ");
-                    // Escape kutip ganda agar format CSV tidak pecah
                     row.push('"' + data.replace(/"/g, '""') + '"');
                 }
                 csv.push(row.join(","));
@@ -1841,12 +1855,16 @@
             const currentBulanIndex = date.getMonth();
             const currentBulan = bulanArray[currentBulanIndex];
             const currentTahun = date.getFullYear().toString();
-            // PERBAIKAN WAKTU LOKAL (BUKAN UTC)
             const todayStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
             
             document.getElementById('spm-bulan-title').innerText = `(${currentBulan} ${currentTahun})`;
             document.getElementById('spm-chart-year').innerText = currentTahun;
             document.getElementById('lap-tgl').value = todayStr;
+
+            const elSpmBulan = document.getElementById('spm-rekap-fokus-bulan');
+            if(elSpmBulan) elSpmBulan.value = currentBulan;
+            const elSpmTahun = document.getElementById('spm-rekap-fokus-tahun');
+            if(elSpmTahun) elSpmTahun.value = currentTahun;
 
             const daysInMonth = new Date(parseInt(currentTahun), currentBulanIndex + 1, 0).getDate();
             const workDays = (daysInMonth - 4) > 0 ? (daysInMonth - 4) : 1;
@@ -1855,13 +1873,147 @@
             let produkSatuanMapSPM = {}; 
             const namaTokoAktif = window.globalUserData?.toko || '';
 
-            // Pisahkan Variabel Data
             let spmTargetRegulerData = [];
             let spmLaporanData = [];
             let spmTargetLainData = [];
 
+            function parseBeratIsi(satuanStr) {
+                if(!satuanStr) return 1;
+                let match = satuanStr.toString().match(/([\d,\.]+)/);
+                if(match) {
+                    return parseFloat(match[1].replace(',', '.')) || 1;
+                }
+                return 1;
+            }
+
+            // FUNGSIONALITAS REKAP PENJUALAN TARGET FOKUS BULANAN PADA SISI SPM (Sama seperti TL)
+            window.renderSPMRekapFokusTable = function() {
+                const date = new Date();
+                const defaultBulan = bulanArray[date.getMonth()];
+                const defaultTahun = date.getFullYear().toString();
+
+                const fMonth = document.getElementById('spm-rekap-fokus-bulan')?.value || defaultBulan;
+                const fYear = (document.getElementById('spm-rekap-fokus-tahun')?.value || defaultTahun).toLowerCase();
+
+                const thead = document.getElementById('spm-rekap-fokus-head');
+                const tbody = document.getElementById('spm-rekap-fokus-body');
+
+                // Filter target RM milik toko ini
+                let targetFokusMap = {};
+                spmTargetLainData.forEach(tFokus => {
+                    // Cek Kategori Produk Fokus: Hanya RM
+                    const katProduk = produkKatMapSPM[tFokus.produk] || 'RM';
+                    if (katProduk === 'CCM') return;
+
+                    let d = tFokus.tanggal ? new Date(tFokus.tanggal) : new Date();
+                    let b = bulanArray[d.getMonth()];
+                    let y = d.getFullYear().toString();
+                    
+                    if ((!fMonth || b === fMonth) && (!fYear || y.toLowerCase().includes(fYear))) {
+                        let namaProdFokus = bersihkanNamaProdukFokus(tFokus.produk);
+                        let key = `${b}_${y}_${namaProdFokus}`;
+                        
+                        if(!targetFokusMap[key]) {
+                            targetFokusMap[key] = {
+                                bulan: b, tahun: y, periode: `${b} ${y}`,
+                                produk: namaProdFokus, targetVol: 0, targetNilai: 0, capVol: 0, capNilai: 0
+                            };
+                        }
+                        targetFokusMap[key].targetVol += (parseFloat(tFokus.volume) || 0);
+                        targetFokusMap[key].targetNilai += (parseFloat(tFokus.nilai) || 0);
+                    }
+                });
+
+                // Kalkulasi Capaian RM
+                spmLaporanData.forEach(lap => {
+                    if(!lap.nama_produk) return;
+                    const kat = produkKatMapSPM[lap.produk_id] || produkKatMapSPM[lap.nama_produk] || '';
+                    if (kat === 'CCM') return; // Mengabaikan CCM
+
+                    let lapBulan = lap.bulan, lapTahun = lap.tahun;
+
+                    for(let key in targetFokusMap) {
+                        let f = targetFokusMap[key];
+                        if (f.bulan === lapBulan && f.tahun === lapTahun) {
+                            if (cekKecocokanProdukFokus(lap.nama_produk, f.produk)) {
+                                let sat = lap.satuan || lap.kemasan || produkSatuanMapSPM[lap.produk_id] || produkSatuanMapSPM[f.produk] || '1';
+                                let multiplier = parseBeratIsi(sat);
+                                f.capVol += (parseFloat(lap.qty) || 0) * multiplier;
+                                f.capNilai += (parseFloat(lap.total) || 0);
+                            }
+                        }
+                    }
+                });
+
+                const listFokus = Object.values(targetFokusMap);
+
+                if (listFokus.length === 0) {
+                    if (thead) thead.innerHTML = `<tr><th class="p-4 text-xs font-bold text-gray-500 uppercase">Data Target Fokus</th></tr>`;
+                    if (tbody) tbody.innerHTML = `<tr><td class="p-6 text-center text-gray-500">Tidak ada target produk fokus untuk periode ${fMonth || 'Semua Bulan'} ${fYear}.</td></tr>`;
+                    return;
+                }
+
+                const uniqueProducts = [...new Set(listFokus.map(item => item.produk))];
+                let groupedPeriod = {};
+                listFokus.forEach(item => {
+                    let pKey = `${item.bulan}_${item.tahun}`;
+                    if(!groupedPeriod[pKey]) {
+                        groupedPeriod[pKey] = { periode: item.periode, bulan: item.bulan, tahun: item.tahun, products: {} };
+                    }
+                    groupedPeriod[pKey].products[item.produk] = item;
+                });
+
+                let tr1 = `<tr>
+                    <th rowspan="2" class="p-4 text-xs font-bold text-gray-500 uppercase align-middle bg-gray-50 dark:bg-gray-800/80 sticky left-0 z-20 shadow-[1px_0_0_#f3f4f6] dark:shadow-[1px_0_0_#1f2937]">Nama Toko & SPM</th>
+                    <th rowspan="2" class="p-4 text-xs font-bold text-gray-500 uppercase align-middle text-center bg-gray-50 dark:bg-gray-800/80">Periode</th>`;
+                let tr2 = `<tr>`;
+
+                uniqueProducts.forEach(prod => {
+                    tr1 += `<th colspan="3" class="p-3 text-xs font-bold text-orange-600 dark:text-orange-400 uppercase text-center border-b border-gray-200 dark:border-gray-700 border-r border-gray-200 dark:border-gray-700 bg-orange-50 dark:bg-orange-900/10">${prod}</th>`;
+                    tr2 += `
+                        <th class="p-2 text-[10px] font-bold text-gray-500 uppercase text-center bg-gray-50 dark:bg-gray-800/80 border-b border-gray-200 dark:border-gray-700">TARGET</th>
+                        <th class="p-2 text-[10px] font-bold text-gray-500 uppercase text-center bg-gray-50 dark:bg-gray-800/80 border-b border-gray-200 dark:border-gray-700">ACV</th>
+                        <th class="p-2 text-[10px] font-bold text-gray-500 uppercase text-center bg-gray-50 dark:bg-gray-800/80 border-r border-b border-gray-200 dark:border-gray-700">%</th>
+                    `;
+                });
+                tr1 += `</tr>`; tr2 += `</tr>`;
+                if (thead) thead.innerHTML = tr1 + tr2;
+
+                let html = '';
+                const namaSPMG = window.globalUserData?.nama || 'SPM';
+                Object.values(groupedPeriod).forEach(g => {
+                    html += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition border-b border-gray-100 dark:border-gray-800">
+                        <td class="p-3 border-r border-gray-100 dark:border-gray-800 bg-white dark:bg-darkcard sticky left-0 z-10 shadow-[1px_0_0_#f3f4f6] dark:shadow-[1px_0_0_#1f2937]">
+                            <div class="font-bold text-indigo-600 text-sm">${namaTokoAktif}</div>
+                            <div class="text-xs text-gray-500 font-medium">${namaSPMG}</div>
+                        </td>
+                        <td class="p-3 text-sm font-semibold text-center border-r border-gray-100 dark:border-gray-800 whitespace-nowrap">${g.periode}</td>`;
+                    
+                    uniqueProducts.forEach(prod => {
+                        let pData = g.products[prod];
+                        if (pData) {
+                            let pctVol = pData.targetVol > 0 ? (pData.capVol / pData.targetVol * 100) : (pData.capVol > 0 ? 100 : 0);
+                            let badgeVol = pctVol >= 100 ? 'text-green-600 font-bold' : (pctVol >= 70 ? 'text-blue-600 font-bold' : 'text-orange-600 font-bold');
+                            html += `
+                                <td class="p-3 text-sm text-center border-gray-100 dark:border-gray-800">${parseFloat(pData.targetVol.toFixed(2))}</td>
+                                <td class="p-3 text-sm font-bold text-center border-gray-100 dark:border-gray-800">${parseFloat(pData.capVol.toFixed(2))}</td>
+                                <td class="p-3 text-sm text-center bg-gray-50/50 dark:bg-gray-800/30 border-r border-gray-200 dark:border-gray-700 ${badgeVol}">${pctVol.toFixed(1)}%</td>
+                            `;
+                        } else {
+                            html += `
+                                <td class="p-3 text-sm text-center text-gray-300 dark:text-gray-600 border-gray-100 dark:border-gray-800">-</td>
+                                <td class="p-3 text-sm text-center text-gray-300 dark:text-gray-600 border-gray-100 dark:border-gray-800">-</td>
+                                <td class="p-3 text-sm text-center text-gray-300 dark:text-gray-600 bg-gray-50/50 dark:bg-gray-800/30 border-r border-gray-200 dark:border-gray-700">-</td>
+                            `;
+                        }
+                    });
+                    html += `</tr>`;
+                });
+                if (tbody) tbody.innerHTML = html;
+            };
+
             function renderSPMData() {
-                // 1. Hitung Target Bulanan
+                // 1. Hitung Target Bulanan CCM
                 let tBulananBulanIni = 0;
                 let targetBulananArray = new Array(12).fill(0);
                 spmTargetRegulerData.forEach(trg => {
@@ -1874,23 +2026,20 @@
                 document.getElementById('spm-target-bulanan').innerText = formatRp(tBulananBulanIni);
                 document.getElementById('spm-target-harian').innerText = formatRp(tHarian);
 
-                // 2. Hitung Capaian
+                // 2. Hitung Capaian Omzet
                 let capaianBulananArray = new Array(12).fill(0);
                 let totalCapBulanIni = 0;
                 let capHariIni = 0;
                 rawHistoriPenjualanList = [];
-                let tintaHtml = ''; // Variabel penampung tabel tinta
+                let tintaHtml = '';
 
                 spmLaporanData.forEach(lap => {
-                    // Deteksi jika nama produk mengandung kata "Colourant"
                     const isColourant = (lap.nama_produk || '').toLowerCase().includes('colourant');
 
                     if (isColourant) {
-                        // Cari sisa stok di database master produk
                         const prodInfo = rawProdukListSPM.find(p => p.id === lap.produk_id);
                         const sisaStok = prodInfo ? prodInfo.qty : '-';
                         
-                        // Format: Tanggal. Bulan. Tahun
                         let formatTgl = '-';
                         if (lap.tanggal_lengkap) {
                             const parts = lap.tanggal_lengkap.split('-'); 
@@ -1906,7 +2055,7 @@
                                 <button onclick="hapusLaporan('${lap.id}')" class="px-3 py-1.5 bg-red-50 hover:bg-red-500 hover:text-white text-red-600 rounded-lg text-xs font-bold transition border border-red-100 shadow-sm"><i class="fas fa-trash"></i></button>
                             </td>
                         </tr>`;
-                        return; // Hentikan proses disini agar TIDAK MASUK ke Omzet / Histori Utama
+                        return;
                     }
 
                     const kat = produkKatMapSPM[lap.produk_id] || produkKatMapSPM[lap.nama_produk] || 'CCM';
@@ -1930,74 +2079,90 @@
                     }
                 });
 
-                // Cetak tabel Tinta ke HTML
                 if(tintaHtml === '') tintaHtml = '<tr><td colspan="5" class="p-6 text-center text-gray-500">Belum ada pemakaian tinta/colourant.</td></tr>';
                 const elTinta = document.getElementById('spm-tinta-body');
                 if(elTinta) elTinta.innerHTML = tintaHtml;
 
-                // FIX: Panggil filterHistoriPenjualan agar histori update realtime dan filter tetap berfungsi
                 if(typeof window.filterHistoriPenjualan === 'function') {
-                          window.filterHistoriPenjualan();
-                  } else {
-                          renderTabelHistori(rawHistoriPenjualanList);
-                          }
+                    window.filterHistoriPenjualan();
+                } else {
+                    renderTabelHistori(rawHistoriPenjualanList);
+                }
 
                 let pct = tBulananBulanIni > 0 ? (totalCapBulanIni / tBulananBulanIni * 100).toFixed(1) : 0;
                 document.getElementById('spm-total-capaian').innerText = `${formatRp(totalCapBulanIni)} (${pct}%)`;
                 document.getElementById('spm-capaian-hari-ini').innerText = formatRp(capHariIni);
                 updateGrafikTahunanSPM(targetBulananArray, capaianBulananArray, currentTahun);
 
-                // 3. Kalkulasi Produk Fokus
+                // 3. Kalkulasi Produk Fokus Card (Khusus RM)
                 let fokusCardHtml = '';
-                let tr1 = `<tr><th rowspan="2" class="p-4 text-xs font-bold text-gray-500 uppercase align-middle bg-gray-50 dark:bg-gray-800/80 border-r border-gray-200 dark:border-gray-700">Periode</th>`;
-                let tr2 = `<tr>`;
-                let bodyRow = `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition"><td class="p-4 text-sm font-semibold border-r border-gray-100 dark:border-gray-800">${currentBulan} ${currentTahun}</td>`;
+                let targetFokusMap = {};
+                
+                spmTargetLainData.forEach(tFokus => {
+                    if(!tFokus.tanggal) return;
+                    // REVISI FILTER: HANYA KATEGORI RM
+                    const katProduk = produkKatMapSPM[tFokus.produk] || 'RM';
+                    if (katProduk === 'CCM') return;
 
-                if(spmTargetLainData.length === 0) {
-                    document.getElementById('spm-target-fokus-container').innerHTML = '<div class="bg-white dark:bg-darkcard p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 text-gray-500 text-sm col-span-full">Belum ada Target Produk Fokus dari Team Leader.</div>';
-                    const spmThead = document.getElementById('spm-rekap-fokus-head');
-                    const spmTbody = document.getElementById('spm-rekap-fokus-body');
-                    if(spmThead) spmThead.innerHTML = `<tr><th class="p-4 text-xs font-bold text-gray-500 uppercase">Data Target Fokus</th></tr>`;
-                    if(spmTbody) spmTbody.innerHTML = '<tr><td class="p-6 text-center text-gray-500">Tidak ada data rekap target fokus.</td></tr>';
+                    let d = new Date(tFokus.tanggal);
+                    let b = bulanArray[d.getMonth()];
+                    let y = d.getFullYear().toString();
+                    
+                    if (b === currentBulan && y === currentTahun) {
+                        let namaProdFokus = bersihkanNamaProdukFokus(tFokus.produk);
+                        if(!targetFokusMap[namaProdFokus]) {
+                            targetFokusMap[namaProdFokus] = {
+                                nama: namaProdFokus, targetVol: 0, targetNilai: 0, capVol: 0, capNilai: 0
+                            };
+                        }
+                        targetFokusMap[namaProdFokus].targetVol += (parseFloat(tFokus.volume) || 0);
+                        targetFokusMap[namaProdFokus].targetNilai += (parseFloat(tFokus.nilai) || 0);
+                    }
+                });
+
+                const listProdukFokusBulanIni = Object.values(targetFokusMap);
+
+                if(listProdukFokusBulanIni.length === 0) {
+                    document.getElementById('spm-target-fokus-container').innerHTML = `<div class="bg-white dark:bg-darkcard p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 text-gray-500 text-sm col-span-full">Belum ada Target Produk Fokus (RM) untuk bulan ${currentBulan} ${currentTahun}.</div>`;
                 } else {
-                    spmTargetLainData.forEach(tFokus => {
-                        const targetVol = parseFloat(tFokus.volume) || 0;
-                        const targetNilai = parseFloat(tFokus.nilai) || 0;
-                        const namaProdFokus = bersihkanNamaProdukFokus(tFokus.produk);
+                    const lapBulanIni = spmLaporanData.filter(l => l.bulan === currentBulan && l.tahun === currentTahun);
+                    
+                    lapBulanIni.forEach(l => {
+                        if(!l.nama_produk) return;
+                        const kat = produkKatMapSPM[l.produk_id] || produkKatMapSPM[l.nama_produk] || '';
+                        if (kat === 'CCM') return; // CCM tidak dihitung sebagai produk fokus
 
-                        let capVol = 0;
-                        let capNilai = 0;
-                        
-                        spmLaporanData.forEach(l => {
-                            if(!l.nama_produk) return;
-                            if (cekKecocokanProdukFokus(l.nama_produk, namaProdFokus)) {
+                        listProdukFokusBulanIni.forEach(fokus => {
+                            if (cekKecocokanProdukFokus(l.nama_produk, fokus.nama)) {
                                 let sat = produkSatuanMapSPM[l.produk_id] || produkSatuanMapSPM[l.nama_produk] || l.satuan || l.kemasan || '1';
-                                let matchNum = sat.toString().match(/([\d,\.]+)/);
-                                let multiplier = matchNum ? (parseFloat(matchNum[1].replace(',', '.')) || 1) : 1;
-                                capVol += (parseFloat(l.qty) || 0) * multiplier;
-                                capNilai += parseFloat(l.total) || 0;
+                                let multiplier = parseBeratIsi(sat);
+                                
+                                fokus.capVol += (parseFloat(l.qty) || 0) * multiplier;
+                                fokus.capNilai += parseFloat(l.total) || 0;
                             }
                         });
+                    });
 
-                        let pctVol = targetVol > 0 ? (capVol / targetVol * 100) : (capVol > 0 ? 100 : 0);
-                        let pctNilai = targetNilai > 0 ? (capNilai / targetNilai * 100) : (capNilai > 0 ? 100 : 0);
+                    listProdukFokusBulanIni.forEach(fokus => {
+                        let pctVol = fokus.targetVol > 0 ? (fokus.capVol / fokus.targetVol * 100) : (fokus.capVol > 0 ? 100 : 0);
+                        let pctNilai = fokus.targetNilai > 0 ? (fokus.capNilai / fokus.targetNilai * 100) : (fokus.capNilai > 0 ? 100 : 0);
 
                         fokusCardHtml += `
                         <div class="bg-white dark:bg-darkcard p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <span class="px-2.5 py-1 bg-orange-50 text-orange-600 rounded text-xs font-bold border border-orange-100">Fokus Produk</span>
-                                    <h4 class="font-bold text-base mt-1 text-gray-800 dark:text-gray-100">${namaProdFokus}</h4>
+                                    <span class="px-2.5 py-1 bg-orange-50 text-orange-600 rounded text-xs font-bold border border-orange-100">Fokus Produk (RM)</span>
+                                    <h4 class="font-bold text-base mt-1 text-gray-800 dark:text-gray-100">${fokus.nama}</h4>
                                 </div>
                             </div>
                             <div class="space-y-2 text-sm">
                                 <div class="flex justify-between">
                                     <span class="text-gray-500">Target Berat/Isi:</span>
-                                    <span class="font-bold">${parseFloat(capVol.toFixed(2))} / ${targetVol}</span>
+                                    <span class="font-bold">${parseFloat(fokus.capVol.toFixed(2))} / ${fokus.targetVol}</span>
                                 </div>
                                 <div class="flex justify-between">
                                     <span class="text-gray-500">Target Nilai (Value):</span>
-                                    <span class="font-bold text-indigo-600">${formatRp(capNilai)} / ${formatRp(targetNilai)}</span>
+                                    <span class="font-bold text-indigo-600">${formatRp(fokus.capNilai)} / ${formatRp(fokus.targetNilai)}</span>
                                 </div>
                                 <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mt-3 shadow-inner">
                                     <div class="bg-orange-500 h-2 rounded-full" style="width: ${Math.min(pctNilai, 100)}%"></div>
@@ -2005,33 +2170,14 @@
                                 <div class="text-right text-xs font-bold text-gray-500 mt-1">Capaian Nilai: ${pctNilai.toFixed(1)}%</div>
                             </div>
                         </div>`;
-
-                        tr1 += `<th colspan="3" class="p-3 text-xs font-bold text-orange-600 dark:text-orange-400 uppercase text-center border-b border-gray-200 dark:border-gray-700 border-r border-gray-200 dark:border-gray-700 bg-orange-50 dark:bg-orange-900/10">${namaProdFokus}</th>`;
-                        tr2 += `
-                            <th class="p-2 text-[10px] font-bold text-gray-500 uppercase text-center bg-gray-50 dark:bg-gray-800/80 border-b border-gray-200 dark:border-gray-700">Target</th>
-                            <th class="p-2 text-[10px] font-bold text-gray-500 uppercase text-center bg-gray-50 dark:bg-gray-800/80 border-b border-gray-200 dark:border-gray-700">ACV</th>
-                            <th class="p-2 text-[10px] font-bold text-gray-500 uppercase text-center bg-gray-50 dark:bg-gray-800/80 border-r border-b border-gray-200 dark:border-gray-700">%</th>
-                        `;
-
-                        let badgeVol = pctVol >= 100 ? 'text-green-600 font-bold' : (pctVol >= 70 ? 'text-blue-600 font-bold' : 'text-orange-600 font-bold');
-                        bodyRow += `
-                            <td class="p-4 text-sm text-center border-gray-100 dark:border-gray-800">${targetVol}</td>
-                            <td class="p-4 text-sm font-bold text-center border-gray-100 dark:border-gray-800">${parseFloat(capVol.toFixed(2))}</td>
-                            <td class="p-4 text-sm text-center ${badgeVol} bg-gray-50/50 dark:bg-gray-800/30 border-r border-gray-100 dark:border-gray-800">${pctVol.toFixed(1)}%</td>
-                        `;
                     });
 
                     document.getElementById('spm-target-fokus-container').innerHTML = fokusCardHtml;
-                    tr1 += `</tr>`; tr2 += `</tr>`; bodyRow += `</tr>`;
-
-                    const spmThead = document.getElementById('spm-rekap-fokus-head');
-                    const spmTbody = document.getElementById('spm-rekap-fokus-body');
-                    if (spmThead) spmThead.innerHTML = tr1 + tr2;
-                    if (spmTbody) spmTbody.innerHTML = bodyRow;
                 }
+
+                if(window.renderSPMRekapFokusTable) window.renderSPMRekapFokusTable();
             }
 
-            // LISTENER DIPISAH
             const qProd = query(collection(db, "produk"), where("toko", "==", namaTokoAktif));
             onSnapshot(qProd, (snapProd) => {
                 let pSelectLap = '<option value="" disabled selected>Pilih Produk (Tersedia)...</option>';
@@ -2046,9 +2192,7 @@
                     produkSatuanMapSPM[doc.id] = p.satuan || '1';
                     produkSatuanMapSPM[p.nama] = p.satuan || '1';
                     
-                    // Dropdown untuk Laporan Penjualan Harian
                     pSelectLap += `<option value="${doc.id}" data-kat="${p.kategori}" data-nama="${p.nama}" data-satuan="${p.satuan}" data-harga="${p.harga}">${p.kategori} - ${p.nama} (${p.satuan})</option>`;
-                    // Dropdown untuk PO dengan Keterangan [Stok: X]
                     pSelectPO += `<option value="${doc.id}" data-kat="${p.kategori}" data-nama="${p.nama}" data-satuan="${p.satuan}" data-harga="${p.harga}">${p.kategori} - ${p.nama} (${p.satuan}) - [Stok: ${p.qty}]</option>`;
                 });
                 
@@ -2140,7 +2284,6 @@
             }
         };
 
-        // FUNGSI PENCARIAN KHUSUS PO
         window.filterPOProduk = function() {
             const keyword = document.getElementById('search-po-produk').value.toLowerCase();
             let pSelect = '<option value="" disabled selected>Pilih Produk (Tersedia)...</option>';
@@ -2152,7 +2295,6 @@
             });
             
             filtered.forEach(p => {
-                // Info stok dimasukkan ke text dropdown
                 pSelect += `<option value="${p.id}" data-kat="${p.kategori}" data-nama="${p.nama}" data-satuan="${p.satuan}" data-harga="${p.harga}">${p.kategori} - ${p.nama} (${p.satuan}) - [Stok: ${p.qty}]</option>`;
             });
             
@@ -2397,7 +2539,6 @@
             const inputQty = parseFloat(document.getElementById('prod-qty').value);
             const inputHarga = parseFloat(document.getElementById('prod-harga').value || 0);
 
-            // Cek apakah produk dengan nama dan kemasan yang sama persis sudah ada di toko ini
             const isDuplicate = rawProdukListSPM.some(p => 
                 (p.nama || '').toLowerCase().trim() === inputNama.toLowerCase().trim() && 
                 p.satuan === inputSatuan
@@ -2410,7 +2551,7 @@
                     html: `Produk <b>${inputNama}</b> dengan kemasan <b>${inputSatuan}</b> sudah terdaftar di toko ini. Silakan edit stok produk yang sudah ada di menu <b>Daftar Harga</b>.`
                 });
                 btn.disabled = false;
-                return; // Batalkan proses simpan
+                return;
             }
 
             btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...`;
