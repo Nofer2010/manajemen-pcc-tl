@@ -688,26 +688,27 @@
                         </div>
 
                         <div class="bg-white dark:bg-darkcard rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-800 mb-8">
-                            <div class="overflow-x-auto w-full">
-                                <table class="w-full text-left whitespace-nowrap min-w-[800px]">
-                                    <thead class="bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur">
-                                        <tr>
-                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Tanggal</th>
-                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Toko</th>
-                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Kategori</th>
-                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Detail Produk</th>
-                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Qty</th>
-                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Total Nilai Rp</th>
-                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-center">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="spm-histori-body" class="divide-y divide-gray-100 dark:divide-gray-800">
-                                        <tr><td colspan="7" class="p-6 text-center text-gray-500">Memuat histori penjualan...</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <div class="overflow-x-auto overflow-y-auto max-h-[400px] w-full custom-scroll"> <!-- Tambah max-h dan scroll -->
+                            <table class="w-full text-left whitespace-nowrap min-w-[800px]">
+              <!-- Tambah sticky top-0 z-10 agar header tetap melayang saat di-scroll -->
+                      <thead class="bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur sticky top-0 z-10 shadow-sm">
+                        <tr>
+                <th class="p-4 text-xs font-bold text-gray-500 uppercase">Tanggal</th>
+                <th class="p-4 text-xs font-bold text-gray-500 uppercase">Toko</th>
+                <th class="p-4 text-xs font-bold text-gray-500 uppercase">Kategori</th>
+                <th class="p-4 text-xs font-bold text-gray-500 uppercase">Detail Produk</th>
+                <th class="p-4 text-xs font-bold text-gray-500 uppercase">Kemasan</th> <!-- Tambahan Kolom Kemasan -->
+                <th class="p-4 text-xs font-bold text-gray-500 uppercase">Qty</th>
+                <th class="p-4 text-xs font-bold text-gray-500 uppercase">Total Rp</th>
+                <th class="p-4 text-xs font-bold text-gray-500 uppercase text-center">Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="spm-histori-body" class="divide-y divide-gray-100 dark:divide-gray-800">
+            <tr><td colspan="8" class="p-6 text-center text-gray-500">Memuat histori penjualan...</td></tr>
+                    </tbody>
+                      </table>
                         </div>
-                                   
+                        </div>                         
                     </section>
 
                     <!-- ============================================== -->
@@ -2188,6 +2189,7 @@
                     <td class="p-4 text-sm font-bold text-indigo-600"><i class="fas fa-store-alt mr-1 opacity-50"></i> ${item.toko}</td>
                     <td class="p-4 text-sm"><span class="px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded text-xs font-bold border border-gray-200 dark:border-gray-600">${item.kategori}</span></td>
                     <td class="p-4 text-sm font-semibold">${item.namaProduk}</td>
+                    <td class="p-4 text-sm text-gray-600 dark:text-gray-400 font-medium">${item.satuan || '-'}</td>
                     <td class="p-4 text-sm">${item.qty}</td>
                     <td class="p-4 text-sm font-black text-green-600">Rp ${item.total.toLocaleString('id-ID')}</td>
                     <td class="p-4 text-center">
@@ -2195,7 +2197,7 @@
                     </td>
                 </tr>`;
             });
-            if(list.length === 0) historiHtml = '<tr><td colspan="7" class="p-6 text-center text-gray-500">Belum ada transaksi direkam.</td></tr>';
+            if(list.length === 0) historiHtml = '<tr><td colspan="8" class="p-6 text-center text-gray-500">Belum ada transaksi direkam.</td></tr>';
             document.getElementById('spm-histori-body').innerHTML = historiHtml;
         }
 
