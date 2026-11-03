@@ -698,25 +698,28 @@
                         </div>
 
                         <div class="bg-white dark:bg-darkcard rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-800 mb-8">
-                            <div class="overflow-x-auto overflow-y-auto max-h-[400px] w-full custom-scroll">
-                            <table class="w-full text-left whitespace-nowrap min-w-[800px]">
-                      <thead class="bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur sticky top-0 z-10 shadow-sm">
-                        <tr>
-                <th class="p-4 text-xs font-bold text-gray-500 uppercase">Tanggal</th>
-                <th class="p-4 text-xs font-bold text-gray-500 uppercase">Toko</th>
-                <th class="p-4 text-xs font-bold text-gray-500 uppercase">Kategori</th>
-                <th class="p-4 text-xs font-bold text-gray-500 uppercase">Detail Produk</th>
-                <th class="p-4 text-xs font-bold text-gray-500 uppercase">Kemasan</th>
-                <th class="p-4 text-xs font-bold text-gray-500 uppercase">Qty</th>
-                <th class="p-4 text-xs font-bold text-gray-500 uppercase">Total Rp</th>
-                <th class="p-4 text-xs font-bold text-gray-500 uppercase text-center">Aksi</th>
-            </tr>
-        </thead>
-        <tbody id="spm-histori-body" class="divide-y divide-gray-100 dark:divide-gray-800">
-            <tr><td colspan="8" class="p-6 text-center text-gray-500">Memuat histori penjualan...</td></tr>
-                    </tbody>
-                      </table>
-                        </div>
+                            <div class="overflow-x-auto overflow-y-auto max-h-[400px] w-full custom-scroll relative">
+                                <table class="w-full text-left whitespace-nowrap min-w-[800px]">
+                                    <thead class="bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur sticky top-0 z-10 shadow-sm">
+                                        <tr>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Tanggal</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Toko</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Kategori</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Detail Produk</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Kemasan</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Qty</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Total Rp</th>
+                                            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-center">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="spm-histori-body" class="divide-y divide-gray-100 dark:divide-gray-800 relative z-0">
+                                        <tr><td colspan="8" class="p-6 text-center text-gray-500">Memuat histori penjualan...</td></tr>
+                                    </tbody>
+                                    <!-- TAMBAHAN: TFOOT STICKY DI BAWAH -->
+                                    <tfoot id="spm-histori-tfoot" class="sticky bottom-0 z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
+                                    </tfoot>
+                                </table>
+                            </div>
                         </div>                         
                     </section>
 
@@ -2349,7 +2352,11 @@
 
         function renderTabelHistori(list) {
             let historiHtml = '';
+            let totalGlobalRp = 0;
+
             list.forEach(item => {
+                totalGlobalRp += parseFloat(item.total) || 0; 
+
                 historiHtml += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
                     <td class="p-4 text-sm font-medium text-gray-700 dark:text-gray-300">${item.tanggal || '-'}</td>
                     <td class="p-4 text-sm font-bold text-indigo-600"><i class="fas fa-store-alt mr-1 opacity-50"></i> ${item.toko}</td>
@@ -2363,9 +2370,30 @@
                     </td>
                 </tr>`;
             });
-            if(list.length === 0) historiHtml = '<tr><td colspan="8" class="p-6 text-center text-gray-500">Belum ada transaksi direkam.</td></tr>';
+
+            if(list.length === 0) {
+                historiHtml = '<tr><td colspan="8" class="p-6 text-center text-gray-500">Belum ada transaksi direkam.</td></tr>';
+            }
+
+            // Masukkan data transaksi ke Body (Bisa discroll)
             document.getElementById('spm-histori-body').innerHTML = historiHtml;
+
+            // RENDER TOTAL KE TFOOT (Sticky/Fix di bawah)
+            let tfootHtml = '';
+            if(list.length > 0) {
+                tfootHtml = `
+                <tr class="bg-indigo-50 dark:bg-indigo-900/95 border-t border-indigo-200 dark:border-indigo-700">
+                    <td colspan="6" class="p-4 text-sm font-black text-right text-indigo-700 dark:text-indigo-400 uppercase tracking-wider backdrop-blur-md">Total Penjualan:</td>
+                    <td colspan="2" class="p-4 text-sm font-black text-green-600 dark:text-green-400 text-left backdrop-blur-md">Rp ${totalGlobalRp.toLocaleString('id-ID')}</td>
+                </tr>`;
+            }
+            
+            const tfootEl = document.getElementById('spm-histori-tfoot');
+            if(tfootEl) {
+                tfootEl.innerHTML = tfootHtml;
+            }
         }
+
 
         window.filterRekapProduk = function() {
             const keyword = document.getElementById('search-rekap-produk').value.toLowerCase();
