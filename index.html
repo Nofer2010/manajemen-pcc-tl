@@ -678,6 +678,16 @@
                             <h3 class="text-xl font-bold text-gray-800 dark:text-white"><i class="fas fa-history text-indigo-500 mr-2"></i> Rekap & Histori Penjualan</h3>
                             <div class="flex flex-wrap items-center gap-2">
                                 <input type="date" id="filter-search-tgl" onchange="filterHistoriPenjualan()" class="p-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none">
+                                
+                                <!-- TAMBAHAN: Filter Kategori -->
+                                <select id="filter-search-kategori" onchange="filterHistoriPenjualan()" class="p-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none">
+                                    <option value="">Semua Kategori</option>
+                                    <option value="CCM">CCM</option>
+                                    <option value="RM">Ready Mix (RM)</option>
+                                    <option value="ALAT">Alat</option>
+                                    <option value="DLL">Lain-lain</option>
+                                </select>
+
                                 <select id="filter-search-bulan" onchange="filterHistoriPenjualan()" class="p-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none">
                                     <option value="">Semua Bulan</option>
                                     <option value="Januari">Januari</option><option value="Februari">Februari</option><option value="Maret">Maret</option><option value="April">April</option><option value="Mei">Mei</option><option value="Juni">Juni</option><option value="Juli">Juli</option><option value="Agustus">Agustus</option><option value="September">September</option><option value="Oktober">Oktober</option><option value="November">November</option><option value="Desember">Desember</option>
@@ -1033,7 +1043,6 @@
 
             if(window.globalAllProdukData) {
                 window.globalAllProdukData.forEach(p => {
-                    // FILTER REVISI: HANYA PRODUK KATEGORI RM YANG BISA DIJADIKAN TARGET FOKUS
                     if (p.toko === namaTokoTerpilih && (p.kategori || '').toUpperCase() === 'RM') {
                         hasProd = true;
                         const namaBersih = bersihkanNamaProdukFokus(p.nama);
@@ -1179,7 +1188,6 @@
                 
                 let fokusMap = {};
                 allTargetLainTL.forEach(tgt => {
-                    // FILTER REVISI: Pastikan Kategori Produk Fokus Hanya RM (Bila ada data lama CCM/Lain, abaikan)
                     const katProduk = produkKatMap[tgt.produk] || 'RM';
                     if(katProduk === 'CCM') return;
 
@@ -1208,7 +1216,6 @@
                     if(!lap.nama_produk) return;
                     let lapBulan = lap.bulan, lapTahun = lap.tahun, spmId = lap.spm_id;
                     
-                    // Filter laporan: hanya transaksi kategori RM yang masuk ke pencapaian fokus
                     const katLap = produkKatMap[lap.produk_id] || produkKatMap[lap.nama_produk] || '';
                     if (katLap === 'CCM') return;
 
@@ -1901,7 +1908,6 @@
                 // Filter target RM milik toko ini
                 let targetFokusMap = {};
                 spmTargetLainData.forEach(tFokus => {
-                    // Cek Kategori Produk Fokus: Hanya RM
                     const katProduk = produkKatMapSPM[tFokus.produk] || 'RM';
                     if (katProduk === 'CCM') return;
 
@@ -2100,7 +2106,6 @@
                 
                 spmTargetLainData.forEach(tFokus => {
                     if(!tFokus.tanggal) return;
-                    // REVISI FILTER: HANYA KATEGORI RM
                     const katProduk = produkKatMapSPM[tFokus.produk] || 'RM';
                     if (katProduk === 'CCM') return;
 
@@ -2213,6 +2218,14 @@
             onSnapshot(qLapYear, (snapLapYear) => {
                 spmLaporanData = [];
                 snapLapYear.forEach(docSnap => spmLaporanData.push({ id: docSnap.id, ...docSnap.data() }));
+                
+                // TAMBAHAN: Sort data agar yang terbaru langsung berada di baris paling atas (Real-time Fix)
+                spmLaporanData.sort((a, b) => {
+                    let dateA = a.created_at ? (a.created_at.toDate ? a.created_at.toDate() : new Date(a.created_at)) : new Date(0);
+                    let dateB = b.created_at ? (b.created_at.toDate ? b.created_at.toDate() : new Date(b.created_at)) : new Date(0);
+                    return dateB - dateA;
+                });
+                
                 renderSPMData();
             });
 
@@ -2311,12 +2324,15 @@
             const fTgl = document.getElementById('filter-search-tgl').value;
             const fBulan = document.getElementById('filter-search-bulan').value;
             const fTahun = document.getElementById('filter-search-tahun').value.toLowerCase();
+            const fKategori = document.getElementById('filter-search-kategori') ? document.getElementById('filter-search-kategori').value.toLowerCase() : '';
 
             const filtered = rawHistoriPenjualanList.filter(item => {
                 let matchTgl = !fTgl || item.tanggal === fTgl;
                 let matchBulan = !fBulan || item.bulan === fBulan;
                 let matchTahun = !fTahun || item.tahun.toLowerCase().includes(fTahun);
-                return matchTgl && matchBulan && matchTahun;
+                let matchKategori = !fKategori || (item.kategori || '').toLowerCase() === fKategori;
+                
+                return matchTgl && matchBulan && matchTahun && matchKategori;
             });
             renderTabelHistori(filtered);
         };
@@ -2325,6 +2341,9 @@
             document.getElementById('filter-search-tgl').value = '';
             document.getElementById('filter-search-bulan').value = '';
             document.getElementById('filter-search-tahun').value = '';
+            if (document.getElementById('filter-search-kategori')) {
+                document.getElementById('filter-search-kategori').value = '';
+            }
             renderTabelHistori(rawHistoriPenjualanList);
         };
 
