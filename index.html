@@ -2031,9 +2031,7 @@
                     if(bIdx !== -1) targetBulananArray[bIdx] += nominal;
                     if(trg.bulan === currentBulan) tBulananBulanIni += nominal;
                 });
-                const tHarian = tBulananBulanIni / workDays;
                 document.getElementById('spm-target-bulanan').innerText = formatRp(tBulananBulanIni);
-                document.getElementById('spm-target-harian').innerText = formatRp(tHarian);
 
                 // 2. Hitung Capaian Omzet
                 let capaianBulananArray = new Array(12).fill(0);
@@ -2097,6 +2095,41 @@
                 } else {
                     renderTabelHistori(rawHistoriPenjualanList);
                 }
+
+              if(typeof window.filterHistoriPenjualan === 'function') {
+                    window.filterHistoriPenjualan();
+                } else {
+                    renderTabelHistori(rawHistoriPenjualanList);
+                }
+
+                // --- LOGIKA BARU: TARGET HARIAN AKUMULASI (SKIP HARI MINGGU) ---
+                const baseTargetHarian = tBulananBulanIni / workDays;
+                const currentDay = date.getDate();
+                
+                // Hitung hari kerja aktual (tanpa hari Minggu) dari tanggal 1 sampai kemarin
+                let hariEfektifKemarin = 0;
+                for (let i = 1; i < currentDay; i++) {
+                    const cekTanggal = new Date(parseInt(currentTahun), currentBulanIndex, i);
+                    if (cekTanggal.getDay() !== 0) { // 0 = Hari Minggu
+                        hariEfektifKemarin++;
+                    }
+                }
+                
+                // Hitung kekurangan target
+                const capaianSampaiKemarin = totalCapBulanIni - capHariIni;
+                const targetSampaiKemarin = baseTargetHarian * hariEfektifKemarin;
+                
+                let kekuranganKemarin = targetSampaiKemarin - capaianSampaiKemarin;
+                if (kekuranganKemarin < 0) kekuranganKemarin = 0; // Jika over-achieve, base target normal
+                
+                // Target hari ini = Base target harian + hutang target (jika hari ini hari Minggu, set Rp 0)
+                let tHarianAkumulasi = baseTargetHarian + kekuranganKemarin;
+                if (date.getDay() === 0) { 
+                    tHarianAkumulasi = 0; // Tampilkan Rp 0 jika hari ini adalah Hari Minggu
+                }
+
+                document.getElementById('spm-target-harian').innerText = formatRp(tHarianAkumulasi);
+                // --------------------------------------------------------------
 
                 let pct = tBulananBulanIni > 0 ? (totalCapBulanIni / tBulananBulanIni * 100).toFixed(1) : 0;
                 document.getElementById('spm-total-capaian').innerText = `${formatRp(totalCapBulanIni)} (${pct}%)`;
