@@ -2131,12 +2131,6 @@
                     renderTabelHistori(rawHistoriPenjualanList);
                 }
 
-              if(typeof window.filterHistoriPenjualan === 'function') {
-                    window.filterHistoriPenjualan();
-                } else {
-                    renderTabelHistori(rawHistoriPenjualanList);
-                }
-
                 // --- LOGIKA BARU: TARGET HARIAN AKUMULASI (SKIP HARI MINGGU) ---
                 const baseTargetHarian = tBulananBulanIni / workDays;
                 const currentDay = date.getDate();
@@ -2250,12 +2244,10 @@
 
                     document.getElementById('spm-target-fokus-container').innerHTML = fokusCardHtml;
                 }
-              if(window.renderSPMTintaTable) window.renderSPMTintaTable(); // Tambahkan pemanggilan ini
                 
+                if(window.renderSPMTintaTable) window.renderSPMTintaTable(); 
                 if(window.renderSPMRekapFokusTable) window.renderSPMRekapFokusTable();
-            }
-
-                if(window.renderSPMRekapFokusTable) window.renderSPMRekapFokusTable();
+                
             }
 
             const qProd = query(collection(db, "produk"), where("toko", "==", namaTokoAktif));
