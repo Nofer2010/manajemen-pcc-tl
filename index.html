@@ -725,14 +725,23 @@
 
                     <!-- SECTION SPM - LAPORAN PEMAKAIAN TINTA -->
                     <section id="spm-tinta" class="menu-section hidden fade-in">
-                        <div class="flex items-center gap-3 mb-6">
-                            <div class="p-3 bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded-xl"><i class="fas fa-tint text-xl"></i></div>
-                            <div>
-                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Laporan Pemakaian Tinta</h2>
-                                <p class="text-sm font-medium text-gray-500">Rekap data pemakaian khusus produk Colourant (Tidak dihitung sebagai Omzet).</p>
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+                            <div class="flex items-center gap-3">
+                                <div class="p-3 bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded-xl"><i class="fas fa-tint text-xl"></i></div>
+                                <div>
+                                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Laporan Pemakaian Tinta</h2>
+                                    <p class="text-sm font-medium text-gray-500">Rekap data pemakaian khusus produk Colourant (Tidak dihitung sebagai Omzet).</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <select id="spm-tinta-bulan" onchange="renderSPMTintaTable()" class="p-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none focus:ring-2 focus:ring-purple-500">
+                                    <option value="">Semua Bulan</option>
+                                    <option value="Januari">Januari</option><option value="Februari">Februari</option><option value="Maret">Maret</option><option value="April">April</option><option value="Mei">Mei</option><option value="Juni">Juni</option><option value="Juli">Juli</option><option value="Agustus">Agustus</option><option value="September">September</option><option value="Oktober">Oktober</option><option value="November">November</option><option value="Desember">Desember</option>
+                                </select>
+                                <input type="text" id="spm-tinta-tahun" onkeyup="renderSPMTintaTable()" placeholder="Tahun (Cth: 2026)" class="w-32 p-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none focus:ring-2 focus:ring-purple-500">
                             </div>
                         </div>
-
+                      
                         <div class="bg-white dark:bg-darkcard rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-800 mb-8">
                             <div class="overflow-x-auto w-full custom-scroll">
                                 <table class="w-full text-left whitespace-nowrap min-w-[700px]">
@@ -1876,6 +1885,12 @@
             const elSpmTahun = document.getElementById('spm-rekap-fokus-tahun');
             if(elSpmTahun) elSpmTahun.value = currentTahun;
 
+            // TAMBAHKAN INI:
+            const elSpmTintaBulan = document.getElementById('spm-tinta-bulan');
+            if(elSpmTintaBulan) elSpmTintaBulan.value = currentBulan;
+            const elSpmTintaTahun = document.getElementById('spm-tinta-tahun');
+            if(elSpmTintaTahun) elSpmTintaTahun.value = currentTahun;
+          
             const daysInMonth = new Date(parseInt(currentTahun), currentBulanIndex + 1, 0).getDate();
             const workDays = (daysInMonth - 4) > 0 ? (daysInMonth - 4) : 1;
 
@@ -2021,6 +2036,48 @@
                 if (tbody) tbody.innerHTML = html;
             };
 
+                      // FUNGSIONALITAS RENDER LAPORAN TINTA BERDASARKAN FILTER
+            window.renderSPMTintaTable = function() {
+                const fBulan = document.getElementById('spm-tinta-bulan')?.value || '';
+                const fTahun = (document.getElementById('spm-tinta-tahun')?.value || '').toLowerCase();
+                
+                let tintaHtml = '';
+                const filteredTinta = spmLaporanData.filter(lap => {
+                    const isColourant = (lap.nama_produk || '').toLowerCase().includes('colourant');
+                    if (!isColourant) return false;
+                    
+                    let mMatch = !fBulan || lap.bulan === fBulan;
+                    let yMatch = !fTahun || (lap.tahun || '').toLowerCase().includes(fTahun);
+                    return mMatch && yMatch;
+                });
+
+                filteredTinta.forEach(lap => {
+                    const prodInfo = rawProdukListSPM.find(p => p.id === lap.produk_id);
+                    const sisaStok = prodInfo ? prodInfo.qty : '-';
+                    
+                    let formatTgl = '-';
+                    if (lap.tanggal_lengkap) {
+                        const parts = lap.tanggal_lengkap.split('-'); 
+                        if (parts.length === 3) formatTgl = `${parts[2]}. ${lap.bulan}. ${parts[0]}`;
+                    }
+                    
+                    tintaHtml += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                        <td class="p-4 text-sm font-medium text-gray-700 dark:text-gray-300">${formatTgl}</td>
+                        <td class="p-4 text-sm font-semibold">${lap.nama_produk}</td>
+                        <td class="p-4 text-sm font-black text-purple-600">${lap.qty}</td>
+                        <td class="p-4 text-sm font-bold text-gray-600">${sisaStok}</td>
+                        <td class="p-4 text-center">
+                            <button onclick="hapusLaporan('${lap.id}')" class="px-3 py-1.5 bg-red-50 hover:bg-red-500 hover:text-white text-red-600 rounded-lg text-xs font-bold transition border border-red-100 shadow-sm"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>`;
+                });
+
+                if(filteredTinta.length === 0) tintaHtml = '<tr><td colspan="5" class="p-6 text-center text-gray-500">Belum ada pemakaian tinta/colourant untuk filter bulan dan tahun ini.</td></tr>';
+                const elTinta = document.getElementById('spm-tinta-body');
+                if(elTinta) elTinta.innerHTML = tintaHtml;
+            };
+
+
             function renderSPMData() {
                 // 1. Hitung Target Bulanan CCM
                 let tBulananBulanIni = 0;
@@ -2044,25 +2101,7 @@
                     const isColourant = (lap.nama_produk || '').toLowerCase().includes('colourant');
 
                     if (isColourant) {
-                        const prodInfo = rawProdukListSPM.find(p => p.id === lap.produk_id);
-                        const sisaStok = prodInfo ? prodInfo.qty : '-';
-                        
-                        let formatTgl = '-';
-                        if (lap.tanggal_lengkap) {
-                            const parts = lap.tanggal_lengkap.split('-'); 
-                            if (parts.length === 3) formatTgl = `${parts[2]}. ${lap.bulan}. ${parts[0]}`;
-                        }
-                        
-                        tintaHtml += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
-                            <td class="p-4 text-sm font-medium text-gray-700 dark:text-gray-300">${formatTgl}</td>
-                            <td class="p-4 text-sm font-semibold">${lap.nama_produk}</td>
-                            <td class="p-4 text-sm font-black text-purple-600">${lap.qty}</td>
-                            <td class="p-4 text-sm font-bold text-gray-600">${sisaStok}</td>
-                            <td class="p-4 text-center">
-                                <button onclick="hapusLaporan('${lap.id}')" class="px-3 py-1.5 bg-red-50 hover:bg-red-500 hover:text-white text-red-600 rounded-lg text-xs font-bold transition border border-red-100 shadow-sm"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>`;
-                        return;
+                         return;
                     }
 
                     const kat = produkKatMapSPM[lap.produk_id] || produkKatMapSPM[lap.nama_produk] || 'CCM';
@@ -2085,10 +2124,6 @@
                         }
                     }
                 });
-
-                if(tintaHtml === '') tintaHtml = '<tr><td colspan="5" class="p-6 text-center text-gray-500">Belum ada pemakaian tinta/colourant.</td></tr>';
-                const elTinta = document.getElementById('spm-tinta-body');
-                if(elTinta) elTinta.innerHTML = tintaHtml;
 
                 if(typeof window.filterHistoriPenjualan === 'function') {
                     window.filterHistoriPenjualan();
@@ -2215,6 +2250,10 @@
 
                     document.getElementById('spm-target-fokus-container').innerHTML = fokusCardHtml;
                 }
+              if(window.renderSPMTintaTable) window.renderSPMTintaTable(); // Tambahkan pemanggilan ini
+                
+                if(window.renderSPMRekapFokusTable) window.renderSPMRekapFokusTable();
+            }
 
                 if(window.renderSPMRekapFokusTable) window.renderSPMRekapFokusTable();
             }
