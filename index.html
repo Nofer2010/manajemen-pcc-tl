@@ -2927,6 +2927,106 @@
 
             } catch (error) { Swal.fire('Error', error.message, 'error'); } finally { btn.disabled = false; btn.innerHTML = `<i class="fas fa-plus-circle mr-2"></i>Buat Akun Tim & Daftarkan Toko`; }
         });
+
+          // ================= FITUR EXPORT PRODUK & HARGA =================
+function getExportProdukHtml() {
+    const toko = window.globalUserData?.toko || 'Toko Tidak Diketahui';
+    const keyword = document.getElementById('search-rekap-produk').value.toLowerCase();
+    const kategoriValue = document.getElementById('filter-kategori-produk').value.toLowerCase();
+    
+    // Ambil data yang difilter saat ini
+    const filtered = rawProdukListSPM.filter(p => {
+        const matchKeyword = (p.nama || '').toLowerCase().includes(keyword) || (p.kategori || '').toLowerCase().includes(keyword);
+        const matchKategori = kategoriValue === "" || (p.kategori || '').toLowerCase() === kategoriValue;
+        return matchKeyword && matchKategori;
+    });
+
+    // Urutkan A-Z
+    filtered.sort((a, b) => (a.nama || '').localeCompare(b.nama || ''));
+
+    // Buat HTML dengan border (kotak-kotak) untuk Print / Excel
+    let html = `
+    <div id="print-area" style="font-family: Arial, sans-serif; color: #000; padding: 10px; width: 100%;">
+        <h2 style="text-align: center; margin-bottom: 5px; color: #000;">DAFTAR PRODUK & STOK</h2>
+        <h3 style="text-align: center; margin-top: 0; margin-bottom: 20px; color: #000; text-transform: uppercase;">${toko}</h3>
+        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+            <thead>
+                <tr style="background-color: #e5e7eb;">
+                    <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Kategori</th>
+                    <th style="border: 1px solid #000; padding: 8px; text-align: left; font-weight: bold;">Nama Produk</th>
+                    <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Stock Qty</th>
+                    <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Kemasan</th>
+                </tr>
+            </thead>
+            <tbody>`;
+    
+    filtered.forEach(p => {
+        html += `
+                <tr>
+                    <td style="border: 1px solid #000; padding: 8px; text-align: center;">${p.kategori}</td>
+                    <td style="border: 1px solid #000; padding: 8px; text-align: left;">${p.nama}</td>
+                    <td style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">${p.qty}</td>
+                    <td style="border: 1px solid #000; padding: 8px; text-align: center;">${p.satuan || '-'}</td>
+                </tr>`;
+    });
+
+    if(filtered.length === 0) {
+        html += `<tr><td colspan="4" style="border: 1px solid #000; padding: 8px; text-align: center;">Tidak ada data produk</td></tr>`;
+    }
+
+    html += `</tbody></table></div>`;
+    return html;
+}
+
+window.exportProdukToExcel = function() {
+    let html = getExportProdukHtml();
+    let dataType = 'application/vnd.ms-excel';
+    let filename = 'Stok_Produk_' + (window.globalUserData?.toko || 'Toko').replace(/\s+/g, '_') + '.xls';
+    
+    let downloadLink = document.createElement("a");
+    document.body.appendChild(downloadLink);
+    
+    if (navigator.msSaveOrOpenBlob) {
+        let blob = new Blob(['\ufeff', html], { type: dataType });
+        navigator.msSaveOrOpenBlob(blob, filename);
+    } else {
+        downloadLink.href = 'data:' + dataType + ', ' + encodeURIComponent('\ufeff' + html);
+        downloadLink.download = filename;
+        downloadLink.click();
+    }
+    document.body.removeChild(downloadLink);
+};
+
+window.exportProdukToPDF = function() {
+    let html = getExportProdukHtml();
+    
+    let tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.left = '-9999px';
+    tempDiv.style.top = '0';
+    tempDiv.style.width = '800px'; 
+    document.body.appendChild(tempDiv);
+
+    const toko = window.globalUserData?.toko || 'Toko';
+    const filename = `Stok_Produk_${toko.replace(/\s+/g, '_')}.pdf`;
+    
+    Swal.fire({ title: 'Menyiapkan PDF...', text: 'Tunggu sebentar.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+    const optPdf = { 
+        margin: 0.5, 
+        filename: filename, 
+        image: { type: 'jpeg', quality: 0.98 }, 
+        html2canvas: { scale: 2 }, 
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } 
+    };
+
+    html2pdf().set(optPdf).from(tempDiv.firstElementChild).save().then(() => {
+        Swal.close();
+        document.body.removeChild(tempDiv);
+    });
+};
+
     </script>
 
     <!-- SCRIPT UI & LOGIKA RESPONSIVE SIDEBAR + API WILAYAH -->
@@ -3076,107 +3176,7 @@
             }
             const total = (parseFloat(lapQty.value) || 0) * (parseFloat(lapHarga.value) || 0);
             lapTotal.value = "Rp " + total.toLocaleString('id-ID');
-        }
-
-      // ================= FITUR EXPORT PRODUK & HARGA =================
-function getExportProdukHtml() {
-    const toko = window.globalUserData?.toko || 'Toko Tidak Diketahui';
-    const keyword = document.getElementById('search-rekap-produk').value.toLowerCase();
-    const kategoriValue = document.getElementById('filter-kategori-produk').value.toLowerCase();
-    
-    // Ambil data yang difilter saat ini
-    const filtered = rawProdukListSPM.filter(p => {
-        const matchKeyword = (p.nama || '').toLowerCase().includes(keyword) || (p.kategori || '').toLowerCase().includes(keyword);
-        const matchKategori = kategoriValue === "" || (p.kategori || '').toLowerCase() === kategoriValue;
-        return matchKeyword && matchKategori;
-    });
-
-    // Urutkan A-Z
-    filtered.sort((a, b) => (a.nama || '').localeCompare(b.nama || ''));
-
-    // Buat HTML dengan border (kotak-kotak) untuk Print / Excel
-    let html = `
-    <div id="print-area" style="font-family: Arial, sans-serif; color: #000; padding: 10px; width: 100%;">
-        <h2 style="text-align: center; margin-bottom: 5px; color: #000;">DAFTAR PRODUK & STOK</h2>
-        <h3 style="text-align: center; margin-top: 0; margin-bottom: 20px; color: #000; text-transform: uppercase;">${toko}</h3>
-        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
-            <thead>
-                <tr style="background-color: #e5e7eb;">
-                    <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Kategori</th>
-                    <th style="border: 1px solid #000; padding: 8px; text-align: left; font-weight: bold;">Nama Produk</th>
-                    <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Stock Qty</th>
-                    <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Kemasan</th>
-                </tr>
-            </thead>
-            <tbody>`;
-    
-    filtered.forEach(p => {
-        html += `
-                <tr>
-                    <td style="border: 1px solid #000; padding: 8px; text-align: center;">${p.kategori}</td>
-                    <td style="border: 1px solid #000; padding: 8px; text-align: left;">${p.nama}</td>
-                    <td style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">${p.qty}</td>
-                    <td style="border: 1px solid #000; padding: 8px; text-align: center;">${p.satuan || '-'}</td>
-                </tr>`;
-    });
-
-    if(filtered.length === 0) {
-        html += `<tr><td colspan="4" style="border: 1px solid #000; padding: 8px; text-align: center;">Tidak ada data produk</td></tr>`;
-    }
-
-    html += `</tbody></table></div>`;
-    return html;
-}
-
-window.exportProdukToExcel = function() {
-    let html = getExportProdukHtml();
-    let dataType = 'application/vnd.ms-excel';
-    let filename = 'Stok_Produk_' + (window.globalUserData?.toko || 'Toko').replace(/\s+/g, '_') + '.xls';
-    
-    let downloadLink = document.createElement("a");
-    document.body.appendChild(downloadLink);
-    
-    if (navigator.msSaveOrOpenBlob) {
-        let blob = new Blob(['\ufeff', html], { type: dataType });
-        navigator.msSaveOrOpenBlob(blob, filename);
-    } else {
-        downloadLink.href = 'data:' + dataType + ', ' + encodeURIComponent('\ufeff' + html);
-        downloadLink.download = filename;
-        downloadLink.click();
-    }
-    document.body.removeChild(downloadLink);
-};
-
-window.exportProdukToPDF = function() {
-    let html = getExportProdukHtml();
-    
-    let tempDiv = document.createElement('div');
-    tempDiv.innerHTML = html;
-    tempDiv.style.position = 'absolute';
-    tempDiv.style.left = '-9999px';
-    tempDiv.style.top = '0';
-    tempDiv.style.width = '800px'; 
-    document.body.appendChild(tempDiv);
-
-    const toko = window.globalUserData?.toko || 'Toko';
-    const filename = `Stok_Produk_${toko.replace(/\s+/g, '_')}.pdf`;
-    
-    Swal.fire({ title: 'Menyiapkan PDF...', text: 'Tunggu sebentar.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
-    const optPdf = { 
-        margin: 0.5, 
-        filename: filename, 
-        image: { type: 'jpeg', quality: 0.98 }, 
-        html2canvas: { scale: 2 }, 
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } 
-    };
-
-    html2pdf().set(optPdf).from(tempDiv.firstElementChild).save().then(() => {
-        Swal.close();
-        document.body.removeChild(tempDiv);
-    });
-};
-
+        } 
     </script>
     
     <!-- Script WA Transparan saat di-scroll -->
