@@ -893,17 +893,20 @@
                         <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-3">
                             <h2 class="text-2xl font-bold">Daftar Produk & Harga</h2>
                             <div class="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
-                                <select id="filter-kategori-produk" onchange="filterRekapProduk()" class="w-full sm:w-40 p-2 py-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none focus:ring-2 focus:ring-green-500 border-gray-200 dark:border-gray-700 transition">
-                                    <option value="">Semua Kategori</option>
-                                    <option value="CCM">CCM</option>
-                                    <option value="RM">Ready Mix (RM)</option>
-                                    <option value="ALAT">Alat</option>
-                                    <option value="DLL">Lain-lain</option>
-                                </select>
+                            <select id="filter-kategori-produk" onchange="filterRekapProduk()" class="w-full sm:w-40 p-2 py-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none focus:ring-2 focus:ring-green-500 border-gray-200 dark:border-gray-700 transition">
+                                <option value="">Semua Kategori</option>
+                                <option value="CCM">CCM</option>
+                                <option value="RM">Ready Mix (RM)</option>
+                                <option value="ALAT">Alat</option>
+                                <option value="DLL">Lain-lain</option>
+                        </select>
                                 <div class="relative w-full sm:w-64">
-                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400"><i class="fas fa-search"></i></span>
-                                    <input type="text" id="search-rekap-produk" onkeyup="filterRekapProduk()" placeholder="Cari nama produk..." class="w-full pl-10 pr-4 py-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none focus:ring-2 focus:ring-green-500 border-gray-200 dark:border-gray-700 transition">
-                                </div>
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400"><i class="fas fa-search"></i></span>
+                                  <input type="text" id="search-rekap-produk" onkeyup="filterRekapProduk()" placeholder="Cari nama produk..." class="w-full pl-10 pr-4 py-2 border rounded-xl text-sm bg-white dark:bg-gray-900 outline-none focus:ring-2 focus:ring-green-500 border-gray-200 dark:border-gray-700 transition">
+                              </div>
+                            <!-- TOMBOL EXPORT BARU -->
+                                <button onclick="exportProdukToExcel()" class="px-3.5 py-2 bg-[#107c41] hover:bg-green-700 text-white text-xs font-bold rounded-xl transition shadow-sm"><i class="fas fa-file-excel mr-1"></i> Excel</button>
+                                <button onclick="exportProdukToPDF()" class="px-3.5 py-2 bg-[#d32f2f] hover:bg-red-700 text-white text-xs font-bold rounded-xl transition shadow-sm"><i class="fas fa-file-pdf mr-1"></i> PDF</button>
                             </div>
                         </div>
 
@@ -2474,6 +2477,8 @@
         };
 
         function renderTabelRekapSPM(list) {
+          // KODE BARU: Mengurutkan list produk berdasarkan Abjad A-Z (Nama Produk)
+            list.sort((a, b) => (a.nama || '').localeCompare(b.nama || ''));
             let pTable = '';
             list.forEach(p => {
                 pTable += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
@@ -3072,6 +3077,106 @@
             const total = (parseFloat(lapQty.value) || 0) * (parseFloat(lapHarga.value) || 0);
             lapTotal.value = "Rp " + total.toLocaleString('id-ID');
         }
+
+      // ================= FITUR EXPORT PRODUK & HARGA =================
+function getExportProdukHtml() {
+    const toko = window.globalUserData?.toko || 'Toko Tidak Diketahui';
+    const keyword = document.getElementById('search-rekap-produk').value.toLowerCase();
+    const kategoriValue = document.getElementById('filter-kategori-produk').value.toLowerCase();
+    
+    // Ambil data yang difilter saat ini
+    const filtered = rawProdukListSPM.filter(p => {
+        const matchKeyword = (p.nama || '').toLowerCase().includes(keyword) || (p.kategori || '').toLowerCase().includes(keyword);
+        const matchKategori = kategoriValue === "" || (p.kategori || '').toLowerCase() === kategoriValue;
+        return matchKeyword && matchKategori;
+    });
+
+    // Urutkan A-Z
+    filtered.sort((a, b) => (a.nama || '').localeCompare(b.nama || ''));
+
+    // Buat HTML dengan border (kotak-kotak) untuk Print / Excel
+    let html = `
+    <div id="print-area" style="font-family: Arial, sans-serif; color: #000; padding: 10px; width: 100%;">
+        <h2 style="text-align: center; margin-bottom: 5px; color: #000;">DAFTAR PRODUK & STOK</h2>
+        <h3 style="text-align: center; margin-top: 0; margin-bottom: 20px; color: #000; text-transform: uppercase;">${toko}</h3>
+        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+            <thead>
+                <tr style="background-color: #e5e7eb;">
+                    <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Kategori</th>
+                    <th style="border: 1px solid #000; padding: 8px; text-align: left; font-weight: bold;">Nama Produk</th>
+                    <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Stock Qty</th>
+                    <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Kemasan</th>
+                </tr>
+            </thead>
+            <tbody>`;
+    
+    filtered.forEach(p => {
+        html += `
+                <tr>
+                    <td style="border: 1px solid #000; padding: 8px; text-align: center;">${p.kategori}</td>
+                    <td style="border: 1px solid #000; padding: 8px; text-align: left;">${p.nama}</td>
+                    <td style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">${p.qty}</td>
+                    <td style="border: 1px solid #000; padding: 8px; text-align: center;">${p.satuan || '-'}</td>
+                </tr>`;
+    });
+
+    if(filtered.length === 0) {
+        html += `<tr><td colspan="4" style="border: 1px solid #000; padding: 8px; text-align: center;">Tidak ada data produk</td></tr>`;
+    }
+
+    html += `</tbody></table></div>`;
+    return html;
+}
+
+window.exportProdukToExcel = function() {
+    let html = getExportProdukHtml();
+    let dataType = 'application/vnd.ms-excel';
+    let filename = 'Stok_Produk_' + (window.globalUserData?.toko || 'Toko').replace(/\s+/g, '_') + '.xls';
+    
+    let downloadLink = document.createElement("a");
+    document.body.appendChild(downloadLink);
+    
+    if (navigator.msSaveOrOpenBlob) {
+        let blob = new Blob(['\ufeff', html], { type: dataType });
+        navigator.msSaveOrOpenBlob(blob, filename);
+    } else {
+        downloadLink.href = 'data:' + dataType + ', ' + encodeURIComponent('\ufeff' + html);
+        downloadLink.download = filename;
+        downloadLink.click();
+    }
+    document.body.removeChild(downloadLink);
+};
+
+window.exportProdukToPDF = function() {
+    let html = getExportProdukHtml();
+    
+    let tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.left = '-9999px';
+    tempDiv.style.top = '0';
+    tempDiv.style.width = '800px'; 
+    document.body.appendChild(tempDiv);
+
+    const toko = window.globalUserData?.toko || 'Toko';
+    const filename = `Stok_Produk_${toko.replace(/\s+/g, '_')}.pdf`;
+    
+    Swal.fire({ title: 'Menyiapkan PDF...', text: 'Tunggu sebentar.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+    const optPdf = { 
+        margin: 0.5, 
+        filename: filename, 
+        image: { type: 'jpeg', quality: 0.98 }, 
+        html2canvas: { scale: 2 }, 
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } 
+    };
+
+    html2pdf().set(optPdf).from(tempDiv.firstElementChild).save().then(() => {
+        Swal.close();
+        document.body.removeChild(tempDiv);
+    });
+};
+
     </script>
     
     <!-- Script WA Transparan saat di-scroll -->
